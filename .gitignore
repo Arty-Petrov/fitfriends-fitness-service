@@ -1,0 +1,9 @@
+.vscode/
+.idea/*
+
+coverage
+
+# System Files
+.DS_Store
+Thumbs.db
+*.log
