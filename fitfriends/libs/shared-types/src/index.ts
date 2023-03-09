@@ -5,3 +5,5 @@ export * from './lib/user-role.enum';
 export * from './lib/user-gender.enum';
 export * from './lib/user-expirience.enum';
 export * from './lib/sort-order.enum';
+export * from './lib/training.interface';
+export * from './lib/user.interface';
