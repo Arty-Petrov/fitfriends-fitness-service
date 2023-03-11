@@ -8,6 +8,7 @@ export * from './lib/user-role.enum';
 export * from './lib/user-gender.enum';
 export * from './lib/user-expirience.enum';
 export * from './lib/sort-order.enum';
+export * from './lib/notification.interface';
 export * from './lib/purchase.interface';
 export * from './lib/gym.interface';
 export * from './lib/review.interface';
