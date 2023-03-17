@@ -1,11 +1,13 @@
-import { TrainingDuration, TrainingType, UserExpirience, UserGender } from '@fitfriends/shared-types';
+import { TrainingDuration, TrainingType, UserExperience, UserGender } from '@fitfriends/shared-types';
+import { PickType } from '@nestjs/swagger';
 import { Expose } from 'class-transformer';
+import { TrainingApi } from '../training.api';
 
 export class TrainingCardRdo extends PickType(TrainingApi, [
   'id',
   'name',
   'backgroundImageUri',
-  'expirience',
+  'experience',
   'type',
   'duration',
   'price',
@@ -27,7 +29,7 @@ export class TrainingCardRdo extends PickType(TrainingApi, [
   public backgroundImageUri: string;
 
   @Expose()
-  public expirience: UserExpirience;
+  public experience: UserExperience;
 
   @Expose()
   public type: TrainingType;

@@ -5,7 +5,7 @@ export interface Gym {
   id?: number;
   name: string;
   location: SubwayStation;
-  isVerifyed: boolean;
+  isVerified: boolean;
   features: GymFeature[];
   photos: string[];
   description: string;

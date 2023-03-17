@@ -1,5 +1,30 @@
-import { IsArray, IsBoolean, IsDateString, IsEmail, IsEnum, IsMongoId, IsNumber, IsString, Length, Matches, Max, Min } from 'class-validator';
+import {
+  SortOrder,
+  SubwayStation,
+  TrainingDuration,
+  TrainingType,
+  User,
+  UserExperience,
+  UserGender,
+  UserRole,
+} from '@fitfriends/shared-types';
 import { ApiProperty } from '@nestjs/swagger';
+import { Transform } from 'class-transformer';
+import {
+  IsArray,
+  IsBoolean,
+  IsDateString,
+  IsEmail,
+  IsEnum,
+  IsMongoId,
+  IsNumber,
+  IsString,
+  Length,
+  Matches,
+  Max,
+  Min,
+} from 'class-validator';
+import { InputExample } from '../input-examples.constant';
 import {
   DEFAULT_PAGINATION_COUNT,
   DEFAULT_SORT_ORDER,
@@ -13,9 +38,6 @@ import {
   UserNameLength,
   UserPasswordLength,
 } from './user.constant';
-import { SortOrder, SubwayStation, TrainingDuration, TrainingType, User, UserExpirience, UserGender, UserRole } from '@fitfriends/shared-types';
-import { InputExample } from '../input-examples.constant';
-import { Transform } from 'class-transformer';
 
 export class UserApi implements User {
   @ApiProperty({
@@ -120,7 +142,7 @@ export class UserApi implements User {
   @IsEnum(SubwayStation, {
     message: UserApiError.LocationIsWrong,
   })
-  public location: SubwayStation;
+  public subwayStation: SubwayStation;
 
   @ApiProperty({
     required: true,
@@ -131,23 +153,23 @@ export class UserApi implements User {
 
   @ApiProperty({
     required: true,
-    description: UserApiDescription.Expirience,
+    description: UserApiDescription.Experience,
   })
-  @IsEnum(UserExpirience, {
-    message: UserApiError.ExpirienceIsWrong,
+  @IsEnum(UserExperience, {
+    message: UserApiError.ExperienceIsWrong,
   })
-  public expirience: UserExpirience;
+  public experience: UserExperience;
 
   @ApiProperty({
     required: true,
-    description: UserApiDescription.TraningType,
+    description: UserApiDescription.TrainingType,
   })
   @IsArray()
   @IsEnum(TrainingType, {
     each: true,
     message: UserApiError.TrainingTypeIsWrong,
   })
-  public traningType: TrainingType[];
+  public trainingTypes: TrainingType[];
 
   @ApiProperty({
     required: true,
@@ -190,11 +212,11 @@ export class UserApi implements User {
 
   @ApiProperty({
     required: true,
-    description: UserApiDescription.Sertificate,
+    description: UserApiDescription.Certificate,
     example: InputExample.SertificateUrl,
   })
   @IsString()
-  public sertificate: string;
+  public certificate: string;
 
   @ApiProperty({
     required: true,

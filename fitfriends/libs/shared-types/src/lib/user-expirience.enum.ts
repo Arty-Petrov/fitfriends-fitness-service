@@ -1,5 +1,5 @@
-export enum UserExpirience {
-  Newbie = 'новичок';
-  Amateur = 'любитель';
-  Pro = 'профессионал';
+export enum UserExperience {
+  Newbie = 'новичок',
+  Amateur = 'любитель',
+  Pro = 'профессионал',
 }

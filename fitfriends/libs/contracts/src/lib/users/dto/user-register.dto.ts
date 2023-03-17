@@ -9,14 +9,15 @@ export class UserRegisterDto extends PickType(UserApi, [
   'password',
   'gender',
   'dateBirth',
-  'location',
-  'expirience',
-  'traningType',
+  'role',
+  'subwayStation',
+  'experience',
+  'trainingTypes',
   'trainingDuration',
   'caloriesLoss',
   'caloriesConsumption',
   'isReadyForInvite',
-  'sertificate',
+  'certificate',
   'awards',
   'isPersonalTrainer',
 ]) {
@@ -31,4 +32,10 @@ export class UserRegisterDto extends PickType(UserApi, [
   })
   @IsOptional()
   public dateBirth: Date;
+
+  @ApiProperty({
+    required: false,
+  })
+  @IsOptional()
+  public certificate: string;
 }

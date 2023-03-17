@@ -1,4 +1,4 @@
-import { SortOrder, TrainingDuration, TrainingType, UserExpirience, UserGender } from '@fitfriends/shared-types';
+import { SortOrder, TrainingDuration, TrainingType, UserExperience, UserGender } from '@fitfriends/shared-types';
 
 export const MAX_TRAINING_BACKGROUND_FILE_SIZE = 1024000;
 export const MAX_TRAINING_VIDEO_FILE_SIZE = 1024000;
@@ -30,7 +30,7 @@ export const enum TrainingCaloriesLoss {
 
 export const TrainingApiError = {
   NameNotValid: `Training name must be min ${TrainingNameLength.Min}, max ${TrainingNameLength.Max} chars length`,
-  ExpirienceIsWrong: `Expirience field must contain any of these values: ${Object.values(UserExpirience).join(', ')}`,
+  ExperienceIsWrong: `Expirience field must contain any of these values: ${Object.values(UserExperience).join(', ')}`,
   DurationIsWrong: `Training Time field must contain any of these values: ${Object.values(TrainingDuration).join(', ')}`,
   TypeIsWrong: `Training type field must contain any of these values: ${Object.values(TrainingType).join(', ')}`,
   PriceNotValid: `Training price value must be, min ${TrainingPriceRange.Min}, max ${TrainingPriceRange.Max} or ${TrainingPriceRange.Default}`,
@@ -42,7 +42,7 @@ export const TrainingApiDescription = {
   Id: 'The uniq training id',
   Name: `Training name, min ${TrainingNameLength.Min}, max ${TrainingNameLength.Max} chars`,
   BackgroundImage: `Training backgrounf image uri, file type *.png/jpg/jpeg and max size ${MAX_TRAINING_BACKGROUND_FILE_SIZE} bytes allowed to upload`,
-  Expirience: `Level of user fitnes expirience any of these values: ${Object.values(UserExpirience).join(', ')}`,
+  Experience: `Level of user fitnes expirience any of these values: ${Object.values(UserExperience).join(', ')}`,
   Type: `Training type any of these values: ${Object.values(TrainingType).join(', ')}`,
   Duration: `Type of training duration any of these values: ${Object.values(TrainingDuration).join(', ')}`,
   Price: `Training price, min ${TrainingPriceRange.Min}, max ${TrainingPriceRange.Max} value or ${TrainingPriceRange.Default}`,

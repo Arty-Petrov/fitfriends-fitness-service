@@ -1,7 +1,7 @@
-import { SortOrder, SubwayStation, TrainingDuration, TrainingType, UserExpirience, UserGender, UserRole } from '@fitfriends/shared-types';
+import { SortOrder, SubwayStation, TrainingDuration, TrainingType, UserExperience, UserGender, UserRole } from '@fitfriends/shared-types';
 export const SALT_ROUNDS = 10;
 export const MAX_AVATAR_FILE_SIZE = 1024000;
-export const MAX_SERTIFICATE_FILE_SIZE = 1024000;
+export const MAX_CERTIFICATE_FILE_SIZE = 1024000;
 export const NAME_REGEXP = /[a-zA-Zа-яА-Я]/;
 
 export const DEFAULT_PAGINATION_COUNT = 1;
@@ -46,15 +46,15 @@ export const UserApiError = {
   AwardsNotValid: `User info should not be more than ${UserAwardsLength.Max} chars length`,
   NameNotValid: `User name, min ${UserNameLength.Min}, max ${UserNameLength.Max} chars length`,
   NotFound: 'User not found',
-  GenderIsWrong: `User genger must contains any of these values: ${Object.values(UserGender).join(', ')}`,
+  GenderIsWrong: `User gender must contains any of these values: ${Object.values(UserGender).join(', ')}`,
   TrainingDurationIsWrong: `Training Time field must contain any of these values: ${Object.values(TrainingDuration).join(', ')}`,
   TrainingTypeIsWrong: `Training type field must contain any of these values: ${Object.values(TrainingType).join(', ')}`,
-  ExpirienceIsWrong: `Expirience field must contain any of these values: ${Object.values(UserExpirience).join(', ')}`,
+  ExperienceIsWrong: `Experience field must contain any of these values: ${Object.values(UserExperience).join(', ')}`,
   PasswordNotValid: `Password min length is  ${UserPasswordLength.Min}, max is ${UserPasswordLength.Max}`,
   PasswordIsWrong: 'User password is wrong',
   RoleIsWrong: `User role field must contains any of these values: ${Object.values(UserRole).join(', ')}`,
   AvatarFileTypeWrong: 'Avatar image must be jpg or png',
-  SertificateFileTypeWrong: 'Sertificarte file type must be pdf',
+  CertificateFileTypeWrong: 'Certificate file type must be pdf',
 } as const;
 
 export const UserApiDescription = {
@@ -70,13 +70,13 @@ export const UserApiDescription = {
   Role: `User role any of these values: ${Object.values(UserRole).join(', ')}`,
   Location: `User location contains from any of these values: ${Object.values(SubwayStation).join(', ')}`,
   CreatedAt: 'User entry creation date, ISO8601 string',
-  Expirience: `Level of user fitnes expirience any of these values: ${Object.values(UserExpirience).join(', ')}`,
-  TraningType: `Training type any of these values: ${Object.values(TrainingType).join(', ')}`,
+  Experience: `Level of user fitness experience any of these values: ${Object.values(UserExperience).join(', ')}`,
+  TrainingType: `Training type any of these values: ${Object.values(TrainingType).join(', ')}`,
   TrainingDuration: `Type of training duration any of these values: ${Object.values(TrainingDuration).join(', ')}`,
   CaloriesLoss: `Expected daily calories loss value, min ${UserCaloriesLoss.Min}, max ${UserCaloriesLoss.Max}`,
-  CaloriesConsumption: `Expected daily calories consumptuin value, min $UserCaloriesConsumption.Min}, max ${UserCaloriesConsumption.Max}`,
-  IsReadyForInvite: 'User is ready to recieve invites to trainig, boolean flag',
-  Sertificate: `User trainer sertificate uri, file type *.pdf and max size ${MAX_SERTIFICATE_FILE_SIZE} bytes allowed to upload`,
+  CaloriesConsumption: `Expected daily calories consumption value, min $UserCaloriesConsumption.Min}, max ${UserCaloriesConsumption.Max}`,
+  IsReadyForInvite: 'User is ready to receive invites to training, boolean flag',
+  Certificate: `User trainer certificate uri, file type *.pdf and max size ${MAX_CERTIFICATE_FILE_SIZE} bytes allowed to upload`,
   Awards: `Optional user trainer info, min ${UserNameLength.Min}, max ${UserAwardsLength.Max} chars length`,
   IsPersonalTrainer: 'Trainer is ready to perform trainings, boolean flag',
   AccessToken: 'Access token',

@@ -4,7 +4,7 @@ import { TrainingApi } from '../training.api';
 export class TrainingCreateDto extends PickType(TrainingApi, [
   'name',
   'backgroundImageUri',
-  'expirience',
+  'experience',
   'type',
   'duration',
   'price',

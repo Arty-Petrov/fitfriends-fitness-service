@@ -1,4 +1,4 @@
-import { SortOrder, Training, TrainingDuration, TrainingType, UserExpirience, UserGender } from '@fitfriends/shared-types';
+import { SortOrder, Training, TrainingDuration, TrainingType, UserExperience, UserGender } from '@fitfriends/shared-types';
 import { ApiProperty } from '@nestjs/swagger';
 import { Transform } from 'class-transformer';
 import { IsEnum, IsNumber, IsMongoId, IsString, Length, Min, Max, IsBoolean } from 'class-validator';
@@ -41,12 +41,12 @@ export class TrainingApi implements Training {
 
   @ApiProperty({
     required: true,
-    description: TrainingApiDescription.Expirience,
+    description: TrainingApiDescription.Experience,
   })
-  @IsEnum(UserExpirience, {
-    message: TrainingApiError.ExpirienceIsWrong,
+  @IsEnum(UserExperience, {
+    message: TrainingApiError.ExperienceIsWrong,
   })
-  public expirience: UserExpirience;
+  public experience: UserExperience;
 
   @ApiProperty({
     required: true,

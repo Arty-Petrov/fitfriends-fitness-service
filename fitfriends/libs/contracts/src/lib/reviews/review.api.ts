@@ -1,7 +1,7 @@
 import { SortOrder } from '@fitfriends/shared-types';
 import { ApiProperty } from '@nestjs/swagger';
 import { Transform } from 'class-transformer';
-import { IsEnum, IsMongoId, IsNumber, IsString, Length, Max } from 'class-validator';
+import { IsEnum, IsMongoId, IsNumber, IsString, Length, Max, Min } from 'class-validator';
 import {
   DEFAULT_REVIEWS_COUNT_LIMIT,
   DEFAULT_REVIEWS_PAGINATION_COUNT,
