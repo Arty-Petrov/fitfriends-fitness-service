@@ -1,8 +1,5 @@
 import { SortOrder, SubwayStation, TrainingDuration, TrainingType, UserExperience, UserGender, UserRole } from '@fitfriends/shared-types';
-export const SALT_ROUNDS = 10;
-export const MAX_AVATAR_FILE_SIZE = 1024000;
-export const MAX_CERTIFICATE_FILE_SIZE = 1024000;
-export const NAME_REGEXP = /[a-zA-Zа-яА-Я]/;
+export const USER_NAME_REGEXP = /[a-zA-Zа-яА-Я]/;
 
 export const DEFAULT_PAGINATION_COUNT = 1;
 export const DEFAULT_SORT_ORDER = SortOrder.Descended;
