@@ -9,7 +9,7 @@ import AuthRepository from './auth.repository';
 export class AuthService {
   constructor(private readonly authRepository: AuthRepository, private readonly userRepository: UserRepository) { }
 
-  private async verifyUser(dto: UserLoginDto): Promise<User | null> {
+  public async verifyUser(dto: UserLoginDto): Promise<User | null> {
     const { email, password } = dto;
     const existUser = await this.userRepository.findByEmail(email);
 

@@ -1,4 +1,3 @@
-import { createMulterOptions } from '@fitfriends/core';
 import {
   AVATAR_FILE_MAX_SIZE,
   AVATAR_FILE_TYPE_REGEXP,
@@ -7,13 +6,17 @@ import {
   GYM_PHOTO_FILE_MAX_COUNT,
   GYM_PHOTO_FILE_MAX_SIZE,
   GYM_PHOTO_FILE_TYPE_REGEXP,
-  TRAINING_MOVIE_FILE_MAX_SIZE,
-  TRAINING_MOVIE_FILE_TYPE_REGEXP,
-} from '../app/app.constant';
+  TRAINING_IMAGE_FILE_MAX_SIZE,
+  TRAINING_IMAGE_FILE_TYPE_REGEXP,
+  TRAINING_VIDEO_FILE_MAX_SIZE,
+  TRAINING_VIDEO_FILE_TYPE_REGEXP,
+} from '@fitfriends/contracts';
+import { createMulterOptions } from '@fitfriends/core';
 
 export const MulterOptions = {
   Avatar: createMulterOptions(AVATAR_FILE_MAX_SIZE, AVATAR_FILE_TYPE_REGEXP),
   Certificate: createMulterOptions(CERTIFICATE_FILE_MAX_SIZE, CERTIFICATE_FILE_TYPE_REGEXP),
   GymPhotos: createMulterOptions(GYM_PHOTO_FILE_MAX_SIZE, GYM_PHOTO_FILE_TYPE_REGEXP, GYM_PHOTO_FILE_MAX_COUNT),
-  TrainingMovie: createMulterOptions(TRAINING_MOVIE_FILE_MAX_SIZE, TRAINING_MOVIE_FILE_TYPE_REGEXP),
+  TrainingImage: createMulterOptions(TRAINING_IMAGE_FILE_MAX_SIZE, TRAINING_IMAGE_FILE_TYPE_REGEXP),
+  TrainingVideo: createMulterOptions(TRAINING_VIDEO_FILE_MAX_SIZE, TRAINING_VIDEO_FILE_TYPE_REGEXP),
 } as const;

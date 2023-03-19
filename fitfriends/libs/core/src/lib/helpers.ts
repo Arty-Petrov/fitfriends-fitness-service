@@ -4,9 +4,16 @@ import { ensureDir } from 'fs-extra';
 import { diskStorage } from 'multer';
 import { extname } from 'path';
 import { UploadField } from './constants/upload-field.const';
+import { ClassConstructor, plainToInstance } from 'class-transformer';
 
 export function getMongoConnectionString({ username, password, host, port, databaseName, authDatabase }): string {
   return `mongodb://${username}:${password}@${host}:${port}/${databaseName}?authSource=${authDatabase}`;
+}
+
+export function fillObject<T, V>(dto: ClassConstructor<T>, plainObject: V, groups: string[] = []) {
+  const options = !groups.length ? { excludeExtraneousValues: true } : { excludeExtraneousValues: true, groups: [...groups] };
+
+  return plainToInstance(dto, plainObject, { ...options });
 }
 
 export function createMulterOptions(maxFileSize: number, fileType: RegExp, maxCount = 1) {
@@ -30,7 +37,7 @@ export function createMulterOptions(maxFileSize: number, fileType: RegExp, maxCo
 
         const categoryDir = Object.values(UploadField).find((path) => url.includes(path));
         if (!categoryDir) {
-          throw new HttpException('Unexpecxted field name', HttpStatus.BAD_REQUEST);
+          throw new HttpException('Unexpected field name', HttpStatus.BAD_REQUEST);
         }
 
         const userId = user.id;

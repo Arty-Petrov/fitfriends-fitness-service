@@ -11,6 +11,8 @@ export * from './lib/gym.interface';
 export * from './lib/invite.interface';
 export * from './lib/user-experience.enum';
 export * from './lib/sort-order.enum';
+export * from './lib/crud-repository.interface';
+export * from './lib/entity.interface';
 export * from './lib/notification.interface';
 export * from './lib/purchase.interface';
 export * from './lib/review.interface';

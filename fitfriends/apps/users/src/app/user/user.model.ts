@@ -6,6 +6,7 @@ import { USERS_COLLECTION_NAME } from '../app.constant';
 @Schema({
   collection: USERS_COLLECTION_NAME,
   id: true,
+  timestamps: true,
 })
 export class UserModel extends Document implements User {
   @Prop({
@@ -54,11 +55,6 @@ export class UserModel extends Document implements User {
     enum: SubwayStation,
   })
   public subwayStation: SubwayStation;
-
-  @Prop({
-    required: true,
-  })
-  public createdAt?: Date;
 
   @Prop({
     required: true,
