@@ -1,35 +1,13 @@
-import {
-  SortOrder,
-  SubwayStation,
-  TrainingDuration,
-  TrainingType,
-  User,
-  UserExperience,
-  UserGender,
-  UserRole,
-} from '@fitfriends/shared-types';
+import { SortOrder, SubwayStation, TrainingDuration, TrainingType, User, UserExperience, UserGender, UserRole } from '@fitfriends/shared-types';
 import { ApiProperty } from '@nestjs/swagger';
 import { Transform } from 'class-transformer';
-import {
-  IsArray,
-  IsBoolean,
-  IsDateString,
-  IsEmail,
-  IsEnum,
-  IsMongoId,
-  IsNumber,
-  IsString,
-  Length,
-  Matches,
-  Max,
-  Min,
-} from 'class-validator';
+import { IsArray, IsBoolean, IsDateString, IsEmail, IsEnum, IsMongoId, IsNumber, IsString, Length, Matches, Max, Min } from 'class-validator';
 import { InputExample } from '../input-examples.constant';
 import {
-  DEFAULT_PAGINATION_COUNT,
-  DEFAULT_SORT_ORDER,
+  DEFAULT_USERS_PAGINATION_COUNT,
+  DEFAULT_USERS_SORT_ORDER,
   DEFAULT_USERS_COUNT_LIMIT,
-  NAME_REGEXP,
+  USER_NAME_REGEXP,
   UserApiDescription,
   UserApiError,
   UserAwardsLength,
@@ -54,7 +32,7 @@ export class UserApi implements User {
     example: InputExample.Name,
   })
   @IsString()
-  @Matches(NAME_REGEXP, {
+  @Matches(USER_NAME_REGEXP, {
     message: UserApiError.NameNotValid,
   })
   @Length(UserNameLength.Min, UserNameLength.Max)
@@ -255,14 +233,14 @@ export class UserApi implements User {
     required: false,
   })
   @IsEnum(SortOrder)
-  public sort: SortOrder = DEFAULT_SORT_ORDER;
+  public sort: SortOrder = DEFAULT_USERS_SORT_ORDER;
 
   @ApiProperty({
     required: false,
   })
   @Transform(({ value }) => +value)
   @IsNumber()
-  public page: number = DEFAULT_PAGINATION_COUNT;
+  public page: number = DEFAULT_USERS_PAGINATION_COUNT;
 
   @ApiProperty({
     required: false,

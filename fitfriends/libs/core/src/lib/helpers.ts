@@ -1,5 +1,5 @@
 import { HttpException, HttpStatus } from '@nestjs/common';
-import * as dayjs from 'dayjs';
+import dayjs from 'dayjs';
 import { ensureDir } from 'fs-extra';
 import { diskStorage } from 'multer';
 import { extname } from 'path';

@@ -1,23 +1,11 @@
 import { Gym, GymFeature, SortOrder, SubwayStation } from '@fitfriends/shared-types';
 import { ApiProperty } from '@nestjs/swagger';
 import { Transform } from 'class-transformer';
-import {
-  ArrayMaxSize,
-  ArrayNotEmpty,
-  IsArray,
-  IsBooleanString,
-  IsEnum,
-  IsMongoId,
-  IsNumber,
-  IsString,
-  Length,
-  Max,
-  Min,
-} from 'class-validator';
+import { ArrayMaxSize, ArrayNotEmpty, IsArray, IsBooleanString, IsEnum, IsMongoId, IsNumber, IsString, Length, Max, Min } from 'class-validator';
 import {
   DEFAULT_GYM_COUNT_LIMIT,
-  DEFAULT_PAGINATION_COUNT,
-  DEFAULT_SORT_ORDER,
+  DEFAULT_GYM_PAGINATION_COUNT,
+  DEFAULT_GYM_SORT_ORDER,
   GymApiDescription,
   GymApiError,
   GymNameLength,
@@ -111,14 +99,14 @@ export class GymApi implements Gym {
     required: false,
   })
   @IsEnum(SortOrder)
-  public sort: SortOrder = DEFAULT_SORT_ORDER;
+  public sort: SortOrder = DEFAULT_GYM_SORT_ORDER;
 
   @ApiProperty({
     required: false,
   })
   @Transform(({ value }) => +value)
   @IsNumber()
-  public page: number = DEFAULT_PAGINATION_COUNT;
+  public page: number = DEFAULT_GYM_PAGINATION_COUNT;
 
   @ApiProperty({
     required: false,

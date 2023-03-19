@@ -9,9 +9,9 @@ import {
   TrainingDescriptionLength,
   TrainingNameLength,
   TrainingPriceRange,
-  DEFAULT_SORT_ORDER,
-  DEFAULT_PAGINATION_COUNT,
-  DEFAULT_TRAINIGS_COUNT_LIMIT,
+  DEFAULT_TRAININGS_SORT_ORDER,
+  DEFAULT_TRAININGS_PAGINATION_COUNT,
+  DEFAULT_TRAININGS_COUNT_LIMIT,
 } from './training.constant';
 
 export class TrainingApi implements Training {
@@ -34,10 +34,10 @@ export class TrainingApi implements Training {
 
   @ApiProperty({
     required: true,
-    description: TrainingApiDescription.BackgroundImage,
+    description: TrainingApiDescription.Image,
   })
   @IsString()
-  public backgroundImageUri: string;
+  public image: string;
 
   @ApiProperty({
     required: true,
@@ -163,14 +163,14 @@ export class TrainingApi implements Training {
     required: false,
   })
   @IsEnum(SortOrder)
-  public sort: SortOrder = DEFAULT_SORT_ORDER;
+  public sort: SortOrder = DEFAULT_TRAININGS_SORT_ORDER;
 
   @ApiProperty({
     required: false,
   })
   @Transform(({ value }) => +value)
   @IsNumber()
-  public page: number = DEFAULT_PAGINATION_COUNT;
+  public page: number = DEFAULT_TRAININGS_PAGINATION_COUNT;
 
   @ApiProperty({
     required: false,
@@ -178,7 +178,7 @@ export class TrainingApi implements Training {
   @Transform(({ value }) => +value)
   @IsNumber()
   @Transform(({ value }) => {
-    return value < DEFAULT_TRAINIGS_COUNT_LIMIT ? value : DEFAULT_TRAINIGS_COUNT_LIMIT;
+    return value < DEFAULT_TRAININGS_COUNT_LIMIT ? value : DEFAULT_TRAININGS_COUNT_LIMIT;
   })
-  public count: number = DEFAULT_TRAINIGS_COUNT_LIMIT;
+  public count: number = DEFAULT_TRAININGS_COUNT_LIMIT;
 }

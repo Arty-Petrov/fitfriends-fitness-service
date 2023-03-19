@@ -1,8 +1,14 @@
 import { SortOrder, SubwayStation, TrainingDuration, TrainingType, UserExperience, UserGender, UserRole } from '@fitfriends/shared-types';
 export const USER_NAME_REGEXP = /[a-zA-Zа-яА-Я]/;
 
-export const DEFAULT_PAGINATION_COUNT = 1;
-export const DEFAULT_SORT_ORDER = SortOrder.Descended;
+export const AVATAR_FILE_TYPE_REGEXP = /\/(jpg|jpeg|png)$/;
+export const AVATAR_FILE_MAX_SIZE = 1024000;
+
+export const CERTIFICATE_FILE_TYPE_REGEXP = /\/(pdf)$/;
+export const CERTIFICATE_FILE_MAX_SIZE = 1024000;
+
+export const DEFAULT_USERS_PAGINATION_COUNT = 1;
+export const DEFAULT_USERS_SORT_ORDER = SortOrder.Descended;
 export const DEFAULT_USERS_COUNT_LIMIT = 50;
 
 export const enum UserPasswordLength {
@@ -58,7 +64,7 @@ export const UserApiDescription = {
   Id: 'The uniq user id',
   Name: `User name and surname, min ${UserNameLength.Min}, max ${UserNameLength.Max} chars`,
   Email: 'User unique email address',
-  Avatar: `User avatar uri, file type *.png/jpg/jpeg and max size ${MAX_AVATAR_FILE_SIZE} bytes allowed to upload`,
+  Avatar: `User avatar uri, file type *.png/jpg/jpeg and max size ${AVATAR_FILE_MAX_SIZE} bytes allowed to upload`,
   Password: `User password, min ${UserPasswordLength.Min}, max ${UserPasswordLength.Max} chars length`,
   CurrentPassword: `User's current password`,
   PasswordUpdate: `New password, min ${UserPasswordLength.Min}, max ${UserPasswordLength.Max} chars length`,
@@ -73,7 +79,7 @@ export const UserApiDescription = {
   CaloriesLoss: `Expected daily calories loss value, min ${UserCaloriesLoss.Min}, max ${UserCaloriesLoss.Max}`,
   CaloriesConsumption: `Expected daily calories consumption value, min $UserCaloriesConsumption.Min}, max ${UserCaloriesConsumption.Max}`,
   IsReadyForInvite: 'User is ready to receive invites to training, boolean flag',
-  Certificate: `User trainer certificate uri, file type *.pdf and max size ${MAX_CERTIFICATE_FILE_SIZE} bytes allowed to upload`,
+  Certificate: `User trainer certificate uri, file type *.pdf and max size ${CERTIFICATE_FILE_MAX_SIZE} bytes allowed to upload`,
   Awards: `Optional user trainer info, min ${UserNameLength.Min}, max ${UserAwardsLength.Max} chars length`,
   IsPersonalTrainer: 'Trainer is ready to perform trainings, boolean flag',
   AccessToken: 'Access token',

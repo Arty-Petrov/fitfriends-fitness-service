@@ -9,7 +9,7 @@ export * from './lib/user-role.enum';
 export * from './lib/user-gender.enum';
 export * from './lib/gym.interface';
 export * from './lib/invite.interface';
-export * from './lib/user-expirience.enum';
+export * from './lib/user-experience.enum';
 export * from './lib/sort-order.enum';
 export * from './lib/notification.interface';
 export * from './lib/purchase.interface';

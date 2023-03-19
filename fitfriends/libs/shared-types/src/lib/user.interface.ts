@@ -1,7 +1,7 @@
 import { SubwayStation } from './subway-station.enum';
 import { TrainingDuration } from './training-duration.enum';
 import { TrainingType } from './training-type.enum';
-import { UserExperience } from './user-expirience.enum';
+import { UserExperience } from './user-experience.enum';
 import { UserGender } from './user-gender.enum';
 import { UserRole } from './user-role.enum';
 

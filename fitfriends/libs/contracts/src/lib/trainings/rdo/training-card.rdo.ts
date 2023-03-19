@@ -6,7 +6,7 @@ import { TrainingApi } from '../training.api';
 export class TrainingCardRdo extends PickType(TrainingApi, [
   'id',
   'name',
-  'backgroundImageUri',
+  'image',
   'experience',
   'type',
   'duration',
@@ -26,7 +26,7 @@ export class TrainingCardRdo extends PickType(TrainingApi, [
   public name: string;
 
   @Expose()
-  public backgroundImageUri: string;
+  public image: string;
 
   @Expose()
   public experience: UserExperience;

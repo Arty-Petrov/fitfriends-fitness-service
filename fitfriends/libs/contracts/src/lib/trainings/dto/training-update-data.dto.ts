@@ -6,7 +6,7 @@ import { TrainingApi } from '../training.api';
 export class TrainingUpdateDto extends PickType(TrainingApi, [
   'id',
   'name',
-  'backgroundImageUri',
+  'image',
   'experience',
   'type',
   'duration',
@@ -28,13 +28,13 @@ export class TrainingUpdateDto extends PickType(TrainingApi, [
     required: false,
   })
   @IsOptional()
-  public backgroundImageUri: string;
+  public image: string;
 
   @ApiProperty({
     required: false,
   })
   @IsOptional()
-  public expirience: UserExperience;
+  public experience: UserExperience;
 
   @ApiProperty({
     required: false,

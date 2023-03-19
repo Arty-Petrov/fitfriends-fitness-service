@@ -1,9 +1,11 @@
 import { GymFeature, SortOrder, SubwayStation } from '@fitfriends/shared-types';
 
-export const MAX_GYM_PHOTO_FILE_SIZE = 5120000;
+export const GYM_PHOTO_FILE_TYPE_REGEXP = /\/(jpg|jpeg|png)$/;
+export const GYM_PHOTO_FILE_MAX_SIZE = 5120000;
+export const GYM_PHOTO_FILE_MAX_COUNT = 5;
 
-export const DEFAULT_PAGINATION_COUNT = 1;
-export const DEFAULT_SORT_ORDER = SortOrder.Descended;
+export const DEFAULT_GYM_PAGINATION_COUNT = 1;
+export const DEFAULT_GYM_SORT_ORDER = SortOrder.Descended;
 export const DEFAULT_GYM_COUNT_LIMIT = 50;
 
 export const enum GymNameLength {
@@ -41,7 +43,7 @@ export const GymApiDescription = {
   Location: `Gym location contains from any of these values: ${Object.values(SubwayStation).join(', ')}`,
   IsVeryfied: 'Gym is verifyed',
   Features: `Gym features any of these values: ${Object.values(GymFeature).join(', ')}`,
-  Photos: `Photos uri, file type *.png/jpg/jpeg and max size ${MAX_GYM_PHOTO_FILE_SIZE} bytes allowed to upload`,
+  Photos: `Photos uri, file type *.png/jpg/jpeg and max size ${GYM_PHOTO_FILE_MAX_SIZE} bytes allowed to upload`,
   Description: `Training description, min ${GymDescriptionLength.Min}, max ${GymDescriptionLength.Max} chars`,
   Price: `Training price, min ${GymPriceRange.Min}, max ${GymPriceRange.Max}`,
 } as const;

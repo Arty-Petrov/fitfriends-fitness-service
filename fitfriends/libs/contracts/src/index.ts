@@ -1,3 +1,21 @@
+export * from './lib/gyms/gym.api';
+export * from './lib/gyms/gym.constant';
+
+export * from './lib/invites/invite.api';
+export * from './lib/invites/invite.constant';
+
+export * from './lib/notifications/notification.api';
+export * from './lib/notifications/notification.constant';
+
+export * from './lib/purchases/purchase.api';
+export * from './lib/purchases/purchase.constant';
+
+export * from './lib/reviews/review.api';
+export * from './lib/reviews/review.constant';
+
+export * from './lib/trainings/training.api';
+export * from './lib/trainings/training.constant';
+
 export * from './lib/users/user.api';
 export * from './lib/users/user.constant';
 export * from './lib/users/contract/user-get-friends';

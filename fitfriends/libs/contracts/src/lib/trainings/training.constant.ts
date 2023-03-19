@@ -1,11 +1,14 @@
 import { SortOrder, TrainingDuration, TrainingType, UserExperience, UserGender } from '@fitfriends/shared-types';
 
-export const MAX_TRAINING_BACKGROUND_FILE_SIZE = 1024000;
-export const MAX_TRAINING_VIDEO_FILE_SIZE = 1024000;
+export const TRAINING_IMAGE_FILE_MAX_SIZE = 1024000;
+export const TRAINING_IMAGE_FILE_TYPE_REGEXP = /\/(jpg|jpeg|png)$/;
 
-export const DEFAULT_PAGINATION_COUNT = 1;
-export const DEFAULT_SORT_ORDER = SortOrder.Descended;
-export const DEFAULT_TRAINIGS_COUNT_LIMIT = 50;
+export const TRAINING_VIDEO_FILE_TYPE_REGEXP = /\/(mov|avi|mp4)$/;
+export const TRAINING_VIDEO_FILE_MAX_SIZE = 10240000;
+
+export const DEFAULT_TRAININGS_PAGINATION_COUNT = 1;
+export const DEFAULT_TRAININGS_SORT_ORDER = SortOrder.Descended;
+export const DEFAULT_TRAININGS_COUNT_LIMIT = 50;
 
 export const enum TrainingNameLength {
   Min = 1,
@@ -41,7 +44,7 @@ export const TrainingApiError = {
 export const TrainingApiDescription = {
   Id: 'The uniq training id',
   Name: `Training name, min ${TrainingNameLength.Min}, max ${TrainingNameLength.Max} chars`,
-  BackgroundImage: `Training backgrounf image uri, file type *.png/jpg/jpeg and max size ${MAX_TRAINING_BACKGROUND_FILE_SIZE} bytes allowed to upload`,
+  Image: `Training backgrounf image uri, file type *.png/jpg/jpeg and max size ${TRAINING_IMAGE_FILE_MAX_SIZE} bytes allowed to upload`,
   Experience: `Level of user fitnes expirience any of these values: ${Object.values(UserExperience).join(', ')}`,
   Type: `Training type any of these values: ${Object.values(TrainingType).join(', ')}`,
   Duration: `Type of training duration any of these values: ${Object.values(TrainingDuration).join(', ')}`,
@@ -49,7 +52,7 @@ export const TrainingApiDescription = {
   CaloriesLoss: `Expected daily calories loss value, min ${TrainingCaloriesLoss.Min}, max ${TrainingCaloriesLoss.Max}`,
   Description: `Training description, min ${TrainingDescriptionLength.Min}, max ${TrainingDescriptionLength.Max} chars`,
   Gender: `Most suitable gender for training any of these values: ${Object.values(UserGender).join(', ')}`,
-  Video: `Training video uri, file type *.mov/avi/mp4 and max size ${MAX_TRAINING_VIDEO_FILE_SIZE} bytes allowed toH upload`,
+  Video: `Training video uri, file type *.mov/avi/mp4 and max size ${TRAINING_VIDEO_FILE_MAX_SIZE} bytes allowed toH upload`,
   TrainerId: 'The uniq training author id',
   IsSpecialOffer: 'Trining is part of special offer',
   PriceMin: 'Minimum price query treshold',
