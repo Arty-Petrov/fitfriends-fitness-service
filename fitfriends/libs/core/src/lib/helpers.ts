@@ -33,18 +33,18 @@ export function createMulterOptions(maxFileSize: number, fileType: RegExp, maxCo
       destination: async (req: any, file: Express.Multer.File, cb: any) => {
         const rootDir = process.env.MULTER_DEST;
 
-        const { user, url, id } = req;
-
-        const categoryDir = Object.values(UploadField).find((path) => url.includes(path));
+        // const { user, url, id } = req;
+        const { url, id } = req;
+        const categoryDir = Object.values(UploadField).find((field) => file.fieldname === field);
         if (!categoryDir) {
           throw new HttpException('Unexpected field name', HttpStatus.BAD_REQUEST);
         }
+        // const userId  = `${user.id}-`;
+        const routeId = id ? `${id}-` : '';
 
-        const userId = user.id;
-        const routeId = id ? `-${id}` : '';
-
-        const timestamp = `-${dayjs().unix()}`;
-        const uploadDir = `${rootDir}/${categoryDir}/${userId}${routeId}${timestamp}`;
+        const timestamp = `${dayjs().unix()}`;
+        // const uploadDir = `${rootDir}/${categoryDir}/${userId}${routeId}${timestamp}`;
+        const uploadDir = `${rootDir}/${categoryDir}/${routeId}${timestamp}`;
         await ensureDir(uploadDir);
         cb(null, uploadDir);
       },

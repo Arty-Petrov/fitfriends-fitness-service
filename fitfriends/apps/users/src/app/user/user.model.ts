@@ -1,4 +1,4 @@
-import { SubwayStation, TrainingDuration, TrainingType, User, UserExperience, UserGender, UserRole } from '@fitfriends/shared-types';
+import { SubwayStation, User, UserGender, UserRole } from '@fitfriends/shared-types';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
 import { USERS_COLLECTION_NAME } from '../app.constant';
@@ -23,12 +23,12 @@ export class UserModel extends Document implements User {
   @Prop({
     required: true,
   })
-  public avatar?: string;
+  public avatar: string;
 
   @Prop({
     required: true,
   })
-  public passwordHash?: string;
+  public passwordHash: string;
 
   @Prop({
     required: true,
@@ -38,9 +38,9 @@ export class UserModel extends Document implements User {
   public gender: UserGender;
 
   @Prop({
-    required: true,
+    required: false,
   })
-  public dateBirth?: Date;
+  public dateBirth: Date;
 
   @Prop({
     required: true,
@@ -55,58 +55,6 @@ export class UserModel extends Document implements User {
     enum: SubwayStation,
   })
   public subwayStation: SubwayStation;
-
-  @Prop({
-    required: true,
-    type: String,
-    enum: UserExperience,
-  })
-  public experience: UserExperience;
-
-  @Prop({
-    required: true,
-    type: [String],
-  })
-  public trainingTypes: TrainingType[];
-
-  @Prop({
-    required: true,
-    type: String,
-    enum: TrainingDuration,
-  })
-  public trainingDuration: TrainingDuration;
-
-  @Prop({
-    required: true,
-  })
-  public caloriesLoss: number;
-
-  @Prop({
-    required: true,
-  })
-  public caloriesConsumption?: number;
-
-  @Prop({
-    required: true,
-    default: null,
-  })
-  public isReadyForInvite?: boolean | null;
-
-  @Prop({
-    required: true,
-  })
-  public certificate: string;
-
-  @Prop({
-    required: true,
-  })
-  public awards: string;
-
-  @Prop({
-    required: true,
-    default: null,
-  })
-  public isPersonalTrainer: boolean | null;
 }
 
 export const UserSchema = SchemaFactory.createForClass(UserModel);

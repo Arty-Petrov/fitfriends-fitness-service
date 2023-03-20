@@ -81,7 +81,7 @@ export const UserApiDescription = {
   IsReadyForInvite: 'User is ready to receive invites to training, boolean flag',
   Certificate: `User trainer certificate uri, file type *.pdf and max size ${CERTIFICATE_FILE_MAX_SIZE} bytes allowed to upload`,
   Awards: `Optional user trainer info, min ${UserNameLength.Min}, max ${UserAwardsLength.Max} chars length`,
-  IsPersonalTrainer: 'Trainer is ready to perform trainings, boolean flag',
+  IsPersonalCoach: 'Trainer is ready to perform trainings, boolean flag',
   AccessToken: 'Access token',
   RefreshToken: 'Refresh token',
 } as const;

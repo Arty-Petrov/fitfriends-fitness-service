@@ -16,7 +16,7 @@ export class UserCardRdo extends PickType(UserApi, [
   'isReadyForInvite',
   'certificate',
   'awards',
-  'isPersonalTrainer',
+  'isPersonalCoach',
 ]) {
   @Expose()
   public name: string;
@@ -46,5 +46,5 @@ export class UserCardRdo extends PickType(UserApi, [
   public awards: string;
 
   @Expose()
-  public isPersonalTrainer: boolean;
+  public isPersonalCoach: boolean;
 }

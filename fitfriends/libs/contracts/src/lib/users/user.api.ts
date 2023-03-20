@@ -207,11 +207,11 @@ export class UserApi implements User {
 
   @ApiProperty({
     required: true,
-    description: UserApiDescription.IsPersonalTrainer,
+    description: UserApiDescription.IsPersonalCoach,
     example: InputExample.Boolean,
   })
   @IsBoolean()
-  public isPersonalTrainer: boolean;
+  public isPersonalCoach: boolean;
 
   @ApiProperty({
     required: true,
