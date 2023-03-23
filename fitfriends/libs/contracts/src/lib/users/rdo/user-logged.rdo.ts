@@ -1,4 +1,10 @@
-import { PickType } from '@nestjs/swagger';
-import { UserApi } from '../user.api';
+import { Expose } from 'class-transformer';
 
-export class UserLoggedRdo extends PickType(UserApi, ['name', 'email', 'avatar', 'role', 'accessToken']) { }
+export class UserLoggedRdo {
+  @Expose()
+  public access_token: string;
+  
+  @Expose()
+  public refresh_token: string;
+}
+

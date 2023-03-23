@@ -5,36 +5,44 @@ import { EnvValidationMessage } from './app.constant';
 
 class EnvironmentsConfig {
   @IsString({
-    message: EnvValidationMessage.DBNameRequired
+    message: EnvValidationMessage.DBNameRequired,
   })
   public MONGO_DB: string;
 
   @IsString({
-    message: EnvValidationMessage.DBHostRequired
+    message: EnvValidationMessage.DBHostRequired,
   })
   public MONGO_HOST: string;
 
-  @IsNumber({}, {
-    message: EnvValidationMessage.DBPortRequired
-  })
+  @IsNumber(
+    {},
+    {
+      message: EnvValidationMessage.DBPortRequired,
+    }
+  )
   @Min(MongoPortRange.Min)
   @Max(MongoPortRange.Max)
   public MONGO_PORT: number;
 
   @IsString({
-    message: EnvValidationMessage.DBUserRequired
+    message: EnvValidationMessage.DBUserRequired,
   })
   public MONGO_USER: string;
 
   @IsString({
-    message: EnvValidationMessage.DBPasswordRequired
+    message: EnvValidationMessage.DBPasswordRequired,
   })
   public MONGO_PASSWORD: string;
 
   @IsString({
-    message: EnvValidationMessage.DBBaseAuthRequired
+    message: EnvValidationMessage.DBBaseAuthRequired,
   })
   public MONGO_AUTH_BASE: string;
+
+  @IsString({
+    message: EnvValidationMessage.RmqServiceNameRequired,
+  })
+  public RMQ_SERVICE_NAME: string;
 
   @IsString({
     message: EnvValidationMessage.RmqExchangeRequired,
@@ -54,12 +62,32 @@ class EnvironmentsConfig {
   @IsString({
     message: EnvValidationMessage.RmqHostRequired,
   })
-  public RMQ_HOSTNAME: string;
+  public RMQ_HOST_NAME: string;
 
   @IsString({
     message: EnvValidationMessage.RmqQueueRequired,
   })
-  public RMQ_QUEUE: string;
+  public RMQ_USERS_QUEUE: string;
+
+  @IsString({
+    message: EnvValidationMessage.JwtAccessTokenSecretRequired,
+  })
+  public JWT_AT_SECRET: string;
+
+  @IsString({
+    message: EnvValidationMessage.JwtRefreshTokenExpiresInRequired,
+  })
+  public JWT_AT_EXPIRES_IN: string;
+
+  @IsString({
+    message: EnvValidationMessage.JwtRefreshTokenSecretRequired,
+  })
+  public JWT_RT_SECRET: string;
+
+  @IsString({
+    message: EnvValidationMessage.JwtRefreshTokenExpiresInRequired,
+  })
+  public JWT_RT_EXPIRES_IN: string;
 }
 
 export function validateEnvironments(config: Record<string, unknown>) {

@@ -2,7 +2,6 @@ import { UserListQuery } from '@fitfriends/contracts';
 import { CRUDRepository, User } from '@fitfriends/shared-types';
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-
 import { Model } from 'mongoose';
 import { UserEntity } from './user.entity';
 import { UserModel } from './user.model';
@@ -16,8 +15,8 @@ export default class UserRepository implements CRUDRepository<UserEntity, string
     return newUser.save();
   }
 
-  public async findById(id: string): Promise<User | null> {
-    return this.userModel.findOne({ id }).exec();
+  public async findById(_id: string): Promise<User | null> {
+    return this.userModel.findOne({ _id }).exec();
   }
 
   public async findByEmail(email: string): Promise<User | null> {
@@ -33,11 +32,11 @@ export default class UserRepository implements CRUDRepository<UserEntity, string
     return this.userModel.find({}).select('rating').sort({ rating: -1 }).exec();
   }
 
-  public async update(id: string, item: UserEntity): Promise<User> {
-    return this.userModel.findByIdAndUpdate(id, item.toObject(), { new: true }).exec();
+  public async update(_id: string, item: UserEntity): Promise<User> {
+    return this.userModel.findByIdAndUpdate(_id, item.toObject(), { new: true }).exec();
   }
 
-  public async destroy(id: string): Promise<void> {
-    this.userModel.deleteOne({ id });
+  public async destroy(_id: string): Promise<void> {
+    this.userModel.deleteOne({ _id });
   }
 }
