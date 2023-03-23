@@ -4,6 +4,11 @@ import { IsString, validateSync } from 'class-validator';
 
 class EnvironmentsConfig {
   @IsString({
+    message: EnvValidationMessage.RmqServiceNameRequired,
+  })
+  public RMQ_SERVICE_NAME: string;
+
+  @IsString({
     message: EnvValidationMessage.RmqExchangeRequired,
   })
   public RMQ_EXCHANGE: string;
@@ -21,7 +26,27 @@ class EnvironmentsConfig {
   @IsString({
     message: EnvValidationMessage.RmqHostRequired,
   })
-  public RMQ_HOSTNAME: string;
+  public RMQ_HOST_NAME: string;
+
+  @IsString({
+    message: EnvValidationMessage.JwtAccessTokenSecretRequired,
+  })
+  public JWT_AT_SECRET: string;
+
+  @IsString({
+    message: EnvValidationMessage.JwtAccessTokenExpiresInRequired,
+  })
+  public JWT_AT_EXPIRES_IN: string;
+
+  @IsString({
+    message: EnvValidationMessage.JwtRefreshTokenSecretRequired,
+  })
+  public JWT_RT_SECRET: string;
+
+  @IsString({
+    message: EnvValidationMessage.JwtRefreshTokenExpiresInRequired,
+  })
+  public JWT_RT_EXPIRES_IN: string;
 }
 
 export function validateEnvironments(config: Record<string, unknown>) {

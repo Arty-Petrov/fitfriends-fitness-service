@@ -1,12 +1,12 @@
-import { UserLogin, UserRegister } from '@fitfriends/contracts';
+import { UserLogin, UserLogout, UserRefreshToken, UserRegister } from '@fitfriends/contracts';
 import { fillObject } from '@fitfriends/core';
-import { Body, Controller, Logger } from '@nestjs/common';
+import { Body, Controller, HttpStatus, Logger } from '@nestjs/common';
 import { Message, RMQMessage, RMQRoute, RMQValidate } from 'nestjs-rmq';
 import { AuthService } from './auth.service';
 
 @Controller()
 export class AuthController {
-  constructor(private readonly authService: AuthService) { }
+public constructor(private readonly authService: AuthService) { }
 
   @RMQValidate()
   @RMQRoute(UserRegister.topic)
@@ -20,8 +20,22 @@ export class AuthController {
 
   @RMQValidate()
   @RMQRoute(UserLogin.topic)
-  async login(@Body() dto: UserLogin.Request): Promise<UserLogin.Response> {
-    const user = await this.authService.login(dto);
-    return fillObject(UserLogin.Response, user);
+  public  async login(@Body() dto: UserLogin.Request): Promise<UserLogin.Response> {
+    const tokens = await
+    this.authService.login(dto);
+    return fillObject(UserLogin.Response, tokens);
   }
+
+  @RMQValidate()
+  @RMQRoute(UserLogout.topic)
+  public  async logout(@Body() dto: UserLogout.Request): Promise<HttpStatus> {
+    return this.authService.logout(dto);
+  }
+
+  @RMQValidate()
+  @RMQRoute(UserRefreshToken.topic)
+  public async refresh(@Body() dto: UserRefreshToken.Request): Promise<UserRefreshToken.Response> {
+    return await this.authService.createRefreshTokens(dto);
+  }
+
 }

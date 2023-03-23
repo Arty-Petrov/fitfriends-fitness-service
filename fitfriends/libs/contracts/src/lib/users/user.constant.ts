@@ -84,6 +84,7 @@ export const UserApiDescription = {
   IsPersonalCoach: 'Trainer is ready to perform trainings, boolean flag',
   AccessToken: 'Access token',
   RefreshToken: 'Refresh token',
+  RefreshTokenId: 'Refresh token id',
 } as const;
 
 export enum ResponseGroup {

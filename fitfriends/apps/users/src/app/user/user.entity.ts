@@ -32,6 +32,7 @@ export class UserEntity implements Entity<UserEntity>, User {
   }
 
   fillEntity(entity: User): void {
+    this.id = entity?.id;
     this.name = entity.name;
     this.email = entity.email;
     this.avatar = entity.avatar;

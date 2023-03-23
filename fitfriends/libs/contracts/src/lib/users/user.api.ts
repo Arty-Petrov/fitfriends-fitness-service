@@ -230,6 +230,14 @@ export class UserApi implements User {
   public refreshToken: string;
 
   @ApiProperty({
+    required: true,
+    description: UserApiDescription.RefreshTokenId,
+    example: InputExample.MongoId,
+  })
+  @IsString()
+  public refreshTokenId?: string;
+
+  @ApiProperty({
     required: false,
   })
   @IsEnum(SortOrder)
