@@ -1,14 +1,13 @@
 import { TrainingDuration } from './training-duration.enum';
 import { TrainingType } from './training-type.enum';
-import { UserExpirience } from './user-expirience.enum';
+import { UserExperience } from './user-experience.enum';
 import { UserGender } from './user-gender.enum';
-import { User } from './user.interface';
 
 export interface Training {
   id?: string;
   name: string;
-  backgroundImageUri: string;
-  expirience: UserExpirience;
+  image: string;
+  experience: UserExperience;
   type: TrainingType;
   duration: TrainingDuration;
   price: number;

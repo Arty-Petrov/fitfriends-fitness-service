@@ -1,3 +1,4 @@
+import { PickType } from '@nestjs/swagger';
 import { Expose } from 'class-transformer';
 import { ReviewApi } from '../review.api';
 

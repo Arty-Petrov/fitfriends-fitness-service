@@ -1,20 +1,22 @@
-import { SubwayStation, TrainingDuration, TrainingType, UserExpirience, UserGender } from '@fitfriends/shared-types';
+import { SubwayStation, TrainingDuration, TrainingType, UserExperience, UserGender, UserRole } from '@fitfriends/shared-types';
 import { ApiProperty, PickType } from '@nestjs/swagger';
-import { IsOptional } from 'class-validator';
+import { IsOptional, ValidateIf } from 'class-validator';
 import { UserApi } from '../user.api';
 
 export class UserUpdateDataDto extends PickType(UserApi, [
   'name',
+  'avatar',
   'gender',
-  'location',
-  'expirience',
-  'traningType',
+  'subwayStation',
+  'experience',
+  'trainingTypes',
   'trainingDuration',
   'caloriesLoss',
   'caloriesConsumption',
   'isReadyForInvite',
+  'certificate',
   'awards',
-  'isPersonalTrainer',
+  'isPersonalCoach',
 ]) {
   @ApiProperty({
     required: false,
@@ -38,47 +40,60 @@ export class UserUpdateDataDto extends PickType(UserApi, [
     required: false,
   })
   @IsOptional()
-  public expirience: UserExpirience;
+  public experience: UserExperience;
 
   @ApiProperty({
     required: false,
   })
   @IsOptional()
-  public trainingType: TrainingType;
+  public trainingTypes: TrainingType[];
 
   @ApiProperty({
     required: false,
   })
   @IsOptional()
+  @ValidateIf((data) => data?.role === UserRole.Customer)
   public trainingDuration: TrainingDuration;
 
   @ApiProperty({
     required: false,
   })
   @IsOptional()
+  @ValidateIf((data) => data?.role === UserRole.Customer)
   public caloriesLoss: number;
 
   @ApiProperty({
     required: false,
   })
   @IsOptional()
+  @ValidateIf((data) => data?.role === UserRole.Customer)
   public caloriesConsumption: number;
 
   @ApiProperty({
     required: false,
   })
   @IsOptional()
+  @ValidateIf((data) => data?.role === UserRole.Customer)
   public isReadyForInvite: boolean;
 
   @ApiProperty({
     required: false,
   })
   @IsOptional()
+  @ValidateIf((data) => data?.role === UserRole.Coach)
+  public certificate: string;
+
+  @ApiProperty({
+    required: false,
+  })
+  @IsOptional()
+  @ValidateIf((data) => data?.role === UserRole.Coach)
   public awards: string;
 
   @ApiProperty({
     required: false,
   })
   @IsOptional()
-  public isPersonalTrainer: boolean;
+  @ValidateIf((data) => data?.role === UserRole.Coach)
+  public isPersonalCoach: boolean;
 }

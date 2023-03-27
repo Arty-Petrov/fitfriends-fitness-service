@@ -1,7 +1,7 @@
 export enum TrainingDuration {
-  HalfAnHour = 'halfanhour',
+  HalfAnHour = 'half-an-hour',
   Hour = 'hour',
-  AnHourAndQuater = 'anhourandquater',
-  AnHourAndHalf = 'anhourandhalf',
-  TwoHours = 'twohours',
+  AnHourAndQuarter = 'an-hour-and-quarter',
+  AnHourAndHalf = 'an-hour-and-half',
+  TwoHours = 'two-hours',
 }

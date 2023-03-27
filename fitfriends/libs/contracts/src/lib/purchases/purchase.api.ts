@@ -31,7 +31,7 @@ export class PurchaseApi implements Purchase {
     description: PurchaseApiDescription.ProductType,
   })
   @IsEnum(ProductType, {
-    message: PurchaseApiError.ProductTypeIsNotValide,
+    message: PurchaseApiError.ProductTypeIsNotValid,
   })
   public productType: ProductType;
 
@@ -70,7 +70,7 @@ export class PurchaseApi implements Purchase {
     description: PurchaseApiDescription.PaymentMethod,
   })
   @IsEnum(PaymentMethod, {
-    message: PurchaseApiError.PaymentMethodIsNotValide,
+    message: PurchaseApiError.PaymentMethodIsNotValid,
   })
   public paymentMethod: PaymentMethod;
 

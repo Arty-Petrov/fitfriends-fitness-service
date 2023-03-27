@@ -1,10 +1,13 @@
-import { IsArray, IsBoolean, IsDateString, IsEmail, IsEnum, IsMongoId, IsNumber, IsString, Length, Matches, Max, Min } from 'class-validator';
+import { SortOrder, SubwayStation, TrainingDuration, TrainingType, User, UserExperience, UserGender, UserRole } from '@fitfriends/shared-types';
 import { ApiProperty } from '@nestjs/swagger';
+import { Transform } from 'class-transformer';
+import { IsArray, IsBoolean, IsDateString, IsEmail, IsEnum, IsMongoId, IsNumber, IsString, Length, Matches, Max, Min } from 'class-validator';
+import { InputExample } from '../input-examples.constant';
 import {
-  DEFAULT_PAGINATION_COUNT,
-  DEFAULT_SORT_ORDER,
+  DEFAULT_USERS_PAGINATION_COUNT,
+  DEFAULT_USERS_SORT_ORDER,
   DEFAULT_USERS_COUNT_LIMIT,
-  NAME_REGEXP,
+  USER_NAME_REGEXP,
   UserApiDescription,
   UserApiError,
   UserAwardsLength,
@@ -13,9 +16,6 @@ import {
   UserNameLength,
   UserPasswordLength,
 } from './user.constant';
-import { SortOrder, SubwayStation, TrainingDuration, TrainingType, User, UserExpirience, UserGender, UserRole } from '@fitfriends/shared-types';
-import { InputExample } from '../input-examples.constant';
-import { Transform } from 'class-transformer';
 
 export class UserApi implements User {
   @ApiProperty({
@@ -32,7 +32,7 @@ export class UserApi implements User {
     example: InputExample.Name,
   })
   @IsString()
-  @Matches(NAME_REGEXP, {
+  @Matches(USER_NAME_REGEXP, {
     message: UserApiError.NameNotValid,
   })
   @Length(UserNameLength.Min, UserNameLength.Max)
@@ -120,7 +120,7 @@ export class UserApi implements User {
   @IsEnum(SubwayStation, {
     message: UserApiError.LocationIsWrong,
   })
-  public location: SubwayStation;
+  public subwayStation: SubwayStation;
 
   @ApiProperty({
     required: true,
@@ -131,23 +131,23 @@ export class UserApi implements User {
 
   @ApiProperty({
     required: true,
-    description: UserApiDescription.Expirience,
+    description: UserApiDescription.Experience,
   })
-  @IsEnum(UserExpirience, {
-    message: UserApiError.ExpirienceIsWrong,
+  @IsEnum(UserExperience, {
+    message: UserApiError.ExperienceIsWrong,
   })
-  public expirience: UserExpirience;
+  public experience: UserExperience;
 
   @ApiProperty({
     required: true,
-    description: UserApiDescription.TraningType,
+    description: UserApiDescription.TrainingType,
   })
   @IsArray()
   @IsEnum(TrainingType, {
     each: true,
     message: UserApiError.TrainingTypeIsWrong,
   })
-  public traningType: TrainingType[];
+  public trainingTypes: TrainingType[];
 
   @ApiProperty({
     required: true,
@@ -190,11 +190,11 @@ export class UserApi implements User {
 
   @ApiProperty({
     required: true,
-    description: UserApiDescription.Sertificate,
+    description: UserApiDescription.Certificate,
     example: InputExample.SertificateUrl,
   })
   @IsString()
-  public sertificate: string;
+  public certificate: string;
 
   @ApiProperty({
     required: true,
@@ -207,11 +207,11 @@ export class UserApi implements User {
 
   @ApiProperty({
     required: true,
-    description: UserApiDescription.IsPersonalTrainer,
+    description: UserApiDescription.IsPersonalCoach,
     example: InputExample.Boolean,
   })
   @IsBoolean()
-  public isPersonalTrainer: boolean;
+  public isPersonalCoach: boolean;
 
   @ApiProperty({
     required: true,
@@ -230,17 +230,25 @@ export class UserApi implements User {
   public refreshToken: string;
 
   @ApiProperty({
+    required: true,
+    description: UserApiDescription.RefreshTokenId,
+    example: InputExample.MongoId,
+  })
+  @IsString()
+  public refreshTokenId?: string;
+
+  @ApiProperty({
     required: false,
   })
   @IsEnum(SortOrder)
-  public sort: SortOrder = DEFAULT_SORT_ORDER;
+  public sort: SortOrder = DEFAULT_USERS_SORT_ORDER;
 
   @ApiProperty({
     required: false,
   })
   @Transform(({ value }) => +value)
   @IsNumber()
-  public page: number = DEFAULT_PAGINATION_COUNT;
+  public page: number = DEFAULT_USERS_PAGINATION_COUNT;
 
   @ApiProperty({
     required: false,

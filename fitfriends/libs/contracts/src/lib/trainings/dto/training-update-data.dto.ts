@@ -1,4 +1,4 @@
-import { TrainingDuration, TrainingType, UserExpirience, UserGender } from '@fitfriends/shared-types';
+import { TrainingDuration, TrainingType, UserExperience, UserGender } from '@fitfriends/shared-types';
 import { ApiProperty, PickType } from '@nestjs/swagger';
 import { IsOptional } from 'class-validator';
 import { TrainingApi } from '../training.api';
@@ -6,8 +6,8 @@ import { TrainingApi } from '../training.api';
 export class TrainingUpdateDto extends PickType(TrainingApi, [
   'id',
   'name',
-  'backgroundImageUri',
-  'expirience',
+  'image',
+  'experience',
   'type',
   'duration',
   'price',
@@ -28,13 +28,13 @@ export class TrainingUpdateDto extends PickType(TrainingApi, [
     required: false,
   })
   @IsOptional()
-  public backgroundImageUri: string;
+  public image: string;
 
   @ApiProperty({
     required: false,
   })
   @IsOptional()
-  public expirience: UserExpirience;
+  public experience: UserExperience;
 
   @ApiProperty({
     required: false,

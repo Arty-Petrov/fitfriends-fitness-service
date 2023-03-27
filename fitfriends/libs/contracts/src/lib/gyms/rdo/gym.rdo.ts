@@ -3,7 +3,7 @@ import { PickType } from '@nestjs/swagger';
 import { Expose } from 'class-transformer';
 import { GymApi } from '../gym.api';
 
-export class GymRdo extends PickType(GymApi, ['id', 'name', 'location', 'isVerifyed', 'features', 'photos', 'description', 'price', 'createdAt']) {
+export class GymRdo extends PickType(GymApi, ['id', 'name', 'location', 'isVerified', 'features', 'photos', 'description', 'price', 'createdAt']) {
   @Expose()
   public id: number;
 
