@@ -1,10 +1,10 @@
 import { UserUploadAvatarDto } from '../dto/user-upload-avatar.dto';
-import { UserRdo } from '../rdo/user.rdo';
+import { UserUploadAvatarRdo } from '../rdo/user-upload-avatar.rdo';
 
 export namespace UserUploadAvatar {
   export const topic = 'user.upload-avatar.command';
 
   export class Request extends UserUploadAvatarDto { }
 
-  export class Response extends UserRdo { }
+  export class Response extends UserUploadAvatarRdo { }
 }

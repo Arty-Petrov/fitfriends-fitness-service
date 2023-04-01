@@ -17,11 +17,8 @@ export * from './lib/training.interface';
 export * from './lib/token-payload.interface';
 export * from './lib/refresh-token-payload.interface';
 export * from './lib/request-with-token-payload.interface';
-export * from './lib/request-with-user.interface';
 export * from './lib/token.interface';
-export * from './lib/user-data-coach.interface';
-export * from './lib/user-data-customer.interface';
 export * from './lib/user-experience.enum';
 export * from './lib/user-gender.enum';
 export * from './lib/user-role.enum';
-export * from './lib/user.interface';
+export * from './lib/user.interface'

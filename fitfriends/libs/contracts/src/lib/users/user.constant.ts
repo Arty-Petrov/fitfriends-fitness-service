@@ -50,7 +50,7 @@ export const UserApiError = {
   NameNotValid: `User name, min ${UserNameLength.Min}, max ${UserNameLength.Max} chars length`,
   NotFound: 'User not found',
   GenderIsWrong: `User gender must contains any of these values: ${Object.values(UserGender).join(', ')}`,
-  TrainingDurationIsWrong: `Training Time field must contain any of these values: ${Object.values(TrainingDuration).join(', ')}`,
+  TrainingDurationIsWrong: `Training Duration field must contain any of these values: ${Object.values(TrainingDuration).join(', ')}`,
   TrainingTypeIsWrong: `Training type field must contain any of these values: ${Object.values(TrainingType).join(', ')}`,
   ExperienceIsWrong: `Experience field must contain any of these values: ${Object.values(UserExperience).join(', ')}`,
   PasswordNotValid: `Password min length is  ${UserPasswordLength.Min}, max is ${UserPasswordLength.Max}`,

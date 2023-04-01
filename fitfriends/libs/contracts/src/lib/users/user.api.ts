@@ -1,20 +1,18 @@
+import { ConditionalMaxLength } from '@fitfriends/core';
 import { SortOrder, SubwayStation, TrainingDuration, TrainingType, User, UserExperience, UserGender, UserRole } from '@fitfriends/shared-types';
 import { ApiProperty } from '@nestjs/swagger';
 import { Transform } from 'class-transformer';
 import { IsArray, IsBoolean, IsDateString, IsEmail, IsEnum, IsMongoId, IsNumber, IsString, Length, Matches, Max, Min } from 'class-validator';
 import { InputExample } from '../input-examples.constant';
 import {
-  DEFAULT_USERS_PAGINATION_COUNT,
-  DEFAULT_USERS_SORT_ORDER,
-  DEFAULT_USERS_COUNT_LIMIT,
-  USER_NAME_REGEXP,
-  UserApiDescription,
+  DEFAULT_USERS_COUNT_LIMIT, DEFAULT_USERS_PAGINATION_COUNT,
+  DEFAULT_USERS_SORT_ORDER, UserApiDescription,
   UserApiError,
   UserAwardsLength,
   UserCaloriesConsumption,
   UserCaloriesLoss,
   UserNameLength,
-  UserPasswordLength,
+  UserPasswordLength, USER_NAME_REGEXP
 } from './user.constant';
 
 export class UserApi implements User {
@@ -52,7 +50,7 @@ export class UserApi implements User {
     example: InputExample.PictureUrl,
   })
   @IsString()
-  public avatar?: string;
+  public avatar: string;
 
   @ApiProperty({
     required: true,
@@ -143,6 +141,14 @@ export class UserApi implements User {
     description: UserApiDescription.TrainingType,
   })
   @IsArray()
+  @ConditionalMaxLength('role', [
+    {value: UserRole.Customer, maxLength: 1},
+    {value: UserRole.Coach, maxLength: 3},
+  ],
+  {
+      message: UserApiError.RoleIsWrong,
+    }
+  )
   @IsEnum(TrainingType, {
     each: true,
     message: UserApiError.TrainingTypeIsWrong,

@@ -17,6 +17,7 @@
     "paths": {
       "@fitfriends/contracts": ["libs/contracts/src/index.ts"],
       "@fitfriends/core": ["libs/core/src/index.ts"],
+      "@fitfriends/exceptions": ["libs/exceptions/src/index.ts"],
       "@fitfriends/shared-types": ["libs/shared-types/src/index.ts"]
     }
   },

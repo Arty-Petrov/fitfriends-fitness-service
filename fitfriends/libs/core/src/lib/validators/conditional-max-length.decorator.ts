@@ -1,14 +1,5 @@
-import {
-  BadRequestException,
-  HttpCode,
-  HttpException,
-  HttpStatus,
-} from '@nestjs/common';
-import {
-  registerDecorator,
-  ValidationOptions,
-  ValidationArguments,
-} from 'class-validator';
+import { HttpException, HttpStatus } from '@nestjs/common';
+import { registerDecorator, ValidationArguments, ValidationOptions } from 'class-validator';
 
 interface Params {
   value: string;
@@ -20,7 +11,7 @@ export function ConditionalMaxLength(
   conditions: Params[],
   validationOptions?: ValidationOptions
 ) {
-  return function(object: Object, propertyName: string) {
+  return function(object: object, propertyName: string) {
     registerDecorator({
       name: 'conditionalMaxLength',
       target: object.constructor,
@@ -28,9 +19,10 @@ export function ConditionalMaxLength(
       constraints: [property],
       options: validationOptions,
       validator: {
-        validate(value: any, args: ValidationArguments) {
+        validate(value: unknown[], args: ValidationArguments) {
           const [relatedPropertyName] = args.constraints;
-          const relatedValue = (args.object as any)[relatedPropertyName];
+          const relatedValue =
+            (args.object as unknown)[relatedPropertyName];
           const condition = conditions.find(
             (condition) => condition.value === relatedValue
           );
@@ -43,7 +35,7 @@ export function ConditionalMaxLength(
           const result = value.length <= condition.maxLength;
           if (!result) {
             throw new HttpException(
-              `Property '${relatedPropertyName}': '${relatedValue}' allows max array length ${condition.maxLength} for property '${args.property}' but get ${value.length}`,
+              `Property '{${relatedPropertyName}': '${relatedValue}}' expects that max array length of property '${args.property}' is ${condition.maxLength} but got ${value.length}`,
               HttpStatus.BAD_REQUEST
             );
           }

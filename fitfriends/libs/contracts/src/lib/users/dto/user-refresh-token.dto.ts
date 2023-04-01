@@ -18,6 +18,7 @@ export class UserRefreshTokenDto extends PickType(UserApi, ['email', 'name', 'ro
   @Expose()
   public role: UserRole;
   
+  @Expose()
   @IsOptional()
   public refreshTokenId?: string;
 }
