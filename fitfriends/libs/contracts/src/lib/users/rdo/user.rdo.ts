@@ -12,8 +12,8 @@ export class UserRdo extends PickType(UserApi, [
   'dateBirth',
   'role',
   'subwayStation',
-  'experience',
   'createdAt',
+  'experience',
   'trainingTypes',
   'trainingDuration',
   'caloriesLoss',
@@ -48,10 +48,10 @@ export class UserRdo extends PickType(UserApi, [
   public subwayStation: SubwayStation;
 
   @Expose()
-  public experience: UserExperience;
+  public createdAt: Date;
 
   @Expose()
-  public createdAt: Date;
+  public experience: UserExperience;
 
   @Expose()
   public trainingTypes: TrainingType[];

@@ -1,6 +1,14 @@
-import { UserApiError, UserListQuery, UserUpdateDataDto, UserUploadAvatarDto } from '@fitfriends/contracts';
+import {
+  UserListQuery,
+  UserUpdateDataDto,
+  UserUploadAvatarDto
+} from '@fitfriends/contracts';
+import {
+  UserNotFoundException,
+  UserNotRegisteredException
+} from '@fitfriends/exceptions';
 import { User } from '@fitfriends/shared-types';
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { UserEntity } from './user.entity';
 import UserRepository from './user.repository';
 
@@ -11,7 +19,7 @@ export class UserService {
   public async getById(id: string): Promise<User | null> {
     const existUser = await this.userRepository.findById(id);
     if (!existUser) {
-      throw new HttpException(UserApiError.NotFound, HttpStatus.NOT_FOUND);
+      throw new UserNotFoundException(id);
     }
     return existUser;
   }
@@ -19,7 +27,7 @@ export class UserService {
   public async getByEmail(email: string): Promise<User | null> {
     const existUser = await this.userRepository.findByEmail(email);
     if (!existUser) {
-      throw new HttpException(UserApiError.NotFound, HttpStatus.NOT_FOUND);
+      throw new UserNotRegisteredException(email);
     }
     return existUser;
   }
@@ -28,7 +36,10 @@ export class UserService {
     return this.userRepository.find(query);
   }
 
-  public async update(id: string, dto: UserUpdateDataDto): Promise<User | null> {
+  public async update(
+    id: string,
+    dto: UserUpdateDataDto
+  ): Promise<User | null> {
     const existUser = await this.getById(id);
 
     const newUserEntity = new UserEntity({ ...existUser, ...dto });
