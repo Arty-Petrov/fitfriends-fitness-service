@@ -10,7 +10,7 @@ import {
   UserUploadAvatar,
   UserUploadCertificate,
 } from '@fitfriends/contracts';
-import { AuthUserData, UploadField } from '@fitfriends/core';
+import { UploadField } from '@fitfriends/core';
 import {
   Body,
   Controller,
@@ -27,6 +27,7 @@ import { ApiResponse, ApiTags } from '@nestjs/swagger';
 import { Express } from 'express';
 import { RMQService } from 'nestjs-rmq';
 import { MulterOptions } from '../../config/multer.config';
+import { UserData } from '../decorators/user-data.decorator';
 import { JwtRefreshGuard } from '../guards/jwt-refresh.guard';
 import { NoAuthGuard } from '../guards/no-auth.guard';
 
@@ -69,7 +70,7 @@ export class AuthController {
         (UserSignUp.topic, dto);
     } catch (error) {
       if (error instanceof Error) {
-        throw new  UnauthorizedException(error.message);
+        throw new UnauthorizedException(error.message);
       }
     }
   }
@@ -112,7 +113,7 @@ export class AuthController {
   })
   @UseGuards(JwtRefreshGuard)
   public async signOut(
-    @AuthUserData() { refreshTokenId }: UserRefreshTokenDto
+    @UserData() { refreshTokenId }: UserRefreshTokenDto
   ): Promise<UserSignOut.Response> {
     try {
       return await this.rmqService.send<
@@ -135,7 +136,7 @@ export class AuthController {
   })
   @UseGuards(JwtRefreshGuard)
   public async refresh(
-    @AuthUserData() refreshTokenPayload: UserRefreshTokenDto
+    @UserData() refreshTokenPayload: UserRefreshTokenDto
 
   ): Promise<UserRefreshToken.Response> {
     try {

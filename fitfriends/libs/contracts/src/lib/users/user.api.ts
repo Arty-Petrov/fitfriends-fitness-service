@@ -15,7 +15,7 @@ import {
   UserPasswordLength, USER_NAME_REGEXP
 } from './user.constant';
 
-export class UserApi implements User {
+export class UserApi {
   @ApiProperty({
     required: true,
     description: UserApiDescription.Id,
@@ -34,7 +34,7 @@ export class UserApi implements User {
     message: UserApiError.NameNotValid,
   })
   @Length(UserNameLength.Min, UserNameLength.Max)
-  public name: string;
+  public name?: string;
 
   @ApiProperty({
     required: true,
@@ -42,7 +42,7 @@ export class UserApi implements User {
     example: InputExample.Email,
   })
   @IsEmail()
-  public email: string;
+  public email?: string;
 
   @ApiProperty({
     required: true,
@@ -50,7 +50,7 @@ export class UserApi implements User {
     example: InputExample.PictureUrl,
   })
   @IsString()
-  public avatar: string;
+  public avatar?: string;
 
   @ApiProperty({
     required: true,
@@ -61,29 +61,7 @@ export class UserApi implements User {
   @Length(UserPasswordLength.Min, UserPasswordLength.Max, {
     message: UserApiError.PasswordNotValid,
   })
-  public password: string;
-
-  @ApiProperty({
-    required: true,
-    description: UserApiDescription.CurrentPassword,
-    example: InputExample.Password,
-  })
-  @IsString()
-  @Length(UserPasswordLength.Min, UserPasswordLength.Max, {
-    message: UserApiError.PasswordNotValid,
-  })
-  public currentPassword: string;
-
-  @ApiProperty({
-    required: true,
-    description: UserApiDescription.PasswordUpdate,
-    example: InputExample.Password,
-  })
-  @IsString()
-  @Length(UserPasswordLength.Min, UserPasswordLength.Max, {
-    message: UserApiError.PasswordNotValid,
-  })
-  public updatePassword: string;
+  public password?: string;
 
   @ApiProperty({
     required: true,
@@ -92,7 +70,7 @@ export class UserApi implements User {
   @IsEnum(UserGender, {
     message: UserApiError.GenderIsWrong,
   })
-  public gender: UserGender;
+  public gender?: UserGender;
 
   @ApiProperty({
     required: true,
@@ -109,7 +87,7 @@ export class UserApi implements User {
   @IsEnum(UserRole, {
     message: UserApiError.RoleIsWrong,
   })
-  public role: UserRole;
+  public role?: UserRole;
 
   @ApiProperty({
     required: true,
@@ -118,14 +96,14 @@ export class UserApi implements User {
   @IsEnum(SubwayStation, {
     message: UserApiError.LocationIsWrong,
   })
-  public subwayStation: SubwayStation;
+  public subwayStation?: SubwayStation;
 
   @ApiProperty({
     required: true,
     description: UserApiDescription.CreatedAt,
     example: InputExample.Date,
   })
-  public createdAt: Date;
+  public createdAt?: Date;
 
   @ApiProperty({
     required: true,
@@ -134,7 +112,7 @@ export class UserApi implements User {
   @IsEnum(UserExperience, {
     message: UserApiError.ExperienceIsWrong,
   })
-  public experience: UserExperience;
+  public experience?: UserExperience;
 
   @ApiProperty({
     required: true,
@@ -153,7 +131,7 @@ export class UserApi implements User {
     each: true,
     message: UserApiError.TrainingTypeIsWrong,
   })
-  public trainingTypes: TrainingType[];
+  public trainingTypes?: TrainingType[];
 
   @ApiProperty({
     required: true,
@@ -162,7 +140,7 @@ export class UserApi implements User {
   @IsEnum(TrainingDuration, {
     message: UserApiError.TrainingDurationIsWrong,
   })
-  public trainingDuration: TrainingDuration;
+  public trainingDuration?: TrainingDuration;
 
   @ApiProperty({
     required: true,
@@ -173,7 +151,7 @@ export class UserApi implements User {
   @Min(UserCaloriesLoss.Min)
   @Max(UserCaloriesLoss.Max)
   @Transform(({ value }) => +value)
-  public caloriesLoss: number;
+  public caloriesLoss?: number;
 
   @ApiProperty({
     required: true,
@@ -200,7 +178,7 @@ export class UserApi implements User {
     example: InputExample.SertificateUrl,
   })
   @IsString()
-  public certificate: string;
+  public certificate?: string;
 
   @ApiProperty({
     required: true,
@@ -209,7 +187,7 @@ export class UserApi implements User {
   })
   @IsString()
   @Length(UserAwardsLength.Min, UserAwardsLength.Max)
-  public awards: string;
+  public awards?: string;
 
   @ApiProperty({
     required: true,
@@ -217,7 +195,7 @@ export class UserApi implements User {
     example: InputExample.Boolean,
   })
   @IsBoolean()
-  public isPersonalCoach: boolean;
+  public isPersonalCoach?: boolean;
 
   @ApiProperty({
     required: true,
@@ -225,7 +203,7 @@ export class UserApi implements User {
     example: InputExample.Token,
   })
   @IsString()
-  public accessToken: string;
+  public accessToken?: string;
 
   @ApiProperty({
     required: true,
@@ -233,7 +211,7 @@ export class UserApi implements User {
     example: InputExample.Token,
   })
   @IsString()
-  public refreshToken: string;
+  public refreshToken?: string;
 
   @ApiProperty({
     required: true,

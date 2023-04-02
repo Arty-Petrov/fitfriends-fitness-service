@@ -1,3 +1,5 @@
+import { from } from 'rxjs';
+
 export * from './lib/gyms/gym.api';
 export * from './lib/gyms/gym.constant';
 
@@ -12,6 +14,8 @@ export * from './lib/purchases/purchase.constant';
 
 export * from './lib/reviews/review.api';
 export * from './lib/reviews/review.constant';
+
+export * from './lib/storage/contract/storage-delete-file';
 
 export * from './lib/trainings/training.api';
 export * from './lib/trainings/training.constant';

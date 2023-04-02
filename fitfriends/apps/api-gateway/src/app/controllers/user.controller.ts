@@ -1,33 +1,103 @@
-import { UserGetOne, UserRdo } from '@fitfriends/contracts';
-import { MongoidValidationPipe } from '@fitfriends/core';
-import { HttpExceptionFilter } from '@fitfriends/exceptions';
+import {
+  UserCardRdo,
+  UserGetOne,
+  UserUpdateData,
+  UserUpdateDataDto,
+  UserUploadAvatar,
+  UserUploadCertificate
+} from '@fitfriends/contracts';
+import { MongoidValidationPipe, UploadField } from '@fitfriends/core';
+import { TokenPayload, UserRole } from '@fitfriends/shared-types';
 import {
   Controller,
   Get,
   HttpStatus,
   Param,
-  UseFilters,
+  Patch,
+  UploadedFile,
   UseGuards,
+  UseInterceptors
 } from '@nestjs/common';
+import { FileInterceptor } from '@nestjs/platform-express';
 import { ApiResponse, ApiTags } from '@nestjs/swagger';
 import { RMQService } from 'nestjs-rmq';
+import { MulterOptions } from '../../config/multer.config';
+import { Roles } from '../decorators/roles.decorator';
+import { UserData } from '../decorators/user-data.decorator';
 import { JwtAccessGuard } from '../guards/jwt-access.guard';
+import { RolesGuard } from '../guards/roles.guard';
+import { UserDataInterceptor } from '../interceptors/user-data-interceptor';
 
 @ApiTags('users')
 @Controller('users')
-@UseFilters(HttpExceptionFilter)
 export class UsersController {
   constructor(private readonly rmqService: RMQService) { }
 
   @Get(':id')
   @ApiResponse({
-    type: UserRdo,
+    type: UserCardRdo,
     status: HttpStatus.OK,
     description: 'User found',
   })
   @UseGuards(JwtAccessGuard)
-  async show(@Param('id', MongoidValidationPipe) id: string) {
+  async getOne(
+    @Param('id', MongoidValidationPipe) id: string,
+  ) {
     return await this.rmqService.send<UserGetOne.Request, UserGetOne.Response>(
-      UserGetOne.topic, { id });
+      UserGetOne.topic,
+      { id }
+    );
+  }
+
+  @Patch('avatar')
+  @UseGuards(JwtAccessGuard)
+  @UseInterceptors(FileInterceptor(UploadField.Avatar, MulterOptions.Avatar))
+  public async uploadAvatar(
+    @UploadedFile() file: Express.Multer.File,
+    @UserData() user: TokenPayload, 
+  ): Promise<UserUploadAvatar.Response> {
+    const dto = {
+      id: user.sub,
+      avatar: file.path,
+    }
+    return await this.rmqService.send<
+      UserUploadAvatar.Request,
+      UserUploadAvatar.Response
+    >(UserUploadAvatar.topic, dto);
+  }
+
+  @Patch('certificate')
+  @Roles(UserRole.Coach)
+  @UseGuards(JwtAccessGuard, RolesGuard)
+  @UseInterceptors(FileInterceptor(UploadField.Certificate, MulterOptions.Certificate))
+  public async uploadCertificate(
+    @UploadedFile() file: Express.Multer.File,
+    @UserData() user: TokenPayload, 
+  ): Promise<UserUploadCertificate.Response> {
+    const dto = {
+      id: user.sub,
+      certificate: file.path,
+    }
+    return await this.rmqService.send<
+      UserUploadCertificate.Request,
+      UserUploadCertificate.Response
+    >(UserUploadCertificate.topic, dto);
+  }
+
+  @Patch()
+  @ApiResponse({
+    type: UserCardRdo,
+    status: HttpStatus.OK,
+    description: 'User record updated',
+  })
+  @UseGuards(JwtAccessGuard)
+  @UseInterceptors(UserDataInterceptor)
+  async update(
+    @UserData() dto: UserUpdateDataDto 
+  ) {
+    return await this.rmqService.send<
+      UserUpdateData.Request,
+      UserUpdateData.Response
+    >(UserUpdateData.topic, dto);
   }
 }
