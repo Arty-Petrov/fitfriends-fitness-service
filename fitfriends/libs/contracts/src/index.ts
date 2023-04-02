@@ -1,5 +1,3 @@
-import { from } from 'rxjs';
-
 export * from './lib/gyms/gym.api';
 export * from './lib/gyms/gym.constant';
 

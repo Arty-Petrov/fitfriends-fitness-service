@@ -1,15 +1,6 @@
-import {
-  StorageDeleteFile,
-  UserListQuery,
-  UserSignUp,
-  UserUpdateDataDto,
-  UserUploadAvatarDto,
-} from '@fitfriends/contracts';
+import { StorageDeleteFile, UserListQuery, UserUpdateDataDto } from '@fitfriends/contracts';
 import { UploadField } from '@fitfriends/core';
-import {
-  UserNotFoundException,
-  UserNotRegisteredException,
-} from '@fitfriends/exceptions';
+import { UserNotFoundException, UserNotRegisteredException } from '@fitfriends/exceptions';
 import { User } from '@fitfriends/shared-types';
 import { Injectable } from '@nestjs/common';
 import { RMQService } from 'nestjs-rmq';

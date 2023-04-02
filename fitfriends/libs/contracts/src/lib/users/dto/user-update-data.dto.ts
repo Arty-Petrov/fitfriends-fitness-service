@@ -1,6 +1,12 @@
-import { SubwayStation, TrainingDuration, TrainingType, UserExperience, UserGender, UserRole } from '@fitfriends/shared-types';
+import {
+  SubwayStation,
+  TrainingDuration,
+  TrainingType,
+  UserExperience,
+  UserGender,
+  UserRole,
+} from '@fitfriends/shared-types';
 import { ApiProperty, PickType } from '@nestjs/swagger';
-import { Transform } from 'class-transformer';
 import { IsOptional, ValidateIf } from 'class-validator';
 import { UserApi } from '../user.api';
 

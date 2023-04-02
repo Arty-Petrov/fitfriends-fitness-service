@@ -1,5 +1,5 @@
-import { Injectable, NestInterceptor, ExecutionContext, CallHandler, UnauthorizedException } from "@nestjs/common";
-import { Observable } from "rxjs";
+import { CallHandler, ExecutionContext, Injectable, NestInterceptor, UnauthorizedException } from '@nestjs/common';
+import { Observable } from 'rxjs';
 
 export interface Response<T> {
   data: T;
@@ -25,16 +25,15 @@ export class UserDataInterceptor<T> implements NestInterceptor<T, Response<T>> {
     } else if (context.getType() === 'http') {
       request = context.switchToHttp().getRequest();
     }
-    const user = { 
-      ...request['body'], 
+    return {
+      ...request['body'],
       id: request['user']['sub'],
-      role: request['user']['role'], 
-      email: request['user']['email'] 
+      role: request['user']['role'],
+      email: request['user']['email']
     };
-    return user;
   }
 
-  private addUser(data: any, context: ExecutionContext) {
+  private addUser(data: object, context: ExecutionContext) {
     if (context.getType() === 'rpc') {
       context.switchToRpc().getData().user = data;
     } else if (context.getType() === 'http') {

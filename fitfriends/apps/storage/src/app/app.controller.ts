@@ -1,5 +1,5 @@
 import { StorageDeleteFile } from '@fitfriends/contracts';
-import { Body, Controller, Get } from '@nestjs/common';
+import { Body, Controller } from '@nestjs/common';
 import { RMQRoute, RMQValidate } from 'nestjs-rmq';
 import { AppService } from './app.service';
 

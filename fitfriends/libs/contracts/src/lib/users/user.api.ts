@@ -1,18 +1,42 @@
 import { ConditionalMaxLength } from '@fitfriends/core';
-import { SortOrder, SubwayStation, TrainingDuration, TrainingType, User, UserExperience, UserGender, UserRole } from '@fitfriends/shared-types';
+import {
+  SortOrder,
+  SubwayStation,
+  TrainingDuration,
+  TrainingType,
+  UserExperience,
+  UserGender,
+  UserRole,
+} from '@fitfriends/shared-types';
 import { ApiProperty } from '@nestjs/swagger';
 import { Transform } from 'class-transformer';
-import { IsArray, IsBoolean, IsDateString, IsEmail, IsEnum, IsMongoId, IsNumber, IsString, Length, Matches, Max, Min } from 'class-validator';
+import {
+  IsArray,
+  IsBoolean,
+  IsDateString,
+  IsEmail,
+  IsEnum,
+  IsMongoId,
+  IsNumber,
+  IsString,
+  Length,
+  Matches,
+  Max,
+  Min,
+} from 'class-validator';
 import { InputExample } from '../input-examples.constant';
 import {
-  DEFAULT_USERS_COUNT_LIMIT, DEFAULT_USERS_PAGINATION_COUNT,
-  DEFAULT_USERS_SORT_ORDER, UserApiDescription,
+  DEFAULT_USERS_COUNT_LIMIT,
+  DEFAULT_USERS_PAGINATION_COUNT,
+  DEFAULT_USERS_SORT_ORDER,
+  USER_NAME_REGEXP,
+  UserApiDescription,
   UserApiError,
   UserAwardsLength,
   UserCaloriesConsumption,
   UserCaloriesLoss,
   UserNameLength,
-  UserPasswordLength, USER_NAME_REGEXP
+  UserPasswordLength,
 } from './user.constant';
 
 export class UserApi {
