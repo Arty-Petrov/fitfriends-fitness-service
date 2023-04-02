@@ -1,4 +1,4 @@
-import { TrainingDuration, UserRole } from '@fitfriends/shared-types';
+import { SubwayStation, TrainingDuration, UserGender, UserRole } from '@fitfriends/shared-types';
 import { ApiProperty, PickType } from '@nestjs/swagger';
 import { Transform } from 'class-transformer';
 import { IsOptional, ValidateIf } from 'class-validator';
@@ -23,11 +23,23 @@ export class UserSignUpDto extends PickType(UserApi, [
   'awards',
   'isPersonalCoach',
 ]) {
+  public name: string;
+
+  public email: string;
+
+  public password: string;
+
+  public gender: UserGender;
+
   @ApiProperty({
     required: false,
   })
   @IsOptional()
-  public dateBirth: Date;
+  public dateBirth?: Date;
+
+  public role: UserRole;
+
+  public subwayStation: SubwayStation;
 
   @ValidateIf((user) => user.role === UserRole.Customer)
   @Transform(({ obj, value }) =>

@@ -39,8 +39,7 @@ export class UserService {
     delete dto.id;
     const existUser = await this.getById(id);
     const newUserEntity = new UserEntity({ ...existUser, ...dto });
-    const user = this.userRepository.update(id, newUserEntity);
-    return user;
+    return this.userRepository.update(id, newUserEntity);
   }
 
   public async updateFiles(dto: UserUpdateDataDto) {
