@@ -1,6 +1,8 @@
 import {
   UserCardRdo,
+  UserGetList,
   UserGetOne,
+  UserListQuery,
   UserUpdateData,
   UserUpdateDataDto,
   UserUploadAvatar,
@@ -14,6 +16,7 @@ import {
   HttpStatus,
   Param,
   Patch,
+  Query,
   UploadedFile,
   UseGuards,
   UseInterceptors
@@ -42,11 +45,25 @@ export class UsersController {
   @UseGuards(JwtAccessGuard)
   async getOne(
     @Param('id', MongoidValidationPipe) id: string,
-  ) {
+  ): Promise<UserGetOne.Response> {
     return await this.rmqService.send<UserGetOne.Request, UserGetOne.Response>(
       UserGetOne.topic,
       { id }
     );
+  }
+
+  @Get()
+  @ApiResponse({
+    type: UserCardRdo,
+    status: HttpStatus.OK,
+    description: 'Users found',
+  })
+  @UseGuards(JwtAccessGuard)
+  async getList(
+    @Query() dto: UserListQuery,
+  ): Promise<UserGetList.Response> {
+    return await this.rmqService.send<UserGetList.Request, UserGetList.Response>(
+      UserGetList.topic, dto);
   }
 
   @Patch('avatar')

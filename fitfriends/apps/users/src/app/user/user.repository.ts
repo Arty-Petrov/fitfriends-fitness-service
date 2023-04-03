@@ -1,4 +1,4 @@
-import { UserListQuery } from '@fitfriends/contracts';
+import { DEFAULT_USERS_SORT_ORDER, UserListQuery } from '@fitfriends/contracts';
 import { CRUDRepository, User } from '@fitfriends/shared-types';
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
@@ -7,8 +7,12 @@ import { UserEntity } from './user.entity';
 import { UserModel } from './user.model';
 
 @Injectable()
-export default class UserRepository implements CRUDRepository<UserEntity, string, User> {
-  constructor(@InjectModel(UserModel.name) private readonly userModel: Model<UserModel>) { }
+export default class UserRepository
+  implements CRUDRepository<UserEntity, string, User>
+{
+  constructor(
+    @InjectModel(UserModel.name) private readonly userModel: Model<UserModel>
+  ) { }
 
   public async create(entity: UserEntity): Promise<User> {
     const newUser = new this.userModel(entity);
@@ -24,8 +28,35 @@ export default class UserRepository implements CRUDRepository<UserEntity, string
   }
 
   public async find(query: UserListQuery): Promise<User[]> {
-    const { sort, count } = query;
-    return this.userModel.find().limit(count).sort({ createdAt: sort }).exec();
+    const {
+      locations,
+      tranings,
+      experience,
+      sort,
+      count,
+      page,
+    } = query;
+    return this.userModel.aggregate([
+      locations || tranings || experience
+        ? {
+          $match: {
+            subwayStation: locations
+              ? { $in: locations }
+              : { $ne: {} },
+            trainingTypes: tranings
+              ? { $in: tranings }
+              : { $ne: {} },
+            experience: experience || { $ne: {} },
+          },
+        }
+        : { $addFields: {} },
+      { $skip: page > 0 ? count * (page - 1) : 0 },
+      { $limit: count },
+      { $sort: { createdAt: DEFAULT_USERS_SORT_ORDER } },
+      { $sort: { role: sort } },
+      { $addFields: { id: { $toString: '$_id' } } },
+      { $project: { __v: 0, createdAt: 0, updatedAt: 0, password: 0, _id: 0 } },
+    ]);
   }
 
   public async findAllSortedByRating(): Promise<User[]> {
@@ -33,7 +64,9 @@ export default class UserRepository implements CRUDRepository<UserEntity, string
   }
 
   public async update(_id: string, item: UserEntity): Promise<User> {
-    return this.userModel.findByIdAndUpdate(_id, item.toObject(), { new: true }).exec();
+    return this.userModel
+      .findByIdAndUpdate(_id, item.toObject(), { new: true })
+      .exec();
   }
 
   public async destroy(_id: string): Promise<void> {

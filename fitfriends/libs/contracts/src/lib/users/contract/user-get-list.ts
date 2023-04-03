@@ -1,4 +1,6 @@
+import { extend } from 'dayjs';
 import { UserListQuery } from '../query/user-list.query';
+import { UserCardRdo } from '../rdo/user-card.rdo';
 import { UserListRdo } from '../rdo/user-list.rdo';
 
 export namespace UserGetList {
@@ -6,7 +8,6 @@ export namespace UserGetList {
 
   export class Request extends UserListQuery { }
 
-  export class Response {
-    public users: UserListRdo[];
+  export class Response extends UserCardRdo {
   }
 }

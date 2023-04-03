@@ -245,26 +245,4 @@ export class UserApi {
   @IsString()
   public refreshTokenId?: string;
 
-  @ApiProperty({
-    required: false,
-  })
-  @IsEnum(SortOrder)
-  public sort: SortOrder = DEFAULT_USERS_SORT_ORDER;
-
-  @ApiProperty({
-    required: false,
-  })
-  @Transform(({ value }) => +value)
-  @IsNumber()
-  public page: number = DEFAULT_USERS_PAGINATION_COUNT;
-
-  @ApiProperty({
-    required: false,
-  })
-  @Transform(({ value }) => +value)
-  @IsNumber()
-  @Transform(({ value }) => {
-    return value < DEFAULT_USERS_COUNT_LIMIT ? value : DEFAULT_USERS_COUNT_LIMIT;
-  })
-  public count: number = DEFAULT_USERS_COUNT_LIMIT;
 }
