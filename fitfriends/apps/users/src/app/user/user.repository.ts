@@ -1,4 +1,4 @@
-import { DEFAULT_USERS_SORT_ORDER, UserListQuery } from '@fitfriends/contracts';
+import { UserListQuery } from '@fitfriends/contracts';
 import { CRUDRepository, User } from '@fitfriends/shared-types';
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
@@ -30,30 +30,27 @@ export default class UserRepository
   public async find(query: UserListQuery): Promise<User[]> {
     const {
       locations,
-      tranings,
+      trainings,
       experience,
-      sort,
+      sortRole,
+      sortCreation,
       count,
       page,
     } = query;
     return this.userModel.aggregate([
-      locations || tranings || experience
+      locations || trainings || experience
         ? {
           $match: {
-            subwayStation: locations
-              ? { $in: locations }
-              : { $ne: {} },
-            trainingTypes: tranings
-              ? { $in: tranings }
-              : { $ne: {} },
+            subwayStation: locations ? { $in: locations } : { $ne: {} },
+            trainingTypes: trainings ? { $in: trainings } : { $ne: {} },
             experience: experience || { $ne: {} },
           },
         }
         : { $addFields: {} },
       { $skip: page > 0 ? count * (page - 1) : 0 },
       { $limit: count },
-      { $sort: { createdAt: DEFAULT_USERS_SORT_ORDER } },
-      { $sort: { role: sort } },
+      { $sort: { createdAt: sortCreation } },
+      { $sort: { role: sortRole } },
       { $addFields: { id: { $toString: '$_id' } } },
       { $project: { __v: 0, createdAt: 0, updatedAt: 0, password: 0, _id: 0 } },
     ]);

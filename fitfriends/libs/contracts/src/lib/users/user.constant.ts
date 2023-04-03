@@ -1,4 +1,12 @@
-import { SortOrder, SubwayStation, TrainingDuration, TrainingType, UserExperience, UserGender, UserRole } from '@fitfriends/shared-types';
+import {
+  SubwayStation,
+  TrainingDuration,
+  TrainingType,
+  UserExperience,
+  UserGender,
+  UserRole,
+} from '@fitfriends/shared-types';
+
 export const USER_NAME_REGEXP = /[a-zA-Zа-яА-Я]/;
 
 export const AVATAR_FILE_TYPE_REGEXP = /\/(jpg|jpeg|png)$/;
@@ -8,7 +16,7 @@ export const CERTIFICATE_FILE_TYPE_REGEXP = /\/(pdf)$/;
 export const CERTIFICATE_FILE_MAX_SIZE = 1024000;
 
 export const DEFAULT_USERS_PAGINATION_COUNT = 1;
-export const DEFAULT_USERS_SORT_ORDER = SortOrder.Descended;
+export const DEFAULT_USERS_SORT_ORDER = -1;
 export const DEFAULT_USERS_COUNT_LIMIT = 50;
 
 export const enum UserPasswordLength {

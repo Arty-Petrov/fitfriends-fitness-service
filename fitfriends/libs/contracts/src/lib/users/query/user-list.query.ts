@@ -5,21 +5,12 @@ import {
   UserExperience,
   UserRole,
 } from '@fitfriends/shared-types';
-import { PickType } from '@nestjs/swagger';
 import { Transform } from 'class-transformer';
-import {
-  IsNumber,
-  Max,
-  Min,
-  IsOptional,
-  IsIn,
-  IsPositive,
-  IsEnum,
-} from 'class-validator';
-import { UserApi } from '../user.api';
+import { IsEnum, IsIn, IsNumber, IsOptional, Max, Min } from 'class-validator';
 import {
   DEFAULT_USERS_COUNT_LIMIT,
   DEFAULT_USERS_PAGINATION_COUNT,
+  DEFAULT_USERS_SORT_ORDER,
 } from '../user.constant';
 
 export class UserListQuery {
@@ -38,10 +29,15 @@ export class UserListQuery {
   @IsOptional()
   public count?: number = DEFAULT_USERS_COUNT_LIMIT;
 
-  @IsIn([1, -1])
   @Transform(({ value }) => (value === UserRole.Coach ? 1 : -1))
+  @IsIn([1, -1])
   @IsOptional()
-  public sort?: 1 | -1 = SortOrder.Descended;
+  public sortRole?: 1 | -1 = DEFAULT_USERS_SORT_ORDER;
+
+  @Transform(({ value }) => (value === SortOrder.Ascended ? 1 : -1))
+  @IsIn([1, -1])
+  @IsOptional()
+  public sortCreation?: 1 | -1 = DEFAULT_USERS_SORT_ORDER;
 
   @IsEnum(SubwayStation, {
     each: true,
@@ -55,7 +51,7 @@ export class UserListQuery {
   })
   @Transform(({ value }) => value.split(',').map((item: string) => item))
   @IsOptional()
-  public tranings?: TrainingType[];
+  public trainings?: TrainingType[];
 
   @IsEnum(UserExperience)
   @IsOptional()

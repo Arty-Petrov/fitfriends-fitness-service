@@ -1,6 +1,5 @@
 import { ConditionalMaxLength } from '@fitfriends/core';
 import {
-  SortOrder,
   SubwayStation,
   TrainingDuration,
   TrainingType,
@@ -26,9 +25,6 @@ import {
 } from 'class-validator';
 import { InputExample } from '../input-examples.constant';
 import {
-  DEFAULT_USERS_COUNT_LIMIT,
-  DEFAULT_USERS_PAGINATION_COUNT,
-  DEFAULT_USERS_SORT_ORDER,
   USER_NAME_REGEXP,
   UserApiDescription,
   UserApiError,
