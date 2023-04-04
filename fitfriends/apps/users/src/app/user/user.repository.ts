@@ -41,7 +41,7 @@ export default class UserRepository
       locations || trainings || experience
         ? {
           $match: {
-            subwayStation: locations ? { $in: locations } : { $ne: {} },
+            location: locations ? { $in: locations } : { $ne: {} },
             trainingTypes: trainings ? { $in: trainings } : { $ne: {} },
             experience: experience || { $ne: {} },
           },

@@ -17,7 +17,7 @@ export class UserUpdateDataDto extends PickType(UserApi, [
   'gender',
   'dateBirth',
   'role',
-  'subwayStation',
+  'location',
   'experience',
   'trainingTypes',
   'trainingDuration',
@@ -62,7 +62,7 @@ export class UserUpdateDataDto extends PickType(UserApi, [
     required: false,
   })
   @IsOptional()
-  public subwayStation?: SubwayStation;
+  public location?: SubwayStation;
 
   @ApiProperty({
     required: false,

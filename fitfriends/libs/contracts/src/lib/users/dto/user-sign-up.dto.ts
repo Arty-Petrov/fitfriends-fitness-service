@@ -12,7 +12,7 @@ export class UserSignUpDto extends PickType(UserApi, [
   'gender',
   'dateBirth',
   'role',
-  'subwayStation',
+  'location',
   'experience',
   'trainingTypes',
   'trainingDuration',
@@ -39,7 +39,7 @@ export class UserSignUpDto extends PickType(UserApi, [
 
   public role: UserRole;
 
-  public subwayStation: SubwayStation;
+  public location: SubwayStation;
 
   @ValidateIf((user) => user.role === UserRole.Customer)
   @Transform(({ obj, value }) =>

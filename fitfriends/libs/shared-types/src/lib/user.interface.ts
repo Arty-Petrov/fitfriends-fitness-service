@@ -14,7 +14,7 @@ export interface User {
   gender: UserGender;
   dateBirth?: Date;
   role: UserRole;
-  subwayStation: SubwayStation;
+  location: SubwayStation;
   createdAt?: Date;
   experience?: UserExperience;
   trainingTypes?: TrainingType[];

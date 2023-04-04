@@ -30,7 +30,7 @@ import {
   UserApiError,
   UserAwardsLength,
   UserCaloriesConsumption,
-  UserCaloriesLoss,
+  UserCaloriesLoss, UserMaxTrainingTypeCount,
   UserNameLength,
   UserPasswordLength,
 } from './user.constant';
@@ -116,7 +116,7 @@ export class UserApi {
   @IsEnum(SubwayStation, {
     message: UserApiError.LocationIsWrong,
   })
-  public subwayStation?: SubwayStation;
+  public location?: SubwayStation;
 
   @ApiProperty({
     required: true,
@@ -140,8 +140,8 @@ export class UserApi {
   })
   @IsArray()
   @ConditionalMaxLength('role', [
-    {value: UserRole.Customer, maxLength: 1},
-    {value: UserRole.Coach, maxLength: 3},
+    {value: UserRole.Customer, maxLength: UserMaxTrainingTypeCount.Consumer},
+    {value: UserRole.Coach, maxLength: UserMaxTrainingTypeCount.Coach},
   ],
   {
       message: UserApiError.RoleIsWrong,

@@ -21,7 +21,7 @@ export class UserEntity
   public gender: UserGender;
   public dateBirth?: Date;
   public role: UserRole;
-  public subwayStation: SubwayStation;
+  public location: SubwayStation;
   public createdAt?: Date;
   public experience: UserExperience;
   public trainingTypes: TrainingType[];
@@ -59,7 +59,7 @@ export class UserEntity
     this.gender = entity.gender;
     this.dateBirth = entity.dateBirth;
     this.role = entity.role;
-    this.subwayStation = entity.subwayStation;
+    this.location = entity.location;
     this.createdAt = entity.createdAt;
     this.experience = entity.experience;
     this.trainingTypes = entity.trainingTypes;

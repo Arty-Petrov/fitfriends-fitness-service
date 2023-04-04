@@ -11,7 +11,7 @@ export class UserCardRdo extends PickType(UserApi, [
   'gender',
   'dateBirth',
   'role',
-  'subwayStation',
+  'location',
   'createdAt',
   'experience',
   'trainingTypes',
@@ -45,7 +45,7 @@ export class UserCardRdo extends PickType(UserApi, [
   public role: UserRole;
 
   @Expose()
-  public subwayStation: SubwayStation;
+  public location: SubwayStation;
 
   @Expose()
   public createdAt: Date;

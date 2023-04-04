@@ -54,7 +54,7 @@ export class UserModel extends Document implements User {
     type: String,
     enum: SubwayStation,
   })
-  public subwayStation: SubwayStation;
+  public location: SubwayStation;
 
   @Prop({
     required: true,
