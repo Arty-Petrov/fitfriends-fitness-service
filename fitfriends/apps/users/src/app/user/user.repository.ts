@@ -11,7 +11,7 @@ export default class UserRepository
   implements CRUDRepository<UserEntity, string, User>
 {
   constructor(
-    @InjectModel(UserModel.name) private readonly userModel: Model<UserModel>
+    @InjectModel(UserModel.name) private readonly userModel: Model<UserModel>,
   ) { }
 
   public async create(entity: UserEntity): Promise<User> {
@@ -54,10 +54,6 @@ export default class UserRepository
       { $addFields: { id: { $toString: '$_id' } } },
       { $project: { __v: 0, createdAt: 0, updatedAt: 0, password: 0, _id: 0 } },
     ]);
-  }
-
-  public async findAllSortedByRating(): Promise<User[]> {
-    return this.userModel.find({}).select('rating').sort({ rating: -1 }).exec();
   }
 
   public async update(_id: string, item: UserEntity): Promise<User> {

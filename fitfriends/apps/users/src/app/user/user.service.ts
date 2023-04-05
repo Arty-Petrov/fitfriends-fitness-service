@@ -1,16 +1,23 @@
-import { StorageDeleteFile, UserListQuery, UserUpdateDataDto } from '@fitfriends/contracts';
+import { StorageDeleteFile, UserListQuery, UserUpdateDataDto, UserUpdateFriendListDto } from '@fitfriends/contracts';
 import { UploadField } from '@fitfriends/core';
-import { UserNotFoundException, UserNotRegisteredException } from '@fitfriends/exceptions';
-import { User } from '@fitfriends/shared-types';
-import { Injectable } from '@nestjs/common';
+import {
+  UserFriendsNotFoundException,
+  UserNotFoundException,
+  UserNotRegisteredException,
+} from '@fitfriends/exceptions';
+import { User, UserFriends } from '@fitfriends/shared-types';
+import { HttpStatus, Injectable } from '@nestjs/common';
 import { RMQService } from 'nestjs-rmq';
+import { UserFriendsEntity } from '../friends/user-friends.entity';
 import { UserEntity } from './user.entity';
+import UserFriendsRepository from '../friends/user-friends.repository';
 import UserRepository from './user.repository';
 
 @Injectable()
 export class UserService {
   constructor(
     private readonly userRepository: UserRepository,
+    private readonly userFriendsRepository: UserFriendsRepository,
     private readonly rmqService: RMQService
   ) { }
 
@@ -52,6 +59,35 @@ export class UserService {
     return this.update({ id, [fieldName]: dto[fieldName] });
   }
 
+  public async addFriend(dto: UserUpdateFriendListDto) {
+    const { userId, friendId} = dto;
+    const existRecord= await this.userFriendsRepository.findByUserId(userId);
+    if (!existRecord) {
+      const userFriendsEntity = new UserFriendsEntity( {
+        userId: userId,
+        friendIds: [friendId]
+      });
+      await this.userFriendsRepository.create(userFriendsEntity);
+    }
+    const userFriendsEntity = new UserFriendsEntity(existRecord);
+    userFriendsEntity.addFriend(friendId);
+    const { id: entityId } = userFriendsEntity;
+    await this.userFriendsRepository.update(entityId, userFriendsEntity);
+    return this.userRepository.findById(friendId);
+  }
+
+  public async removeFriend(dto: UserUpdateFriendListDto) {
+    const { userId, friendId} = dto;
+    const existRecord= await this.userFriendsRepository.findByUserId(userId);
+    if (!existRecord) {
+      throw new UserFriendsNotFoundException(userId);
+    }
+    const userFriendsEntity = new UserFriendsEntity(existRecord);
+    userFriendsEntity.removeFriend(friendId);
+    const { id: entityId } = userFriendsEntity;
+    await this.userFriendsRepository.update(entityId, userFriendsEntity);
+    return HttpStatus.ACCEPTED;
+  }
   public async destroy(id: string): Promise<void> {
     return this.userRepository.destroy(id);
   }

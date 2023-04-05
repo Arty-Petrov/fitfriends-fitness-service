@@ -1,4 +1,12 @@
-import { SubwayStation, TrainingDuration, TrainingType, User, UserExperience, UserGender, UserRole } from '@fitfriends/shared-types';
+import {
+  SubwayStation,
+  TrainingDuration,
+  TrainingType,
+  User,
+  UserExperience,
+  UserGender,
+  UserRole,
+} from '@fitfriends/shared-types';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
 import { USERS_COLLECTION_NAME } from '../app.constant';

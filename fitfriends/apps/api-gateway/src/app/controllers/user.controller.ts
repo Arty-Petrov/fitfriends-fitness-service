@@ -1,12 +1,14 @@
 import {
+  UserAddFriend,
   UserCardRdo,
   UserGetList,
   UserGetOne,
   UserListQuery,
+  UserRemoveFriend,
   UserUpdateData,
   UserUpdateDataDto,
   UserUploadAvatar,
-  UserUploadCertificate
+  UserUploadCertificate,
 } from '@fitfriends/contracts';
 import { MongoidValidationPipe, UploadField } from '@fitfriends/core';
 import { TokenPayload, UserRole } from '@fitfriends/shared-types';
@@ -16,10 +18,11 @@ import {
   HttpStatus,
   Param,
   Patch,
+  Put,
   Query,
   UploadedFile,
   UseGuards,
-  UseInterceptors
+  UseInterceptors,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ApiResponse, ApiTags } from '@nestjs/swagger';
@@ -71,7 +74,7 @@ export class UsersController {
   @UseInterceptors(FileInterceptor(UploadField.Avatar, MulterOptions.Avatar))
   public async uploadAvatar(
     @UploadedFile() file: Express.Multer.File,
-    @UserData() user: TokenPayload, 
+    @UserData() user: TokenPayload,
   ): Promise<UserUploadAvatar.Response> {
     const dto = {
       id: user.sub,
@@ -89,7 +92,7 @@ export class UsersController {
   @UseInterceptors(FileInterceptor(UploadField.Certificate, MulterOptions.Certificate))
   public async uploadCertificate(
     @UploadedFile() file: Express.Multer.File,
-    @UserData() user: TokenPayload, 
+    @UserData() user: TokenPayload,
   ): Promise<UserUploadCertificate.Response> {
     const dto = {
       id: user.sub,
@@ -110,11 +113,45 @@ export class UsersController {
   @UseGuards(JwtAccessGuard)
   @UseInterceptors(UserDataInterceptor)
   async update(
-    @UserData() dto: UserUpdateDataDto 
+    @UserData() dto: UserUpdateDataDto
   ) {
     return await this.rmqService.send<
       UserUpdateData.Request,
       UserUpdateData.Response
     >(UserUpdateData.topic, dto);
+  }
+
+  @Put('friend/:id')
+  @ApiResponse({
+    type: UserCardRdo,
+    status: HttpStatus.OK,
+    description: 'User placed to friends list',
+  })
+  @UseGuards(JwtAccessGuard)
+  async addFriend(
+    @Param('id') friendId: string,
+    @UserData('sub') userId: string,
+  ) {
+    return await this.rmqService.send<
+      UserAddFriend.Request,
+      UserAddFriend.Response
+    >(UserAddFriend.topic, {userId, friendId});
+  }
+
+  @Patch('friend/:id')
+  @ApiResponse({
+    type: UserCardRdo,
+    status: HttpStatus.OK,
+    description: 'User removed from friends list',
+  })
+  @UseGuards(JwtAccessGuard)
+  async removeFriend(
+    @Param('id') friendId: string,
+    @UserData('sub') userId: string,
+  ) {
+    return await this.rmqService.send<
+      UserRemoveFriend.Request,
+      UserRemoveFriend.Response
+    >(UserRemoveFriend.topic, {userId, friendId});
   }
 }

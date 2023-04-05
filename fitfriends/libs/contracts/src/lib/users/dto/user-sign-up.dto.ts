@@ -27,6 +27,8 @@ export class UserSignUpDto extends PickType(UserApi, [
 
   public email: string;
 
+  public avatar: string;
+
   public password: string;
 
   public gender: UserGender;

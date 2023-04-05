@@ -1,11 +1,16 @@
 import {
-    UserRefreshTokenDto,
-    UserSignedRdo,
-    UserSignInDto,
-    UserSignOutDto,
-    UserSignUpDto
+  UserRefreshTokenDto,
+  UserSignedRdo,
+  UserSignInDto,
+  UserSignOutDto,
+  UserSignUpDto,
 } from '@fitfriends/contracts';
-import { TokenNotExistsException, UserExistsException, UserNotRegisteredException, UserPasswordWrongException } from '@fitfriends/exceptions';
+import {
+  TokenNotExistsException,
+  UserExistsException,
+  UserNotRegisteredException,
+  UserPasswordWrongException,
+} from '@fitfriends/exceptions';
 import { RefreshTokenPayload, User } from '@fitfriends/shared-types';
 import { HttpStatus, Inject, Injectable } from '@nestjs/common';
 import { ConfigType } from '@nestjs/config';
@@ -47,7 +52,7 @@ export class AuthService {
 
     const existUser = await this.userRepository.findByEmail(dto.email);
     if (existUser) {
-      throw new UserExistsException(email); 
+      throw new UserExistsException(email);
     }
 
     const userEntity = await new UserEntity(dto).setPassword(password);
@@ -98,7 +103,7 @@ export class AuthService {
     const { refreshTokenId } = dto;
     const existTokenSession = await this.refreshTokenService.isExists(refreshTokenId);
     if (!existTokenSession) {
-      throw new TokenNotExistsException(refreshTokenId); 
+      throw new TokenNotExistsException(refreshTokenId);
     }
     await this.refreshTokenService.deleteRefreshSession(refreshTokenId);
     return this.createRefreshTokens(dto);

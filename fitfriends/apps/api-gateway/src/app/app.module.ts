@@ -7,7 +7,7 @@ import { getJwtConfig, jwtOptions } from '../config/jwt.config';
 import { getRabbitMqConfig, rabbitMqOptions } from '../config/rabbitmq.config';
 import { API_GATEWAY_APP_ENV_PATH } from './app.constant';
 import { AuthController } from './controllers/auth.controller';
-import { UploadController } from './controllers/upload.controller';
+import { MyController } from './controllers/my-controller';
 import { UsersController } from './controllers/user.controller';
 import { validateEnvironments } from './env.validation';
 import { JwtAccessStrategy } from './strategies/jwt-access.strategy';
@@ -26,7 +26,7 @@ import { JwtRefreshStrategy } from './strategies/jwt-refresh.strategy';
     JwtModule.registerAsync(getJwtConfig()),
     PassportModule,
   ],
-  controllers: [AuthController, UploadController, UsersController],
+  controllers: [AuthController, MyController, UsersController],
   providers: [JwtAccessStrategy, JwtRefreshStrategy],
 })
 export class AppModule { }

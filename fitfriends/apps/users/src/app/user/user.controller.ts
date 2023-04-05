@@ -1,4 +1,11 @@
-import { UserGetList, UserGetOne, UserUpdateData, UserUploadAvatar, UserUploadCertificate } from '@fitfriends/contracts';
+import {
+  UserAddFriend,
+  UserGetList,
+  UserGetOne, UserRemoveFriend,
+  UserUpdateData,
+  UserUploadAvatar,
+  UserUploadCertificate,
+} from '@fitfriends/contracts';
 import { fillObject } from '@fitfriends/core';
 import { Body, Controller } from '@nestjs/common';
 import { RMQRoute, RMQValidate } from 'nestjs-rmq';
@@ -19,7 +26,7 @@ export class UserController {
   @RMQRoute(UserGetList.topic)
   public async getList(@Body() dto: UserGetList.Request): Promise<UserGetList.Response> {
     const user = await this.userService.getUsersList(dto);
-    return fillObject(UserGetList.Response, user, [user.role]);
+    return fillObject(UserGetList.Response, user);
   }
 
   @RMQValidate()

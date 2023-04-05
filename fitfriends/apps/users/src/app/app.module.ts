@@ -9,6 +9,7 @@ import { getRabbitMqConfig, rabbitMqOptions } from '../config/rabbitmq.config';
 import { USER_SERVICE_ENV_PATH } from './app.constant';
 import { AuthModule } from './auth/auth.module';
 import { validateEnvironments } from './env.validation';
+import { UserFriendsModule } from './friends/user-friends.module';
 import { UserModule } from './user/user.module';
 
 @Module({
@@ -24,6 +25,7 @@ import { UserModule } from './user/user.module';
 		RMQModule.forRootAsync(getRabbitMqConfig()),
 		AuthModule,
 		UserModule,
+    UserFriendsModule,
 	],
 	controllers: [],
 	providers: [],
