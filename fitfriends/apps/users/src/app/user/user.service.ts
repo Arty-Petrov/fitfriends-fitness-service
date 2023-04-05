@@ -5,12 +5,12 @@ import {
   UserNotFoundException,
   UserNotRegisteredException,
 } from '@fitfriends/exceptions';
-import { User, UserFriends } from '@fitfriends/shared-types';
+import { User } from '@fitfriends/shared-types';
 import { HttpStatus, Injectable } from '@nestjs/common';
 import { RMQService } from 'nestjs-rmq';
 import { UserFriendsEntity } from '../friends/user-friends.entity';
-import { UserEntity } from './user.entity';
 import UserFriendsRepository from '../friends/user-friends.repository';
+import { UserEntity } from './user.entity';
 import UserRepository from './user.repository';
 
 @Injectable()

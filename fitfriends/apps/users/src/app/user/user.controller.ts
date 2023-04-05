@@ -1,7 +1,6 @@
 import {
-  UserAddFriend,
   UserGetList,
-  UserGetOne, UserRemoveFriend,
+  UserGetOne,
   UserUpdateData,
   UserUploadAvatar,
   UserUploadCertificate,
