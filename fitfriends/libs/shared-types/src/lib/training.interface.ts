@@ -4,8 +4,8 @@ import { UserExperience } from './user-experience.enum';
 import { UserGender } from './user-gender.enum';
 
 export interface Training {
-  id?: string;
-  name: string;
+  id?: number;
+  title: string;
   image: string;
   experience: UserExperience;
   type: TrainingType;
@@ -15,6 +15,6 @@ export interface Training {
   description: string;
   gender: UserGender;
   video: string;
-  trainerId: string;
+  authorId: string;
   isSpecialOffer: boolean;
 }

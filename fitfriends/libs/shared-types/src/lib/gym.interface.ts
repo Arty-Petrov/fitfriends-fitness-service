@@ -3,7 +3,7 @@ import { SubwayStation } from './subway-station.enum';
 
 export interface Gym {
   id?: number;
-  name: string;
+  title: string;
   location: SubwayStation;
   isVerified: boolean;
   features: GymFeature[];
