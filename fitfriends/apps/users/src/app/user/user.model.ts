@@ -1,4 +1,12 @@
-import { SubwayStation, User, UserGender, UserRole } from '@fitfriends/shared-types';
+import {
+  SubwayStation,
+  TrainingDuration,
+  TrainingType,
+  User,
+  UserExperience,
+  UserGender,
+  UserRole,
+} from '@fitfriends/shared-types';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
 import { USERS_COLLECTION_NAME } from '../app.constant';
@@ -54,7 +62,57 @@ export class UserModel extends Document implements User {
     type: String,
     enum: SubwayStation,
   })
-  public subwayStation: SubwayStation;
+  public location: SubwayStation;
+
+  @Prop({
+    required: true,
+    type: String,
+    enum: UserExperience,
+  })
+  public experience: UserExperience;
+
+  @Prop({
+    required: true,
+    type: [String],
+  })
+  public trainingTypes: TrainingType[];
+
+  @Prop({
+    required: false,
+    type: String,
+    enum: TrainingDuration,
+  })
+  public trainingDuration: TrainingDuration;
+
+  @Prop({
+    required: false,
+  })
+  public caloriesLoss: number;
+
+  @Prop({
+    required: false,
+  })
+  public caloriesConsumption?: number;
+
+  @Prop({
+    required: false,
+  })
+  public isReadyForInvite?: boolean;
+
+  @Prop({
+    required: false,
+  })
+  public certificate: string;
+
+  @Prop({
+    required: false,
+  })
+  public awards: string;
+
+  @Prop({
+    required: false,
+  })
+  public isPersonalCoach: boolean;
 }
 
 export const UserSchema = SchemaFactory.createForClass(UserModel);

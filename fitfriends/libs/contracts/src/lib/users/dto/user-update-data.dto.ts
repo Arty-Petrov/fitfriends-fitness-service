@@ -1,13 +1,23 @@
-import { SubwayStation, TrainingDuration, TrainingType, UserExperience, UserGender, UserRole } from '@fitfriends/shared-types';
+import {
+  SubwayStation,
+  TrainingDuration,
+  TrainingType,
+  UserExperience,
+  UserGender,
+  UserRole,
+} from '@fitfriends/shared-types';
 import { ApiProperty, PickType } from '@nestjs/swagger';
 import { IsOptional, ValidateIf } from 'class-validator';
 import { UserApi } from '../user.api';
 
 export class UserUpdateDataDto extends PickType(UserApi, [
+  'id',
   'name',
   'avatar',
   'gender',
-  'subwayStation',
+  'dateBirth',
+  'role',
+  'location',
   'experience',
   'trainingTypes',
   'trainingDuration',
@@ -22,78 +32,96 @@ export class UserUpdateDataDto extends PickType(UserApi, [
     required: false,
   })
   @IsOptional()
-  public name: string;
+  public name?: string;
 
   @ApiProperty({
     required: false,
   })
   @IsOptional()
-  public gender: UserGender;
+  public avatar?: string;
 
   @ApiProperty({
     required: false,
   })
   @IsOptional()
-  public location: SubwayStation;
+  public gender?: UserGender;
 
   @ApiProperty({
     required: false,
   })
   @IsOptional()
-  public experience: UserExperience;
+  public dateBirth?: Date;
 
   @ApiProperty({
     required: false,
   })
   @IsOptional()
-  public trainingTypes: TrainingType[];
+  public role?: UserRole;
+
+  @ApiProperty({
+    required: false,
+  })
+  @IsOptional()
+  public location?: SubwayStation;
+
+  @ApiProperty({
+    required: false,
+  })
+  @IsOptional()
+  public experience?: UserExperience;
+
+  @ApiProperty({
+    required: false,
+  })
+  @IsOptional()
+  public trainingTypes?: TrainingType[];
 
   @ApiProperty({
     required: false,
   })
   @IsOptional()
   @ValidateIf((data) => data?.role === UserRole.Customer)
-  public trainingDuration: TrainingDuration;
+  public trainingDuration?: TrainingDuration;
 
   @ApiProperty({
     required: false,
   })
   @IsOptional()
   @ValidateIf((data) => data?.role === UserRole.Customer)
-  public caloriesLoss: number;
+  public caloriesLoss?: number;
 
   @ApiProperty({
     required: false,
   })
   @IsOptional()
   @ValidateIf((data) => data?.role === UserRole.Customer)
-  public caloriesConsumption: number;
+  public caloriesConsumption?: number;
 
   @ApiProperty({
     required: false,
   })
   @IsOptional()
   @ValidateIf((data) => data?.role === UserRole.Customer)
-  public isReadyForInvite: boolean;
+  public isReadyForInvite?: boolean;
 
   @ApiProperty({
     required: false,
   })
   @IsOptional()
   @ValidateIf((data) => data?.role === UserRole.Coach)
-  public certificate: string;
+  public certificate?: string;
 
   @ApiProperty({
     required: false,
   })
   @IsOptional()
   @ValidateIf((data) => data?.role === UserRole.Coach)
-  public awards: string;
+  public awards?: string;
 
   @ApiProperty({
     required: false,
   })
   @IsOptional()
   @ValidateIf((data) => data?.role === UserRole.Coach)
-  public isPersonalCoach: boolean;
+  public isPersonalCoach?: boolean;
 }

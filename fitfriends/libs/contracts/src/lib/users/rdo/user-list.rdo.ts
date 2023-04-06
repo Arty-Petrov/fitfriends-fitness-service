@@ -3,7 +3,7 @@ import { PickType } from '@nestjs/swagger';
 import { Expose } from 'class-transformer';
 import { UserApi } from '../user.api';
 
-export class UserListRdo extends PickType(UserApi, ['name', 'avatar', 'role', 'subwayStation', 'experience', 'createdAt', 'trainingTypes', 'isReadyForInvite', 'isPersonalCoach']) {
+export class UserListRdo extends PickType(UserApi, ['name', 'avatar', 'role', 'location', 'experience', 'createdAt', 'trainingTypes', 'isReadyForInvite', 'isPersonalCoach']) {
   @Expose()
   public name: string;
 

@@ -1,14 +1,18 @@
 import {
-  UserApiError,
-  UserLoggedRdo,
-  UserLoginDto,
-  UserLogoutDto,
   UserRefreshTokenDto,
-  UserRegisterDto,
-  UserUpdatePasswordDto,
+  UserSignedRdo,
+  UserSignInDto,
+  UserSignOutDto,
+  UserSignUpDto,
 } from '@fitfriends/contracts';
+import {
+  TokenNotExistsException,
+  UserExistsException,
+  UserNotRegisteredException,
+  UserPasswordWrongException,
+} from '@fitfriends/exceptions';
 import { RefreshTokenPayload, User } from '@fitfriends/shared-types';
-import { HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
+import { HttpStatus, Inject, Injectable } from '@nestjs/common';
 import { ConfigType } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { randomUUID } from 'crypto';
@@ -26,47 +30,42 @@ export class AuthService {
     @Inject(jwtOptions.KEY) private readonly jwtConfig: ConfigType<typeof jwtOptions>,
   ) { }
 
-  public async verifyUser(dto: UserLoginDto): Promise<User> {
+  public async verifyUser(dto: UserSignInDto): Promise<User> {
     const { email, password } = dto;
     const existUser = await this.userRepository.findByEmail(email);
 
     if (!existUser) {
-      throw new HttpException(UserApiError.NotFound, HttpStatus.NOT_FOUND);
+      throw new UserNotRegisteredException(email);
     }
 
     const userEntity = new UserEntity(existUser);
     if (!(await userEntity.comparePassword(password))) {
-      throw new HttpException(UserApiError.PasswordIsWrong, HttpStatus.FORBIDDEN);
+      throw new UserPasswordWrongException();
     }
 
     return userEntity.toObject();
   }
 
-  public async register(dto: UserRegisterDto): Promise<User | null> {
+  public async signUp(dto: UserSignUpDto): Promise<User | null> {
     const { email, password } = dto;
     delete dto.password;
 
     const existUser = await this.userRepository.findByEmail(dto.email);
     if (existUser) {
-      throw new HttpException(`User with email: ${email} already exist`, HttpStatus.CONFLICT);
+      throw new UserExistsException(email);
     }
 
     const userEntity = await new UserEntity(dto).setPassword(password);
-
     return this.userRepository.create(userEntity);
   }
 
-  public async createRefreshTokens(dto: UserRefreshTokenDto): Promise<UserLoggedRdo> {
-    const { refreshTokenId } = dto;
+  public async createRefreshTokens(dto: UserRefreshTokenDto): Promise<UserSignedRdo> {
     const accessTokenPayload = {
       sub: dto.sub,
       email: dto.email,
       role: dto.role,
       name: dto.name,
     }
-
-    await this.refreshTokenService
-      .deleteRefreshSession(refreshTokenId);
 
     const refreshTokenPayload: RefreshTokenPayload = {
       ...accessTokenPayload, refreshTokenId: randomUUID()
@@ -83,7 +82,7 @@ export class AuthService {
     };
   }
 
-  public async login(dto: UserLoginDto): Promise<UserLoggedRdo> {
+  public async signIn(dto: UserSignInDto): Promise<UserSignedRdo> {
     const user = await this.verifyUser(dto);
     const refreshPayload: UserRefreshTokenDto = {
       sub: user.id,
@@ -95,21 +94,18 @@ export class AuthService {
     return this.createRefreshTokens(refreshPayload);
   }
 
-  public async logout(dto: UserLogoutDto): Promise<HttpStatus> {
+  public async signOut(dto: UserSignOutDto): Promise<HttpStatus> {
     await this.refreshTokenService.deleteRefreshSession(dto.refreshTokenId);
     return HttpStatus.ACCEPTED;
   }
 
-  public async updatePassword(dto: UserUpdatePasswordDto) {
-    const { email, currentPassword, updatePassword } = dto;
-
-    const verifiedUser = await this.verifyUser({
-      email: email,
-      password: currentPassword,
-    });
-
-    const userEntity = await new UserEntity(verifiedUser).setPassword(updatePassword);
-
-    return this.userRepository.update(verifiedUser.id, userEntity);
+  public async  refreshToken(dto: UserRefreshTokenDto): Promise<UserSignedRdo> {
+    const { refreshTokenId } = dto;
+    const existTokenSession = await this.refreshTokenService.isExists(refreshTokenId);
+    if (!existTokenSession) {
+      throw new TokenNotExistsException(refreshTokenId);
+    }
+    await this.refreshTokenService.deleteRefreshSession(refreshTokenId);
+    return this.createRefreshTokens(dto);
   }
 }

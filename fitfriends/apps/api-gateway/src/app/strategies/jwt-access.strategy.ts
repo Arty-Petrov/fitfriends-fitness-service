@@ -5,7 +5,7 @@ import { ConfigService } from '@nestjs/config';
 import { TokenPayload } from '@fitfriends/shared-types';
 
 @Injectable()
-export class JwtAccessStrategy extends PassportStrategy(Strategy) {
+export class JwtAccessStrategy extends PassportStrategy(Strategy, 'jwt-access') {
   constructor(private readonly configService: ConfigService) {
     super({
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),

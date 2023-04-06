@@ -1,62 +1,73 @@
 import {
-  UserLoggedRdo,
-  UserLogin,
-  UserLoginDto,
-  UserLogout,
-  UserLogoutDto,
   UserRefreshToken,
   UserRefreshTokenDto,
-  UserRegister,
-  UserRegisterDto,
+  UserSignedRdo,
+  UserSignIn,
+  UserSignInDto,
+  UserSignOut,
+  UserSignUp,
+  UserSignUpDto,
+  UserUploadAvatar,
+  UserUploadCertificate,
 } from '@fitfriends/contracts';
-import { fillObject, ParseFormDataJsonPipe, UploadField } from '@fitfriends/core';
-import { RefreshTokenPayload, RequestWithTokenPayload } from '@fitfriends/shared-types';
+import { UploadField } from '@fitfriends/core';
 import {
   Body,
   Controller,
   HttpCode,
   HttpStatus,
   Post,
-  Req,
   UnauthorizedException,
   UploadedFile,
   UseGuards,
   UseInterceptors,
-  ValidationPipe,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ApiResponse, ApiTags } from '@nestjs/swagger';
 import { Express } from 'express';
 import { RMQService } from 'nestjs-rmq';
 import { MulterOptions } from '../../config/multer.config';
+import { UserData } from '../decorators/user-data.decorator';
 import { JwtRefreshGuard } from '../guards/jwt-refresh.guard';
+import { NoAuthGuard } from '../guards/no-auth.guard';
 
 @ApiTags('auth')
 @Controller('auth')
 export class AuthController {
   constructor(private readonly rmqService: RMQService) { }
 
-  @Post('register')
+  @Post('avatar')
+  @UseInterceptors(FileInterceptor(UploadField.Avatar, MulterOptions.Avatar))
+  public async uploadAvatar(
+    @UploadedFile() file: Express.Multer.File
+  ): Promise<UserUploadAvatar.Response> {
+    return {
+      avatar: file.path,
+    };
+  }
+
+  @Post('certificate')
+  @UseInterceptors(FileInterceptor(UploadField.Certificate, MulterOptions.Certificate))
+  public async uploadCertificate(
+    @UploadedFile() file: Express.Multer.File
+  ): Promise<UserUploadCertificate.Response> {
+    return {
+      certificate: file.path,
+    };
+  }
+
+  @Post('sign-up')
   @ApiResponse({
     status: HttpStatus.CREATED,
     description: 'The new user has been successfully created.',
   })
-  @UseInterceptors(FileInterceptor(UploadField.Avatar, MulterOptions.Avatar))
-  public async register(
-    @Body(
-      new ParseFormDataJsonPipe({ except: [UploadField.Avatar] }),
-      new ValidationPipe()
-    ) dto: UserRegisterDto,
-    @UploadedFile() file: Express.Multer.File
-  ): Promise<UserRegister.Response> {
-    const { destination } = file;
-    const userRegister = { ...dto, avatar: destination };
+  @UseGuards(NoAuthGuard)
+  public async signUp(@Body() dto: UserSignUpDto): Promise<UserSignUp.Response> {
     try {
-      return await this.rmqService
-      .send<UserRegister.Request, UserRegister.Response>(
-        UserRegister.topic,
-        userRegister, { headers: { requestId: 'someRequestId' } }
-      );
+      return await this.rmqService.send<
+        UserSignUp.Request,
+        UserSignUp.Response>
+        (UserSignUp.topic, dto);
     } catch (error) {
       if (error instanceof Error) {
         throw new UnauthorizedException(error.message);
@@ -64,10 +75,10 @@ export class AuthController {
     }
   }
 
-  @Post('login')
+  @Post('sign-in')
   @HttpCode(HttpStatus.OK)
   @ApiResponse({
-    type: UserLoggedRdo,
+    type: UserSignedRdo,
     status: HttpStatus.OK,
     description: 'User has been successfully logged.',
   })
@@ -75,13 +86,17 @@ export class AuthController {
     status: HttpStatus.UNAUTHORIZED,
     description: 'Password or Login is wrong.',
   })
-  public async login(
-    @Body() dto: UserLoginDto
-  ) {
+  @UseGuards(NoAuthGuard)
+  public async signIn(
+    @Body() dto: UserSignInDto
+  ): Promise<UserSignIn.Response> {
     try {
-      return await this.rmqService
-      .send<UserLogin.Request, UserLogin.Response>(
-        UserLogin.topic, dto
+      return await this.rmqService.send<
+        UserSignIn.Request,
+        UserSignIn.Response
+      >(
+        UserSignIn.topic,
+        dto
       );
     } catch (error) {
       if (error instanceof Error) {
@@ -90,22 +105,22 @@ export class AuthController {
     }
   }
 
-  @UseGuards(JwtRefreshGuard)
-  @Post('logout')
+  @Post('sign-out')
   @HttpCode(HttpStatus.ACCEPTED)
   @ApiResponse({
     status: HttpStatus.ACCEPTED,
     description: 'User has been successfully logged out.',
   })
-  public async logout(
-    @Req() request: RequestWithTokenPayload<RefreshTokenPayload>
-  ) {
-    const refreshTokenId = fillObject(UserLogoutDto, {...request.user});
+  @UseGuards(JwtRefreshGuard)
+  public async signOut(
+    @UserData() { refreshTokenId }: UserRefreshTokenDto
+  ): Promise<UserSignOut.Response> {
     try {
-      return await this.rmqService
-      .send<UserLogout.Request, UserLogout.Response>(
-        UserLogout.topic, refreshTokenId
-      );
+      return await this.rmqService.send<
+        UserSignOut.Request,
+        UserSignOut.Response
+      >(
+        UserSignOut.topic, { refreshTokenId });
     } catch (error) {
       if (error instanceof Error) {
         throw new UnauthorizedException(error.message);
@@ -113,20 +128,22 @@ export class AuthController {
     }
   }
 
-  @UseGuards(JwtRefreshGuard)
   @Post('refresh')
   @HttpCode(HttpStatus.OK)
   @ApiResponse({
     status: HttpStatus.OK,
     description: 'Get a new access/refresh tokens',
   })
+  @UseGuards(JwtRefreshGuard)
   public async refresh(
-    @Req() request: RequestWithTokenPayload<RefreshTokenPayload>
-  ) {
-    const refreshTokenPayload = fillObject(UserRefreshTokenDto, {...request.user});
+    @UserData() refreshTokenPayload: UserRefreshTokenDto
+
+  ): Promise<UserRefreshToken.Response> {
     try {
-      return await this.rmqService
-      .send<UserRefreshToken.Request, UserRefreshToken.Response>(
+      return await this.rmqService.send<
+        UserRefreshToken.Request,
+        UserRefreshToken.Response
+      >(
         UserRefreshToken.topic, refreshTokenPayload
       );
     } catch (error) {

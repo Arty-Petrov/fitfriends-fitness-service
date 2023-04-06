@@ -1,4 +1,12 @@
-import { SortOrder, SubwayStation, TrainingDuration, TrainingType, UserExperience, UserGender, UserRole } from '@fitfriends/shared-types';
+import {
+  SubwayStation,
+  TrainingDuration,
+  TrainingType,
+  UserExperience,
+  UserGender,
+  UserRole,
+} from '@fitfriends/shared-types';
+
 export const USER_NAME_REGEXP = /[a-zA-Zа-яА-Я]/;
 
 export const AVATAR_FILE_TYPE_REGEXP = /\/(jpg|jpeg|png)$/;
@@ -8,7 +16,7 @@ export const CERTIFICATE_FILE_TYPE_REGEXP = /\/(pdf)$/;
 export const CERTIFICATE_FILE_MAX_SIZE = 1024000;
 
 export const DEFAULT_USERS_PAGINATION_COUNT = 1;
-export const DEFAULT_USERS_SORT_ORDER = SortOrder.Descended;
+export const DEFAULT_USERS_SORT_ORDER = -1;
 export const DEFAULT_USERS_COUNT_LIMIT = 50;
 
 export const enum UserPasswordLength {
@@ -28,7 +36,7 @@ export const enum UserAwardsLength {
 
 export const enum UserMaxTrainingTypeCount {
   Consumer = 1,
-  Trainer = 3,
+  Coach = 3,
 }
 
 export const enum UserCaloriesLoss {
@@ -50,7 +58,7 @@ export const UserApiError = {
   NameNotValid: `User name, min ${UserNameLength.Min}, max ${UserNameLength.Max} chars length`,
   NotFound: 'User not found',
   GenderIsWrong: `User gender must contains any of these values: ${Object.values(UserGender).join(', ')}`,
-  TrainingDurationIsWrong: `Training Time field must contain any of these values: ${Object.values(TrainingDuration).join(', ')}`,
+  TrainingDurationIsWrong: `Training Duration field must contain any of these values: ${Object.values(TrainingDuration).join(', ')}`,
   TrainingTypeIsWrong: `Training type field must contain any of these values: ${Object.values(TrainingType).join(', ')}`,
   ExperienceIsWrong: `Experience field must contain any of these values: ${Object.values(UserExperience).join(', ')}`,
   PasswordNotValid: `Password min length is  ${UserPasswordLength.Min}, max is ${UserPasswordLength.Max}`,

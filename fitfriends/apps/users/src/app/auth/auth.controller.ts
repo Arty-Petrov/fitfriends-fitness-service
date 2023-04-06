@@ -1,7 +1,7 @@
-import { UserLogin, UserLogout, UserRefreshToken, UserRegister } from '@fitfriends/contracts';
+import { UserRefreshToken, UserSignIn, UserSignOut, UserSignUp } from '@fitfriends/contracts';
 import { fillObject } from '@fitfriends/core';
-import { Body, Controller, HttpStatus, Logger } from '@nestjs/common';
-import { Message, RMQMessage, RMQRoute, RMQValidate } from 'nestjs-rmq';
+import { Body, Controller, HttpStatus } from '@nestjs/common';
+import { RMQRoute, RMQValidate } from 'nestjs-rmq';
 import { AuthService } from './auth.service';
 
 @Controller()
@@ -9,33 +9,30 @@ export class AuthController {
 public constructor(private readonly authService: AuthService) { }
 
   @RMQValidate()
-  @RMQRoute(UserRegister.topic)
-  async register(dto: UserRegister.Request, @RMQMessage msg: Message): Promise<UserRegister.Response> {
-    const rid = msg.properties.headers['requestId'];
-    const logger = new Logger(rid);
-    logger.error('error message');
-    const user = await this.authService.register(dto);
-    return fillObject(UserRegister.Response, user);
+  @RMQRoute(UserSignUp.topic)
+  async signUp(dto: UserSignUp.Request): Promise<UserSignUp.Response> {
+    const user = await this.authService.signUp(dto);
+    return fillObject(UserSignUp.Response, user);
   }
 
   @RMQValidate()
-  @RMQRoute(UserLogin.topic)
-  public  async login(@Body() dto: UserLogin.Request): Promise<UserLogin.Response> {
+  @RMQRoute(UserSignIn.topic)
+  public  async signIn(@Body() dto: UserSignIn.Request): Promise<UserSignIn.Response> {
     const tokens = await
-    this.authService.login(dto);
-    return fillObject(UserLogin.Response, tokens);
+    this.authService.signIn(dto);
+    return fillObject(UserSignIn.Response, tokens);
   }
 
   @RMQValidate()
-  @RMQRoute(UserLogout.topic)
-  public  async logout(@Body() dto: UserLogout.Request): Promise<HttpStatus> {
-    return this.authService.logout(dto);
+  @RMQRoute(UserSignOut.topic)
+  public  async signOut(@Body() dto: UserSignOut.Request): Promise<HttpStatus> {
+    return this.authService.signOut(dto);
   }
 
   @RMQValidate()
   @RMQRoute(UserRefreshToken.topic)
-  public async refresh(@Body() dto: UserRefreshToken.Request): Promise<UserRefreshToken.Response> {
-    return await this.authService.createRefreshTokens(dto);
+  public async refreshToken(@Body() dto: UserRefreshToken.Request): Promise<UserRefreshToken.Response> {
+    return await this.authService.refreshToken(dto);
   }
 
 }
