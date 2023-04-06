@@ -1,4 +1,10 @@
-import { SortOrder, TrainingRatingRange, TrainingSortType, TrainingType } from '@fitfriends/shared-types';
+import {
+  SortOrder,
+  TrainingDuration,
+  TrainingRatingRange,
+  TrainingSortType,
+  TrainingType,
+} from '@fitfriends/shared-types';
 import { Transform } from 'class-transformer';
 import { IsArray, IsEnum, IsIn, IsNumber, IsOptional, Max, Min } from 'class-validator';
 import {
@@ -9,7 +15,7 @@ import {
   TrainingPriceRange,
 } from '../training.constant';
 
-export class TrainingListQuery {
+export class TrainingMyListQuery {
   @Transform(({ value }) =>
     +value ? Math.abs(+value) : DEFAULT_TRAININGS_PAGINATION_COUNT
   )
@@ -81,9 +87,11 @@ export class TrainingListQuery {
   })
   @Transform(({ value }) => value.split(',').map((item: string) => item))
   @IsArray()
-  @IsEnum(TrainingType, {
+  @IsEnum(TrainingDuration, {
     each: true,
   })
   @IsOptional()
-  public trainings?: TrainingType[];
+  public durations?: TrainingType[];
+
+  public authorId: string;
 }

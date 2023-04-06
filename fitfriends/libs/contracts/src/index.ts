@@ -15,8 +15,7 @@ export * from './lib/reviews/review.constant';
 
 export * from './lib/storage/contract/storage-delete-file';
 
-export * from './lib/trainings/training.api';
-export * from './lib/trainings/training.constant';
+export * from './lib/trainings/index';
 
 export * from './lib/users/user.api';
 export * from './lib/users/user.constant';
