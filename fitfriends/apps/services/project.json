@@ -1,7 +1,7 @@
 {
-  "name": "trainings",
+  "name": "services",
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
-  "sourceRoot": "apps/trainings/src",
+  "sourceRoot": "apps/services/src",
   "projectType": "application",
   "targets": {
     "build": {
@@ -10,12 +10,12 @@
       "options": {
         "target": "node",
         "compiler": "tsc",
-        "outputPath": "dist/apps/trainings",
-        "main": "apps/trainings/src/main.ts",
-        "tsConfig": "apps/trainings/tsconfig.app.json",
-        "assets": ["apps/trainings/src/assets"],
+        "outputPath": "dist/apps/services",
+        "main": "apps/services/src/main.ts",
+        "tsConfig": "apps/services/tsconfig.app.json",
+        "assets": ["apps/services/src/assets"],
         "isolatedConfig": true,
-        "webpackConfig": "apps/trainings/webpack.config.js"
+        "webpackConfig": "apps/services/webpack.config.js"
       },
       "configurations": {
         "production": {
@@ -28,11 +28,11 @@
     "serve": {
       "executor": "@nrwl/js:node",
       "options": {
-        "buildTarget": "trainings:build"
+        "buildTarget": "services:build"
       },
       "configurations": {
         "production": {
-          "buildTarget": "trainings:build:production"
+          "buildTarget": "services:build:production"
         }
       }
     },
@@ -40,14 +40,14 @@
       "executor": "@nrwl/linter:eslint",
       "outputs": ["{options.outputFile}"],
       "options": {
-        "lintFilePatterns": ["apps/trainings/**/*.ts"]
+        "lintFilePatterns": ["apps/services/**/*.ts"]
       }
     },
     "test": {
       "executor": "@nrwl/jest:jest",
       "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
       "options": {
-        "jestConfig": "apps/trainings/jest.config.ts",
+        "jestConfig": "apps/services/jest.config.ts",
         "passWithNoTests": true
       },
       "configurations": {
