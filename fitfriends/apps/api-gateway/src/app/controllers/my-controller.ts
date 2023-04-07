@@ -1,4 +1,10 @@
-import { UserCardRdo, UserFriendListQuery, UserGetFriendList } from '@fitfriends/contracts';
+import {
+  TrainingGetMyList,
+  TrainingMyListQuery,
+  UserCardRdo,
+  UserFriendListQuery,
+  UserGetFriendList,
+} from '@fitfriends/contracts';
 import { Controller, Get, HttpStatus, Query, UseGuards } from '@nestjs/common';
 import { ApiResponse } from '@nestjs/swagger';
 import { RMQService } from 'nestjs-rmq';
@@ -26,4 +32,20 @@ export class MyController {
       );
     }
 
+  @Get('trainings')
+  @ApiResponse({
+    type: UserCardRdo,
+    status: HttpStatus.OK,
+    description: 'User friends found',
+  })
+  @UseGuards(JwtAccessGuard)
+  async getTrainings(
+    @Query() query: TrainingMyListQuery,
+    @UserData('sub') id: string,
+  ): Promise<TrainingGetMyList.Response> {
+      return await this.rmqService.send<TrainingGetMyList.Request, TrainingGetMyList.Response>(
+        TrainingGetMyList.topic,
+        { ...query,  authorId: id  }
+      );
+    }
 }
