@@ -4,20 +4,22 @@ import { PrismaService } from '../prisma/prisma.service';
 import { TrainingEntity } from './training.entity';
 
 @Injectable()
-export class TrainingsRepository implements CRUDRepository<TrainingEntity, number, Training>{
-  constructor(
-    private readonly prisma: PrismaService
-  ) { }
+export class TrainingsRepository
+  implements CRUDRepository<TrainingEntity, number, Training>
+{
+  constructor(private readonly prisma: PrismaService) { }
 
   public async create(item: TrainingEntity): Promise<Training> {
     const entityData = item.toObject();
     return this.prisma.trainings.create({
-      data: { ...entityData }
+      data: { ...entityData },
     }) as unknown as Training;
   }
 
-  findById(id: number): Promise<Training> {
-    throw new Error('Method not implemented.');
+  public async findById(id: number): Promise<Training | null> {
+    return this.prisma.trainings.findFirst({
+      where: { id },
+    }) as unknown as Training;
   }
 
   update(id: number, item: TrainingEntity): Promise<Training> {
@@ -28,7 +30,7 @@ export class TrainingsRepository implements CRUDRepository<TrainingEntity, numbe
     await this.prisma.trainings.delete({
       where: {
         id,
-      }
+      },
     });
   }
 }

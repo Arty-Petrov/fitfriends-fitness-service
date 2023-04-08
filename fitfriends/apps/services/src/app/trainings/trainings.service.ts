@@ -16,4 +16,7 @@ export class TrainingsService {
     return this.trainingsRepository.create(trainingEntity);
   }
 
+  public async getById(id: number): Promise<Training | null> {
+    return this.trainingsRepository.findById(id);
+  }
 }
