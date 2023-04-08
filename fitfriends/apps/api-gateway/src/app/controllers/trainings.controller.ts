@@ -1,28 +1,28 @@
 import {
-  TrainingCardRdo,
-  TrainingCreate,
-  TrainingGetList,
-  TrainingGetOne,
-  TrainingUpdateData,
-  TrainingUpdateImage,
-  TrainingUpdateVideo,
-  UserCardRdo,
-  UserListQuery,
+    TrainingCardRdo,
+    TrainingCreate,
+    TrainingGetList,
+    TrainingGetOne,
+    TrainingUpdateData,
+    TrainingUpdateImage,
+    TrainingUpdateVideo,
+    UserCardRdo,
+    UserListQuery
 } from '@fitfriends/contracts';
 import { UploadField } from '@fitfriends/core';
 import { UserRole } from '@fitfriends/shared-types';
 import {
-  Body,
-  Controller,
-  Get,
-  HttpStatus,
-  Param,
-  Patch,
-  Post,
-  Query,
-  UploadedFile,
-  UseGuards,
-  UseInterceptors,
+    Body,
+    Controller,
+    Get,
+    HttpStatus,
+    Param,
+    Patch,
+    Post,
+    Query,
+    UploadedFile,
+    UseGuards,
+    UseInterceptors
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ApiResponse, ApiTags } from '@nestjs/swagger';
@@ -94,11 +94,11 @@ export class TrainingsController {
   })
   @UseGuards(JwtAccessGuard)
   async getOne(
-    @Param('id') id: number,
+    @Param('id') trainingId: number,
   ): Promise<TrainingGetOne.Response> {
     return await this.rmqService.send<TrainingGetOne.Request, TrainingGetOne.Response>(
       TrainingGetOne.topic,
-      { id }
+      { id: trainingId }
     );
   }
 
@@ -166,21 +166,26 @@ export class TrainingsController {
     >(TrainingUpdateVideo.topic, dto);
   }
 
-  @Patch()
+  @Patch(':id')
   @ApiResponse({
     type: UserCardRdo,
     status: HttpStatus.OK,
-    description: 'Training data placed is updated',
+    description: 'Training data is updated',
   })
   @Roles(UserRole.Coach)
   @UseGuards(JwtAccessGuard, RolesGuard)
-  async addFriend(
+  async updateData(
+    @Param('id') trainingId: number,
     @Body() dto: TrainingUpdateData.Request,
     @UserData('sub') userId: string,
   ): Promise<TrainingUpdateData.Response> {
     return await this.rmqService.send<
       TrainingUpdateData.Request,
       TrainingUpdateData.Response
-    >(TrainingUpdateData.topic, { ...dto, authorId: userId });
+    >(TrainingUpdateData.topic, { 
+      ...dto, 
+      id: trainingId, 
+      authorId: userId 
+    });
   }
 }

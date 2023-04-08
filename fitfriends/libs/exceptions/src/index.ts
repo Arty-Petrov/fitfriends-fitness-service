@@ -1,3 +1,5 @@
+export * from  './lib/item-not-exists.exception';
+export * from  './lib/item-not-found.exception';
 export * from  './lib/token-not-exists.exception';
 export * from  './lib/user-not-found.exception';
 export * from  './lib/user-friends-not-found.exception';

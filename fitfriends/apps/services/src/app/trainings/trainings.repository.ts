@@ -22,8 +22,11 @@ export class TrainingsRepository
     }) as unknown as Training;
   }
 
-  update(id: number, item: TrainingEntity): Promise<Training> {
-    throw new Error('Method not implemented.');
+  public async update(id: number, training: TrainingEntity): Promise<Training> {
+    return this.prisma.trainings.update({
+      where: { id },
+      data: { ...training}
+    }) as unknown as Training;
   }
 
   public async destroy(id: number): Promise<void> {
