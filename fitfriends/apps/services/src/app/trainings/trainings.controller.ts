@@ -1,4 +1,10 @@
-import { TrainingCreate, TrainingGetOne, TrainingUpdateData, TrainingUpdateDataDto } from '@fitfriends/contracts';
+import {
+  TrainingCreate,
+  TrainingGetOne,
+  TrainingUpdateData,
+  TrainingUpdateImage,
+  TrainingUpdateVideo,
+} from '@fitfriends/contracts';
 import { fillObject } from '@fitfriends/core';
 import { Controller } from '@nestjs/common';
 import { RMQRoute, RMQValidate } from 'nestjs-rmq';
@@ -31,7 +37,25 @@ export class TrainingsController {
   public async updateData(
     dto: TrainingUpdateData.Request
   ): Promise<TrainingUpdateData.Response> {
-    const training = await this.trainingsService.updateData(dto);
+    const training = await this.trainingsService.update(dto);
     return fillObject(TrainingUpdateData.Response, training);
+  }
+
+  @RMQValidate()
+  @RMQRoute(TrainingUpdateImage.topic)
+  public async updateImage(
+    dto: TrainingUpdateImage.Request
+  ): Promise<TrainingUpdateImage.Response> {
+    const training = await this.trainingsService.updateFiles(dto);
+    return fillObject(TrainingUpdateImage.Response, training);
+  }
+
+  @RMQValidate()
+  @RMQRoute(TrainingUpdateVideo.topic)
+  public async updateVideo(
+    dto: TrainingUpdateVideo.Request
+  ): Promise<TrainingUpdateVideo.Response> {
+    const training = await this.trainingsService.updateFiles(dto);
+    return fillObject(TrainingUpdateVideo.Response, training);
   }
 }

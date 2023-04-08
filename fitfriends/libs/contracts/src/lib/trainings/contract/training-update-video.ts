@@ -10,6 +10,6 @@ export namespace TrainingUpdateVideo {
 
   export class Response extends PickType(TrainingApi, ['video']) {
    @Expose()
-   public image: string;
+   public video: string;
   }
 }
