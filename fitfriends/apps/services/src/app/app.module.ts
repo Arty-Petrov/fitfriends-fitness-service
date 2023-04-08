@@ -5,6 +5,7 @@ import { getRabbitMqConfig, rabbitMqOptions } from '../config/rabbitmq.config';
 import { SERVICES_SERVICE_ENV_PATH } from './app.constant';
 import { validateEnvironments } from './env.valitation';
 import { PrismaModule } from './prisma/prisma.module';
+import { TrainingsModule } from './trainings/trainings.module';
 
 @Module({
   imports: [
@@ -17,8 +18,9 @@ import { PrismaModule } from './prisma/prisma.module';
     }),
     PrismaModule,
     RMQModule.forRootAsync(getRabbitMqConfig()),
+    TrainingsModule,
   ],
   controllers: [],
   providers: [],
-})
+}) 
 export class AppModule { }
