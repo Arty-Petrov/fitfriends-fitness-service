@@ -1,28 +1,27 @@
 import {
-    TrainingCardRdo,
-    TrainingCreate,
-    TrainingGetList,
-    TrainingGetOne,
-    TrainingUpdateData,
-    TrainingUpdateImage,
-    TrainingUpdateVideo,
-    UserCardRdo,
-    UserListQuery
+  TrainingCardRdo,
+  TrainingCreate,
+  TrainingGetList,
+  TrainingGetOne,
+  TrainingUpdateData,
+  TrainingUpdateImage,
+  TrainingUpdateVideo,
+  UserCardRdo,
 } from '@fitfriends/contracts';
 import { UploadField } from '@fitfriends/core';
 import { UserRole } from '@fitfriends/shared-types';
 import {
-    Body,
-    Controller,
-    Get,
-    HttpStatus,
-    Param,
-    Patch,
-    Post,
-    Query,
-    UploadedFile,
-    UseGuards,
-    UseInterceptors
+  Body,
+  Controller,
+  Get,
+  HttpStatus,
+  Param,
+  Patch,
+  Post,
+  Query,
+  UploadedFile,
+  UseGuards,
+  UseInterceptors,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ApiResponse, ApiTags } from '@nestjs/swagger';
@@ -110,7 +109,7 @@ export class TrainingsController {
   })
   @UseGuards(JwtAccessGuard)
   async getList(
-    @Query() dto: UserListQuery,
+    @Query() dto: TrainingGetList.Request,
   ): Promise<TrainingGetList.Response> {
     return await this.rmqService.send<TrainingGetList.Request, TrainingGetList.Response>(
       TrainingGetList.topic, dto);
@@ -182,10 +181,10 @@ export class TrainingsController {
     return await this.rmqService.send<
       TrainingUpdateData.Request,
       TrainingUpdateData.Response
-    >(TrainingUpdateData.topic, { 
-      ...dto, 
-      id: trainingId, 
-      authorId: userId 
+    >(TrainingUpdateData.topic, {
+      ...dto,
+      id: trainingId,
+      authorId: userId
     });
   }
 }

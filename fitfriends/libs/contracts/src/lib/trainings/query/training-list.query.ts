@@ -1,12 +1,17 @@
-import { SortOrder, TrainingRatingRange, TrainingSortType, TrainingType } from '@fitfriends/shared-types';
+import {
+  SortOrder,
+  TrainingDuration,
+  TrainingPriceSortType,
+  TrainingRatingRange,
+  TrainingType,
+} from '@fitfriends/shared-types';
 import { Transform } from 'class-transformer';
-import { IsArray, IsEnum, IsIn, IsNumber, IsOptional, Max, Min } from 'class-validator';
+import { IsArray, IsEnum, IsNumber, IsOptional, Max, Min } from 'class-validator';
 import {
   DEFAULT_TRAININGS_COUNT_LIMIT,
   DEFAULT_TRAININGS_PAGINATION_COUNT,
   DEFAULT_TRAININGS_SORT_ORDER,
   TrainingCaloriesLoss,
-  TrainingPriceRange,
 } from '../training.constant';
 
 export class TrainingListQuery {
@@ -25,52 +30,55 @@ export class TrainingListQuery {
   @IsOptional()
   public count?: number = DEFAULT_TRAININGS_COUNT_LIMIT;
 
-  @Transform(({ value }) => (value === SortOrder.Ascended ? 1 : -1))
-  @IsIn([1, -1])
+  @IsEnum(SortOrder)
   @IsOptional()
-  public sortCreation?: 1 | -1 = DEFAULT_TRAININGS_SORT_ORDER;
+  public sortCreation?: SortOrder = DEFAULT_TRAININGS_SORT_ORDER;
 
-  @IsEnum(TrainingSortType)
+  @IsEnum(TrainingPriceSortType)
   @IsOptional()
-  public sortBy?: TrainingSortType;
+  public sortPrice?: TrainingPriceSortType;
 
-  @Transform(({ value }) =>
-    (Math.abs(+value) < TrainingPriceRange.Max) ? Math.abs(+value) : TrainingPriceRange.Min
-  )
+  @Transform(({ value }) => Math.abs(+value))
   @IsNumber()
   @IsOptional()
   public priceMin?: number;
 
-  @Transform(({ value }) =>
-    (Math.abs(+value) > TrainingPriceRange.Min) ? Math.abs(+value) : TrainingPriceRange.Max
-  )
+  @Transform(({ value }) => Math.abs(+value))
   @IsNumber()
   @IsOptional()
   public priceMax?: number;
 
   @Transform(({ value }) =>
-    (Math.abs(+value) < TrainingCaloriesLoss.Max) ? Math.abs(+value) : TrainingCaloriesLoss.Min
+    Math.abs(+value) < TrainingCaloriesLoss.Max
+      ? Math.abs(+value)
+      : TrainingCaloriesLoss.Min
   )
   @IsNumber()
   @IsOptional()
   public caloriesMin?: number;
 
   @Transform(({ value }) =>
-    (Math.abs(+value) > TrainingCaloriesLoss.Min) ? Math.abs(+value) : TrainingCaloriesLoss.Max
+    Math.abs(+value) > TrainingCaloriesLoss.Min
+      ? Math.abs(+value)
+      : TrainingCaloriesLoss.Max
   )
   @IsNumber()
   @IsOptional()
   public caloriesMax?: number;
 
   @Transform(({ value }) =>
-    (Math.abs(+value) < TrainingRatingRange.Max) ? Math.abs(+value) : TrainingRatingRange.Min
+    Math.abs(+value) < TrainingRatingRange.Max
+      ? Math.abs(+value)
+      : TrainingRatingRange.Min
   )
   @IsNumber()
   @IsOptional()
   public ratingMin?: number[];
 
   @Transform(({ value }) =>
-    (Math.abs(+value) > TrainingRatingRange.Min) ? Math.abs(+value) : TrainingRatingRange.Max
+    Math.abs(+value) > TrainingRatingRange.Min
+      ? Math.abs(+value)
+      : TrainingRatingRange.Max
   )
   @IsNumber()
   @IsOptional()
@@ -85,5 +93,16 @@ export class TrainingListQuery {
     each: true,
   })
   @IsOptional()
-  public trainings?: TrainingType[];
+  public types?: TrainingType[];
+
+  @IsEnum(TrainingDuration, {
+    each: true,
+  })
+  @Transform(({ value }) => value.split(',').map((item: string) => item))
+  @IsArray()
+  @IsEnum(TrainingDuration, {
+    each: true,
+  })
+  @IsOptional()
+  public durations?: TrainingDuration[];
 }

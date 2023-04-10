@@ -6,7 +6,5 @@ export namespace TrainingGetList {
 
   export class Request extends TrainingListQuery { }
 
-  export class Response {
-    trainings: TrainingListRdo[];
-  }
+  export class Response extends TrainingListRdo { }
 }

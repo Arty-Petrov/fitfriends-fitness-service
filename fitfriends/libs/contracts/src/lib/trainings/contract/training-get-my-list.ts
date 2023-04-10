@@ -1,12 +1,10 @@
-import { TrainingListQuery } from '../query/training-list.query';
+import { TrainingMyListQuery } from '../query/training-my-list.query';
 import { TrainingListRdo } from '../rdo/training-list.rdo';
 
 export namespace TrainingGetMyList {
   export const topic = 'training.get-my-list.query';
 
-  export class Request extends TrainingListQuery { }
+  export class Request extends TrainingMyListQuery { }
 
-  export class Response {
-    trainings: TrainingListRdo[];
-  }
+  export class Response extends TrainingListRdo { }
 }

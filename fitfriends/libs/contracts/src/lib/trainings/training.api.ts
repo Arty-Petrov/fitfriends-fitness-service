@@ -1,14 +1,13 @@
 import { TrainingDuration, TrainingType, UserExperience, UserGender } from '@fitfriends/shared-types';
 import { ApiProperty } from '@nestjs/swagger';
 import { Transform } from 'class-transformer';
-import { IsBoolean, IsEnum, IsMongoId, IsNumber, IsString, Length, Max, Min } from 'class-validator';
+import { IsBoolean, IsEnum, IsMongoId, IsNumber, IsPositive, IsString, Length, Max, Min } from 'class-validator';
 import {
   TrainingApiDescription,
   TrainingApiError,
   TrainingCaloriesLoss,
   TrainingDescriptionLength,
   TrainingNameLength,
-  TrainingPriceRange,
 } from './training.constant';
 
 export class TrainingApi {
@@ -68,8 +67,7 @@ export class TrainingApi {
     description: TrainingApiDescription.Price,
   })
   @IsNumber()
-  @Min(TrainingPriceRange.Min)
-  @Max(TrainingPriceRange.Max)
+  @IsPositive()
   public price?: number;
 
   @ApiProperty({
@@ -120,34 +118,6 @@ export class TrainingApi {
   })
   @IsBoolean()
   public isSpecialOffer?: boolean;
-
-  @ApiProperty({
-    required: true,
-    description: TrainingApiDescription.PriceMin,
-  })
-  @Transform(({ value }) => +value)
-  public priceMin?: number;
-
-  @ApiProperty({
-    required: true,
-    description: TrainingApiDescription.PriceMax,
-  })
-  @Transform(({ value }) => +value)
-  public priceMax?: number;
-
-  @ApiProperty({
-    required: true,
-    description: TrainingApiDescription.CaloriesMin,
-  })
-  @Transform(({ value }) => +value)
-  public caloriesMin?: number;
-
-  @ApiProperty({
-    required: true,
-    description: TrainingApiDescription.CaloriesMax,
-  })
-  @Transform(({ value }) => +value)
-  public caloriesMax?: number;
 
   @ApiProperty({
     required: true,

@@ -52,7 +52,7 @@ model Trainings {
   experience     String
   type           String
   duration       String
-  price          Float
+  price          Int
   caloriesLoss   Int
   description    String
   gender         String

@@ -1,8 +1,8 @@
 import {
   SortOrder,
   TrainingDuration,
+  TrainingPriceSortType,
   TrainingRatingRange,
-  TrainingSortType,
   TrainingType,
 } from '@fitfriends/shared-types';
 import { Transform } from 'class-transformer';
@@ -12,7 +12,6 @@ import {
   DEFAULT_TRAININGS_PAGINATION_COUNT,
   DEFAULT_TRAININGS_SORT_ORDER,
   TrainingCaloriesLoss,
-  TrainingPriceRange,
 } from '../training.constant';
 
 export class TrainingMyListQuery {
@@ -36,20 +35,16 @@ export class TrainingMyListQuery {
   @IsOptional()
   public sortCreation?: 1 | -1 = DEFAULT_TRAININGS_SORT_ORDER;
 
-  @IsEnum(TrainingSortType)
+  @IsEnum(TrainingPriceSortType)
   @IsOptional()
-  public sortBy?: TrainingSortType;
+  public sortPrice?: TrainingPriceSortType;
 
-  @Transform(({ value }) =>
-    (Math.abs(+value) < TrainingPriceRange.Max) ? Math.abs(+value) : TrainingPriceRange.Min
-  )
+  @Transform(({ value }) => Math.abs(+value))
   @IsNumber()
   @IsOptional()
   public priceMin?: number;
 
-  @Transform(({ value }) =>
-    (Math.abs(+value) > TrainingPriceRange.Min) ? Math.abs(+value) : TrainingPriceRange.Max
-  )
+  @Transform(({ value }) => Math.abs(+value))
   @IsNumber()
   @IsOptional()
   public priceMax?: number;

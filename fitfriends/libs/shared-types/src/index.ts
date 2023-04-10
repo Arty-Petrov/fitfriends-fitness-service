@@ -5,7 +5,7 @@ export * from './lib/product-type.enum';
 export * from './lib/subway-station.enum';
 export * from './lib/training-duration.enum';
 export * from './lib/training-rating-range.enum';
-export * from './lib/training-sort-type.enum';
+export * from './lib/training-price-sort-type.enum';
 export * from './lib/training-type.enum';
 export * from './lib/gym.interface';
 export * from './lib/invite.interface';

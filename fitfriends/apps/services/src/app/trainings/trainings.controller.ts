@@ -1,5 +1,6 @@
 import {
   TrainingCreate,
+  TrainingGetList,
   TrainingGetOne,
   TrainingUpdateData,
   TrainingUpdateImage,
@@ -30,6 +31,15 @@ export class TrainingsController {
   ): Promise<TrainingGetOne.Response> {
     const training = await this.trainingsService.getById(id);
     return fillObject(TrainingGetOne.Response, training);
+  }
+
+  @RMQValidate()
+  @RMQRoute(TrainingGetList.topic)
+  public async getList(
+    dto: TrainingGetList.Request
+  ): Promise<TrainingGetList.Response> {
+    const trainings = await this.trainingsService.getList(dto);
+    return fillObject(TrainingGetList.Response, trainings);
   }
 
   @RMQValidate()
