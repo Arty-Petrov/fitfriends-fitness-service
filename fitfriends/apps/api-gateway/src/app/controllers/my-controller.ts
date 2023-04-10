@@ -5,11 +5,14 @@ import {
   UserFriendListQuery,
   UserGetFriendList,
 } from '@fitfriends/contracts';
+import { UserRole } from '@fitfriends/shared-types';
 import { Controller, Get, HttpStatus, Query, UseGuards } from '@nestjs/common';
 import { ApiResponse } from '@nestjs/swagger';
 import { RMQService } from 'nestjs-rmq';
+import { Roles } from '../decorators/roles.decorator';
 import { UserData } from '../decorators/user-data.decorator';
 import { JwtAccessGuard } from '../guards/jwt-access.guard';
+import { RolesGuard } from '../guards/roles.guard';
 
 @Controller('my')
 export class MyController {
@@ -38,8 +41,9 @@ export class MyController {
     status: HttpStatus.OK,
     description: 'User friends found',
   })
-  @UseGuards(JwtAccessGuard)
-  async getTrainings(
+  @Roles(UserRole.Coach)
+  @UseGuards(JwtAccessGuard, RolesGuard)
+  async getMyTrainings(
     @Query() query: TrainingMyListQuery,
     @UserData('sub') id: string,
   ): Promise<TrainingGetMyList.Response> {

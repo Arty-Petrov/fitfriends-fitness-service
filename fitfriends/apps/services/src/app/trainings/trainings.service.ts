@@ -1,14 +1,13 @@
 import {
   StorageDeleteFile,
   TrainingCreateDto,
-  TrainingListQuery,
   TrainingUpdateDataDto,
   TrainingUpdateImageDto,
   TrainingUpdateVideoDto,
 } from '@fitfriends/contracts';
 import { UploadField } from '@fitfriends/core';
 import { ItemNotFoundException } from '@fitfriends/exceptions';
-import { Training } from '@fitfriends/shared-types';
+import { Training, TrainingQuery } from '@fitfriends/shared-types';
 import { Injectable } from '@nestjs/common';
 import { RMQService } from 'nestjs-rmq';
 import { TrainingEntity } from './training.entity';
@@ -39,7 +38,7 @@ export class TrainingsService {
   }
 
   public async getList(
-    dto: TrainingListQuery
+    dto: TrainingQuery
   ): Promise<Training[]> {
    return this.trainingsRepository.find(dto);
   }

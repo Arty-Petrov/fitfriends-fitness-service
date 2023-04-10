@@ -1,5 +1,4 @@
-import { TrainingListQuery } from '@fitfriends/contracts';
-import { CRUDRepository, Training } from '@fitfriends/shared-types';
+import { CRUDRepository, Training, TrainingQuery } from '@fitfriends/shared-types';
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { TrainingEntity } from './training.entity';
@@ -23,11 +22,12 @@ export class TrainingsRepository
     }) as unknown as Training;
   }
 
-  public async find(dto: TrainingListQuery): Promise<Training[]> {
+  public async find(dto: TrainingQuery): Promise<Training[]> {
     const {
       page,
       count,
       sortCreation,
+      sortPrice,
       priceMin,
       priceMax,
       caloriesMin,
