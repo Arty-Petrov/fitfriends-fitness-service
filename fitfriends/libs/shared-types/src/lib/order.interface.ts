@@ -1,7 +1,7 @@
 import { PaymentMethod } from './payment-method.enum';
 import { ProductType } from './product-type.enum';
 
-export interface Purchase {
+export interface Order {
   id?: number;
   authorId: string;
   productType: ProductType;

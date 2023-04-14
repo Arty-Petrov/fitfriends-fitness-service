@@ -1,11 +1,12 @@
 import { PaymentMethod, ProductType } from '@fitfriends/shared-types';
 import { PickType } from '@nestjs/swagger';
 import { Expose } from 'class-transformer';
-import { PurchaseApi } from '../purchase.api';
+import { OrderApi } from '../order.api';
 
-export class PurchaseListRdo extends PickType(PurchaseApi, ['id', 'customerId', 'productType', 'productPrice', 'quantity', 'totalPrice', 'paymentMethod', 'createdAt']) {
+
+export class OrderCardRdo extends PickType(OrderApi, ['id', 'authorId', 'productType', 'productPrice', 'quantity', 'totalPrice', 'paymentMethod', 'createdAt']) {
   @Expose()
-  public id: string;
+  public id: number;
 
   @Expose()
   public customerId: string;

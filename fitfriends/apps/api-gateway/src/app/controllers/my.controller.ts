@@ -1,6 +1,6 @@
 import {
-  TrainingGetMyList,
-  TrainingMyListQuery,
+  OrderCoachListQuery,
+  OrderGetCoachList,
   UserCardRdo,
   UserFriendListQuery,
   UserGetFriendList,
@@ -27,15 +27,15 @@ export class MyController {
   @UseGuards(JwtAccessGuard)
   async getFriends(
     @Query() query: UserFriendListQuery,
-    @UserData('sub') id: string,
+    @UserData('sub') id: string
   ): Promise<UserGetFriendList.Response> {
-      return await this.rmqService.send<UserGetFriendList.Request, UserGetFriendList.Response>(
-        UserGetFriendList.topic,
-        { ...query,  userId: id  }
-      );
-    }
+    return await this.rmqService.send<
+      UserGetFriendList.Request,
+      UserGetFriendList.Response
+    >(UserGetFriendList.topic, { ...query, userId: id });
+  }
 
-  @Get('trainings')
+  @Get('orders')
   @ApiResponse({
     type: UserCardRdo,
     status: HttpStatus.OK,
@@ -44,12 +44,12 @@ export class MyController {
   @Roles(UserRole.Coach)
   @UseGuards(JwtAccessGuard, RolesGuard)
   async getMyTrainings(
-    @Query() query: TrainingMyListQuery,
-    @UserData('sub') id: string,
-  ): Promise<TrainingGetMyList.Response> {
-      return await this.rmqService.send<TrainingGetMyList.Request, TrainingGetMyList.Response>(
-        TrainingGetMyList.topic,
-        { ...query,  authorId: id  }
-      );
-    }
+    @Query() query: OrderCoachListQuery,
+    @UserData('sub') id: string
+  ): Promise<OrderGetCoachList.Response> {
+    return await this.rmqService.send<
+      OrderGetCoachList.Request,
+      OrderGetCoachList.Response
+    >(OrderGetCoachList.topic, { ...query, coachId: id });
+  }
 }
