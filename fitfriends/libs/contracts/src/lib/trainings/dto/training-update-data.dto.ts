@@ -3,9 +3,9 @@ import { ApiProperty, PickType } from '@nestjs/swagger';
 import { IsOptional } from 'class-validator';
 import { TrainingApi } from '../training.api';
 
-export class TrainingUpdateDto extends PickType(TrainingApi, [
+export class TrainingUpdateDataDto extends PickType(TrainingApi, [
   'id',
-  'name',
+  'title',
   'image',
   'experience',
   'type',
@@ -15,14 +15,14 @@ export class TrainingUpdateDto extends PickType(TrainingApi, [
   'description',
   'gender',
   'video',
-  'trainerId',
+  'authorId',
   'isSpecialOffer',
 ]) {
   @ApiProperty({
     required: false,
   })
   @IsOptional()
-  public name: string;
+  public title: string;
 
   @ApiProperty({
     required: false,
@@ -82,7 +82,7 @@ export class TrainingUpdateDto extends PickType(TrainingApi, [
     required: false,
   })
   @IsOptional()
-  public trainerId: string;
+  public authorId: string;
 
   @ApiProperty({
     required: false,

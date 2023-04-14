@@ -1,4 +1,4 @@
-export interface TrainingReview {
+export interface Review {
   id?: number;
   trainingId: number;
   authorId: string;

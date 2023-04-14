@@ -1,0 +1,75 @@
+# USERS CONTROLLEWR
+# @name GET USER BY ID
+< {%
+  client.log(`Raw body:\n${request.body.getRaw()}`);
+%}
+GET {{baseUrl}}users/63aac1a8d0fe043efd78f0b3 HTTP/1.1
+Authorization: Bearer {{accessToken}}
+
+###
+
+# @name GET USERS BY QUERY
+GET {{baseUrl}}users/users?page=1&count=4&sortRole=coach&sortCreation=asc&experience=любитель&locations=Петроградская,Пионерская&trainings=бокс,пилатес HTTP/1.1
+Authorization: Bearer {{accessToken}}
+
+###
+# @name UPDATE USER'S DATA
+PATCH {{baseUrl}}users HTTP/1.1
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{
+  "name": "Keks-Coach",
+  "avatar": "uploads/avatar/1680168642/photo1.png",
+  "gender": "женский",
+  "dateBirth": "2011-11-11T00:00:00.000Z",
+  "location": "Пионерская",
+  "createdAt": "2023-03-31T16:34:22.688Z",
+  "experience": "любитель",
+  "trainingDuration": "",
+  "trainingTypes": [
+    "бокс",
+    "стретчинг"
+  ],
+  "certificate": "uploads/certificate/1680166624/certificate-1.pdf",
+  "awards": "Персональный тренер и инструктор групповых программ с опытом  более 4х лет. Специализация: коррекция фигуры и осанки.",
+  "isPersonalCoach": false
+}
+###
+
+# @name UPLOAD USER'S AVATAR FOR SINGUP
+POST {{baseUrl}}/auth/users/avatar HTTP/1.1
+Authorization: Bearer {{accessToken}}
+Content-Type: multipart/form-data; boundary=WebKitFormBoundary
+
+--WebKitFormBoundary
+Content-Disposition: form-data; name="avatar"; filename="photo-1.png"
+Content-Type: image/png
+
+< ../../mock-files/photo-1.png
+--WebKitFormBoundary--
+###
+
+# @name UPLOAD COACHER'S CERTIFICATE FOR SINGUP
+POST {{baseUrl}}/auth/certificate/ HTTP/1.1
+Authorization: Bearer {{accessToken}}
+Content-Type: multipart/form-data; boundary=WebKitFormBoundary
+
+--WebKitFormBoundary
+Content-Disposition: form-data; name="cerificate"; filename="certificate-1.pdf"
+Content-Type: application/pdf
+
+< ../../mock-files/certificate-1.pdf
+--WebKitFormBoundary--
+###
+
+# @name ADD FRIEND
+PUT {{baseUrl}}users/friend/6437c11b1dd17a346446e979/ HTTP/1.1
+Authorization: Bearer {{accessToken}}
+
+###
+# @name REMOVE FRIEND
+PATCH {{baseUrl}}users/friend/6437c11b1dd17a346446e979/ HTTP/1.1
+Authorization: Bearer {{accessToken}}
+
+###

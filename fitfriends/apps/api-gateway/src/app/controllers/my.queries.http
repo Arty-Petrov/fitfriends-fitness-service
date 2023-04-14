@@ -1,0 +1,8 @@
+# @name GET USER FRIENDS BY QUERY
+GET {{baseUrl}}/my/friends/?page=1&count=4&sortCreation=asc HTTP/1.1
+Authorization: Bearer {{accessToken}}
+###
+
+# @name GET COACHES ORDERS
+GET {{baseUrl}}my/orders?page=1&count=2&sortCreation=asc&sortType=total&sortOrder=asc
+Authorization: Bearer {{accessToken}}

@@ -47,41 +47,41 @@ export class UserSignUpDto extends PickType(UserApi, [
   @Transform(({ obj, value }) =>
     obj.role === UserRole.Customer ?  value : undefined
   )
-  public trainingDuration: TrainingDuration;
+  public trainingDuration?: TrainingDuration;
 
   @ValidateIf((user) => user.role === UserRole.Customer)
   @Transform(({ obj, value }) =>
     obj.role === UserRole.Customer ?  value : undefined
   )
-  public caloriesLoss: number;
+  public caloriesLoss?: number;
 
   @ValidateIf((user) => user.role === UserRole.Customer)
   @Transform(({ obj, value }) =>
     obj.role === UserRole.Customer ?  value : undefined
   )
-  public caloriesConsumption: number;
+  public caloriesConsumption?: number;
 
   @ValidateIf((user) => user.role === UserRole.Customer)
   @Transform(({ obj, value }) =>
     obj.role === UserRole.Customer ?  value : undefined
   )
-  public isReadyForInvite: boolean;
+  public isReadyForInvite?: boolean;
 
   @ValidateIf((user) => user.role === UserRole.Coach)
   @Transform(({ obj, value }) =>
     obj.role === UserRole.Coach ?  value : undefined
   )
-  public certificate: string;
+  public certificate?: string;
 
   @ValidateIf((user) => user.role === UserRole.Coach)
   @Transform(({ obj, value }) =>
     obj.role === UserRole.Coach ?  value : undefined
   )
-  public awards: string;
+  public awards?: string;
 
   @ValidateIf((user) => user.role === UserRole.Coach)
   @Transform(({ obj, value }) =>
     obj.role === UserRole.Coach ?  value : undefined
   )
-  public isPersonalCoach: boolean;
+  public isPersonalCoach?: boolean;
 }

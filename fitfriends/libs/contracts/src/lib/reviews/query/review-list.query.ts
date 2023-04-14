@@ -1,4 +1,4 @@
 import { PickType } from '@nestjs/swagger';
-import { ReviewApi } from '../review.api';
+import { ReviewQueryApi } from '../review-query.api';
 
-export class ReviewListQuery extends PickType(ReviewApi, ['trainingId', 'sort', 'page', 'count']) { }
+export class ReviewListQuery extends PickType(ReviewQueryApi, ['trainingId', 'sortCreation', 'page', 'count']) { }

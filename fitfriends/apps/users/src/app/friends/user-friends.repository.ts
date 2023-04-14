@@ -18,6 +18,10 @@ export default class UserFriendsRepository
     return newFriend.save();
   }
 
+  public async createMany(entities: UserFriendsEntity[]): Promise<UserFriends[]> {
+   return this.userFriendsModel.insertMany(entities);
+  }
+
   public async findByUserId(userId: string): Promise<UserFriends | null> {
     return this.userFriendsModel.findOne({ userId: userId }).exec();
   }
@@ -55,9 +59,9 @@ export default class UserFriendsRepository
     ]);
   }
 
-  public async update(_id: string, item: UserFriendsEntity): Promise<UserFriends> {
+  public async update(_id: string, entity: UserFriendsEntity): Promise<UserFriends> {
     return this.userFriendsModel
-      .findByIdAndUpdate(_id, item.toObject(), { new: true })
+      .findByIdAndUpdate(_id, entity.toObject(), { new: true })
       .exec();
   }
 

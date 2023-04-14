@@ -1,43 +1,39 @@
-import { SortOrder, Training, TrainingDuration, TrainingType, UserExperience, UserGender } from '@fitfriends/shared-types';
+import { TrainingDuration, TrainingType, UserExperience, UserGender } from '@fitfriends/shared-types';
 import { ApiProperty } from '@nestjs/swagger';
 import { Transform } from 'class-transformer';
-import { IsEnum, IsNumber, IsMongoId, IsString, Length, Min, Max, IsBoolean } from 'class-validator';
+import { IsBoolean, IsEnum, IsMongoId, IsNumber, IsPositive, IsString, Length, Max, Min } from 'class-validator';
 import {
   TrainingApiDescription,
   TrainingApiError,
   TrainingCaloriesLoss,
   TrainingDescriptionLength,
-  TrainingNameLength,
-  TrainingPriceRange,
-  DEFAULT_TRAININGS_SORT_ORDER,
-  DEFAULT_TRAININGS_PAGINATION_COUNT,
-  DEFAULT_TRAININGS_COUNT_LIMIT,
+  TrainingTitleLength,
 } from './training.constant';
 
-export class TrainingApi implements Training {
+export class TrainingApi {
   @ApiProperty({
     required: true,
     description: TrainingApiDescription.Id,
   })
-  @IsMongoId()
-  public id: string;
+  @IsNumber()
+  public id?: number;
 
   @ApiProperty({
     required: true,
-    description: TrainingApiDescription.Name,
+    description: TrainingApiDescription.Title,
   })
   @IsString()
-  @Length(TrainingNameLength.Min, TrainingNameLength.Max, {
+  @Length(TrainingTitleLength.Min, TrainingTitleLength.Max, {
     message: TrainingApiError.NameNotValid,
   })
-  public name: string;
+  public title?: string;
 
   @ApiProperty({
     required: true,
     description: TrainingApiDescription.Image,
   })
   @IsString()
-  public image: string;
+  public image?: string;
 
   @ApiProperty({
     required: true,
@@ -46,7 +42,7 @@ export class TrainingApi implements Training {
   @IsEnum(UserExperience, {
     message: TrainingApiError.ExperienceIsWrong,
   })
-  public experience: UserExperience;
+  public experience?: UserExperience;
 
   @ApiProperty({
     required: true,
@@ -55,7 +51,7 @@ export class TrainingApi implements Training {
   @IsEnum(TrainingType, {
     message: TrainingApiError.TypeIsWrong,
   })
-  public type: TrainingType;
+  public type?: TrainingType;
 
   @ApiProperty({
     required: true,
@@ -64,16 +60,15 @@ export class TrainingApi implements Training {
   @IsEnum(TrainingDuration, {
     message: TrainingApiError.DurationIsWrong,
   })
-  public duration: TrainingDuration;
+  public duration?: TrainingDuration;
 
   @ApiProperty({
     required: true,
     description: TrainingApiDescription.Price,
   })
   @IsNumber()
-  @Min(TrainingPriceRange.Min)
-  @Max(TrainingPriceRange.Max)
-  public price: number;
+  @IsPositive()
+  public price?: number;
 
   @ApiProperty({
     required: true,
@@ -92,7 +87,7 @@ export class TrainingApi implements Training {
   @Length(TrainingDescriptionLength.Min, TrainingDescriptionLength.Max, {
     message: TrainingApiError.DescriptionNotValid,
   })
-  public description: string;
+  public description?: string;
 
   @ApiProperty({
     required: true,
@@ -101,84 +96,33 @@ export class TrainingApi implements Training {
   @IsEnum(UserGender, {
     message: TrainingApiError.GenderIsWrong,
   })
-  public gender: UserGender;
+  public gender?: UserGender;
 
   @ApiProperty({
     required: true,
     description: TrainingApiDescription.Video,
   })
   @IsString()
-  public video: string;
+  public video?: string;
 
   @ApiProperty({
     required: true,
-    description: TrainingApiDescription.TrainerId,
+    description: TrainingApiDescription.AuthorId,
   })
   @IsMongoId()
-  public trainerId: string;
+  public authorId?: string;
 
   @ApiProperty({
     required: true,
     description: TrainingApiDescription.IsSpecialOffer,
   })
   @IsBoolean()
-  public isSpecialOffer: boolean;
-
-  @ApiProperty({
-    required: true,
-    description: TrainingApiDescription.PriceMin,
-  })
-  @Transform(({ value }) => +value)
-  public priceMin: number;
-
-  @ApiProperty({
-    required: true,
-    description: TrainingApiDescription.PriceMax,
-  })
-  @Transform(({ value }) => +value)
-  public priceMax: number;
-
-  @ApiProperty({
-    required: true,
-    description: TrainingApiDescription.CaloriesMin,
-  })
-  @Transform(({ value }) => +value)
-  public caloriesMin: number;
-
-  @ApiProperty({
-    required: true,
-    description: TrainingApiDescription.CaloriesMax,
-  })
-  @Transform(({ value }) => +value)
-  public caloriesMax: number;
+  public isSpecialOffer?: boolean;
 
   @ApiProperty({
     required: true,
     description: TrainingApiDescription.Rating,
   })
   @Transform(({ value }) => +value)
-  public rating: number;
-
-  @ApiProperty({
-    required: false,
-  })
-  @IsEnum(SortOrder)
-  public sort: SortOrder = DEFAULT_TRAININGS_SORT_ORDER;
-
-  @ApiProperty({
-    required: false,
-  })
-  @Transform(({ value }) => +value)
-  @IsNumber()
-  public page: number = DEFAULT_TRAININGS_PAGINATION_COUNT;
-
-  @ApiProperty({
-    required: false,
-  })
-  @Transform(({ value }) => +value)
-  @IsNumber()
-  @Transform(({ value }) => {
-    return value < DEFAULT_TRAININGS_COUNT_LIMIT ? value : DEFAULT_TRAININGS_COUNT_LIMIT;
-  })
-  public count: number = DEFAULT_TRAININGS_COUNT_LIMIT;
+  public rating?: number;
 }
