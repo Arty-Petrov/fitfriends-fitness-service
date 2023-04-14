@@ -56,6 +56,27 @@
           "codeCoverage": true
         }
       }
+    },
+    "docker-up": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "docker-compose up -d",
+        "cwd": "apps/users"
+      }
+    },
+    "docker-start": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "docker-compose start",
+        "cwd": "apps/users"
+      }
+    },
+    "docker-stop": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "docker-compose stop",
+        "cwd": "apps/users"
+      }
     }
   },
   "tags": []

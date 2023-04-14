@@ -1,4 +1,10 @@
-import { StorageDeleteFile, UserListQuery, UserUpdateDataDto, UserUpdateFriendListDto } from '@fitfriends/contracts';
+import {
+  StorageDeleteFile,
+  UserListQuery,
+  UserSignUpDto,
+  UserUpdateDataDto,
+  UserUpdateFriendListDto,
+} from '@fitfriends/contracts';
 import { UploadField } from '@fitfriends/core';
 import {
   UserFriendsNotFoundException,
@@ -20,6 +26,21 @@ export class UserService {
     private readonly userFriendsRepository: UserFriendsRepository,
     private readonly rmqService: RMQService
   ) { }
+
+  public async createMany(dtos: UserSignUpDto[]): Promise<User[]> {
+    const users: UserEntity[] = [];
+    for (const dto of dtos) {
+      const { email, password } = dto;
+      delete dto.password;
+      const existUser = await this.userRepository.findByEmail(dto.email);
+      if (existUser ) {
+        break;
+      }
+      const userEntity = await new UserEntity(dto).setPassword(password);
+      users.push(userEntity);
+    }
+    return this.userRepository.createMany(users);
+  }
 
   public async getById(id: string): Promise<User | null> {
     const existUser = await this.userRepository.findById(id);
@@ -51,21 +72,25 @@ export class UserService {
 
   public async updateFiles(dto: UserUpdateDataDto) {
     const id = dto?.id;
-    const fieldName = Object.values(UploadField).filter((field) => dto[field]).toString();
+    const fieldName = Object.values(UploadField)
+      .filter((field) => dto[field])
+      .toString();
     const existUser = await this.getById(id);
     const filePath = existUser[fieldName];
-    await this.rmqService.notify<StorageDeleteFile.Request>
-    (StorageDeleteFile.topic, { fileName: filePath});
+    await this.rmqService.notify<StorageDeleteFile.Request>(
+      StorageDeleteFile.topic,
+      { fileName: filePath }
+    );
     return this.update({ id, [fieldName]: dto[fieldName] });
   }
 
   public async addFriend(dto: UserUpdateFriendListDto) {
-    const { userId, friendId} = dto;
-    const existRecord= await this.userFriendsRepository.findByUserId(userId);
+    const { userId, friendId } = dto;
+    const existRecord = await this.userFriendsRepository.findByUserId(userId);
     if (!existRecord) {
-      const userFriendsEntity = new UserFriendsEntity( {
+      const userFriendsEntity = new UserFriendsEntity({
         userId: userId,
-        friendIds: [friendId]
+        friendIds: [friendId],
       });
       await this.userFriendsRepository.create(userFriendsEntity);
     }
@@ -77,8 +102,8 @@ export class UserService {
   }
 
   public async removeFriend(dto: UserUpdateFriendListDto) {
-    const { userId, friendId} = dto;
-    const existRecord= await this.userFriendsRepository.findByUserId(userId);
+    const { userId, friendId } = dto;
+    const existRecord = await this.userFriendsRepository.findByUserId(userId);
     if (!existRecord) {
       throw new UserFriendsNotFoundException(userId);
     }

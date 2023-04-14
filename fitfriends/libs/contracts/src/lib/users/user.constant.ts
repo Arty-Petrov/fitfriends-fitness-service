@@ -35,7 +35,7 @@ export const enum UserAwardsLength {
 }
 
 export const enum UserMaxTrainingTypeCount {
-  Consumer = 1,
+  Customer = 1,
   Coach = 3,
 }
 

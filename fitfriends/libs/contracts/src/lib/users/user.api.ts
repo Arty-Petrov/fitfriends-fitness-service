@@ -30,7 +30,8 @@ import {
   UserApiError,
   UserAwardsLength,
   UserCaloriesConsumption,
-  UserCaloriesLoss, UserMaxTrainingTypeCount,
+  UserCaloriesLoss,
+  UserMaxTrainingTypeCount,
   UserNameLength,
   UserPasswordLength,
 } from './user.constant';
@@ -140,7 +141,7 @@ export class UserApi {
   })
   @IsArray()
   @ConditionalMaxLength('role', [
-    {value: UserRole.Customer, maxLength: UserMaxTrainingTypeCount.Consumer},
+    {value: UserRole.Customer, maxLength: UserMaxTrainingTypeCount.Customer},
     {value: UserRole.Coach, maxLength: UserMaxTrainingTypeCount.Coach},
   ],
   {

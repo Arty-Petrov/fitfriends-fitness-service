@@ -1,6 +1,6 @@
-import { UserFriendListQuery } from '@fitfriends/contracts';
+import { UserFriendListQuery, UserFriendsDto } from '@fitfriends/contracts';
 import { UserFriendsNotFoundException } from '@fitfriends/exceptions';
-import { User } from '@fitfriends/shared-types';
+import { User, UserFriends } from '@fitfriends/shared-types';
 import { HttpStatus, Injectable } from '@nestjs/common';
 import UserRepository from '../user/user.repository';
 import { UserFriendsEntity } from './user-friends.entity';
@@ -10,19 +10,49 @@ import UserFriendsRepository from './user-friends.repository';
 export class UserFriendsService {
   constructor(
     private readonly userRepository: UserRepository,
-    private readonly userFriendsRepository: UserFriendsRepository,
+    private readonly userFriendsRepository: UserFriendsRepository
   ) { }
+
+  public async createMany(dtos: UserFriendsDto[]): Promise<UserFriends[]> {
+    let friends: Array<UserFriendsEntity> = [];
+    let updatedFriends: Array<UserFriends> = [];
+    for (const dto of dtos) {
+      const existRecord = await this.userFriendsRepository.findByUserId(
+        dto?.userId
+      );
+      if (existRecord) {
+        const { id } = existRecord;
+        const friendsEntity = new UserFriendsEntity(dto);
+        const userFriends = await this.userFriendsRepository.update(
+          id,
+          friendsEntity
+        );
+        updatedFriends = [...updatedFriends, userFriends];
+      } else {
+        const friendsEntity = new UserFriendsEntity(dto);
+        friends = [...friends, friendsEntity];
+      }
+    }
+    if (friends) {
+      const newFriends = await this.userFriendsRepository.createMany(friends);
+      return [...newFriends, ...updatedFriends];
+    }
+    return updatedFriends;
+  }
 
   public async getFriendList(query: UserFriendListQuery): Promise<User[]> {
     return this.userFriendsRepository.findFriends(query);
   }
 
-  public async addFriend(userId: string, friendId: string): Promise<User | null> {
-    const existRecord= await this.userFriendsRepository.findByUserId(userId);
+  public async addFriend(
+    userId: string,
+    friendId: string
+  ): Promise<User | null> {
+    const existRecord = await this.userFriendsRepository.findByUserId(userId);
     if (!existRecord) {
-      const userFriendsEntity = new UserFriendsEntity( {
+      const userFriendsEntity = new UserFriendsEntity({
         userId: userId,
-        friendIds: [friendId]
+        friendIds: [friendId],
       });
       await this.userFriendsRepository.create(userFriendsEntity);
     }
@@ -33,8 +63,11 @@ export class UserFriendsService {
     return this.userRepository.findById(friendId);
   }
 
-  public async removeFriend(userId: string, friendId: string): Promise<void | HttpStatus.ACCEPTED> {
-    const existRecord= await this.userFriendsRepository.findByUserId(userId);
+  public async removeFriend(
+    userId: string,
+    friendId: string
+  ): Promise<void | HttpStatus.ACCEPTED> {
+    const existRecord = await this.userFriendsRepository.findByUserId(userId);
     if (!existRecord) {
       throw new UserFriendsNotFoundException(userId);
     }

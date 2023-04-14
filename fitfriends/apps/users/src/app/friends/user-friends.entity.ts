@@ -22,7 +22,6 @@ export class UserFriendsEntity
 
   removeFriend(friendId: string): UserFriendsEntity {
     this.friendIds = this.friendIds.filter((id) => id !== friendId);
-    console.log(this);
     return this;
   }
 

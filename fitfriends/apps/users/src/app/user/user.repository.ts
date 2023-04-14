@@ -19,6 +19,10 @@ export default class UserRepository
     return newUser.save();
   }
 
+  public async createMany(entities: UserEntity[]): Promise<User[]> {
+   return this.userModel.insertMany(entities);
+  }
+
   public async findById(_id: string): Promise<User | null> {
     return this.userModel.findOne({ _id }).exec();
   }
