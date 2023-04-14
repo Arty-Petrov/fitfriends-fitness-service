@@ -1,16 +1,6 @@
-import { SortOrder } from '@fitfriends/shared-types';
 import { ApiProperty } from '@nestjs/swagger';
-import { Transform } from 'class-transformer';
-import { IsEnum, IsMongoId, IsNumber, IsString, Length, Max, Min } from 'class-validator';
-import {
-  DEFAULT_REVIEWS_COUNT_LIMIT,
-  DEFAULT_REVIEWS_PAGINATION_COUNT,
-  DEFAULT_REVIEWS_SORT_ORDER,
-  ReviewApiDescription,
-  ReviewApiError,
-  ReviewEvaluationRange,
-  ReviewTextLength,
-} from './review.constant';
+import { IsMongoId, IsNumber, IsString, Length, Max, Min } from 'class-validator';
+import { ReviewApiDescription, ReviewApiError, ReviewEvaluationRange, ReviewTextLength } from './review.constant';
 
 export class ReviewApi {
   @ApiProperty({
@@ -58,27 +48,4 @@ export class ReviewApi {
     description: ReviewApiDescription.CreatedAt,
   })
   createdAt?: Date;
-
-  @ApiProperty({
-    required: false,
-  })
-  @IsEnum(SortOrder)
-  public sort: SortOrder = DEFAULT_REVIEWS_SORT_ORDER;
-
-  @ApiProperty({
-    required: false,
-  })
-  @Transform(({ value }) => +value)
-  @IsNumber()
-  public page: number = DEFAULT_REVIEWS_PAGINATION_COUNT;
-
-  @ApiProperty({
-    required: false,
-  })
-  @Transform(({ value }) => +value)
-  @IsNumber()
-  @Transform(({ value }) => {
-    return value < DEFAULT_REVIEWS_COUNT_LIMIT ? value : DEFAULT_REVIEWS_COUNT_LIMIT;
-  })
-  public count: number = DEFAULT_REVIEWS_COUNT_LIMIT;
 }
