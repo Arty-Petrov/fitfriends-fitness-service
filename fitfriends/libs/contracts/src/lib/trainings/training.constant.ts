@@ -10,7 +10,7 @@ export const DEFAULT_TRAININGS_PAGINATION_COUNT = 1;
 export const DEFAULT_TRAININGS_SORT_ORDER = SortOrder.Descended;
 export const DEFAULT_TRAININGS_COUNT_LIMIT = 50;
 
-export const enum TrainingNameLength {
+export const enum TrainingTitleLength {
   Min = 1,
   Max = 15,
 }
@@ -26,17 +26,17 @@ export const enum TrainingCaloriesLoss {
 }
 
 export const TrainingApiError = {
-  NameNotValid: `Training name must be min ${TrainingNameLength.Min}, max ${TrainingNameLength.Max} chars length`,
+  NameNotValid: `Training name must be min ${TrainingTitleLength.Min}, max ${TrainingTitleLength.Max} chars length`,
   ExperienceIsWrong: `Experience field must contain any of these values: ${Object.values(UserExperience).join(', ')}`,
   DurationIsWrong: `Training Time field must contain any of these values: ${Object.values(TrainingDuration).join(', ')}`,
   TypeIsWrong: `Training type field must contain any of these values: ${Object.values(TrainingType).join(', ')}`,
-  DescriptionNotValid: `Training description must be min ${TrainingNameLength.Min}, max ${TrainingNameLength.Max} chars length`,
+  DescriptionNotValid: `Training description must be min ${TrainingTitleLength.Min}, max ${TrainingTitleLength.Max} chars length`,
   GenderIsWrong: `Training gender must contains any of these values: ${Object.values(UserGender).join(', ')}`,
 } as const;
 
 export const TrainingApiDescription = {
   Id: 'The uniq training id',
-  Title: `Training name, min ${TrainingNameLength.Min}, max ${TrainingNameLength.Max} chars`,
+  Title: `Training name, min ${TrainingTitleLength.Min}, max ${TrainingTitleLength.Max} chars`,
   Image: `Training background image uri, file type *.png/jpg/jpeg and max size ${TRAINING_IMAGE_FILE_MAX_SIZE} bytes allowed to upload`,
   Experience: `Level of user fitness experience any of these values: ${Object.values(UserExperience).join(', ')}`,
   Type: `Training type any of these values: ${Object.values(TrainingType).join(', ')}`,

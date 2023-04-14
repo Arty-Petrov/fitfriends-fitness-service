@@ -1,10 +1,10 @@
 import { HttpException, HttpStatus } from '@nestjs/common';
+import { ClassConstructor, plainToInstance } from 'class-transformer';
 import dayjs from 'dayjs';
 import { ensureDir } from 'fs-extra';
 import { diskStorage } from 'multer';
 import { extname } from 'path';
 import { UploadField } from './constants/upload-field.const';
-import { ClassConstructor, plainToInstance } from 'class-transformer';
 
 export function getMongoConnectionString({ username, password, host, port, databaseName, authDatabase }): string {
   return `mongodb://${username}:${password}@${host}:${port}/${databaseName}?authSource=${authDatabase}`;
@@ -12,7 +12,6 @@ export function getMongoConnectionString({ username, password, host, port, datab
 
 export function fillObject<T, V>(dto: ClassConstructor<T>, plainObject: V, groups: string[] = []) {
   const options = !groups.length ? { excludeExtraneousValues: true } : { excludeExtraneousValues: true, groups: [...groups] };
-
   return plainToInstance(dto, plainObject, { ...options });
 }
 

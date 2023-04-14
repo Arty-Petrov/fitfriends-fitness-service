@@ -9,11 +9,16 @@ export class TrainingsRepository
 {
   constructor(private readonly prisma: PrismaService) { }
 
-  public async create(item: TrainingEntity): Promise<Training> {
-    const entityData = item.toObject();
+  public async create(entity: TrainingEntity): Promise<Training> {
     return this.prisma.trainings.create({
-      data: { ...entityData },
+      data: { ...entity},
     }) as unknown as Training;
+  }
+
+  public async createMany(entities: TrainingEntity[]): Promise<Training[]> {
+    return this.prisma.$transaction(
+      entities.map((entity) => this.prisma.trainings.create({ data: entity}))
+    ) as unknown as Training[];
   }
 
   public async findById(id: number): Promise<Training | null> {
@@ -22,7 +27,7 @@ export class TrainingsRepository
     }) as unknown as Training;
   }
 
-  public async find(dto: TrainingQuery): Promise<Training[]> {
+  public async find(query: TrainingQuery): Promise<Training[]> {
     const {
       page,
       count,
@@ -34,8 +39,8 @@ export class TrainingsRepository
       caloriesMax,
       types,
       durations,
-    } = dto;
-    const trainings = await this.prisma.trainings.findMany({
+    } = query;
+    return this.prisma.trainings.findMany({
       where: {
         duration: { in: durations },
         type: { in: types },
@@ -48,19 +53,16 @@ export class TrainingsRepository
           gte: caloriesMin,
         },
       },
-      orderBy: [
-        { createdAt: sortCreation },
-      ],
+      orderBy: [{ createdAt: sortCreation }],
       take: count,
       skip: page > 0 ? count * (page - 1) : undefined,
-    });
-    return trainings.map((training) => training as unknown as Training);
+    }) as unknown as Training[];
   }
 
-  public async update(id: number, training: TrainingEntity): Promise<Training> {
+  public async update(id: number, entity: TrainingEntity): Promise<Training> {
     return this.prisma.trainings.update({
       where: { id },
-      data: { ...training },
+      data: { ...entity },
     }) as unknown as Training;
   }
 

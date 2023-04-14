@@ -2,6 +2,7 @@ export * from './training.api';
 export * from './training.constant';
 
 export * from './contract/training-create';
+export * from './contract/training-create-many';
 export * from './contract/training-get-list';
 export * from './contract/training-get-my-list';
 export * from './contract/training-get-one';

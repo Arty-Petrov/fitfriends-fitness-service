@@ -10,7 +10,7 @@ async function bootstrap() {
     })
   );
   await app.init();
-  Logger.log(`🚀 Services application is running`);
+  Logger.log(`🚀 Fitness application is running`);
 }
 
 bootstrap();

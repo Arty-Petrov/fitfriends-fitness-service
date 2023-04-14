@@ -2,11 +2,11 @@ version: '3.5'
 services:
   postgres:
     image: postgres:14-alpine
-    container_name: postgres-products
+    container_name: fitfriends.fitness.postgres
     environment:
       POSTGRES_USER: "admin"
       POSTGRES_PASSWORD: "test"
-      POSTGRES_DB: "fitfriends-services"
+      POSTGRES_DB: "fitfriends-fitness"
     ports:
       - "5432:5432"
     healthcheck:
@@ -21,7 +21,7 @@ services:
       - postgres
 
   pgadmin:
-    container_name: pgadmin-tasks
+    container_name: fitfriends.fitness.pgadmin
     image: dpage/pgadmin4
     environment:
       PGADMIN_DEFAULT_EMAIL: "admin@admin.local"

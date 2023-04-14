@@ -3,7 +3,7 @@
 
 generator client {
   provider = "prisma-client-js"
-  output   = "../../../node_modules/.prisma/fitfriends-services"
+  output   = "../../../node_modules/.prisma/fitfriends-fitness"
 }
 
 datasource db {
@@ -23,7 +23,7 @@ model Gyms {
   createdAt   DateTime @default(now())
 }
 
-model Purchases {
+model Orders {
   id            Int      @id @default(autoincrement())
   authorId      String
   productType   String

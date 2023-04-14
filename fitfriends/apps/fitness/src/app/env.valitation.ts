@@ -32,7 +32,7 @@ class EnvironmentsConfig {
   @IsString({
     message: EnvValidationMessage.RmqQueueRequired,
   })
-  public RMQ_SERVICES_QUEUE: string;
+  public RMQ_FITNESS_QUEUE: string;
 }
 
 export function validateEnvironments(config: Record<string, unknown>) {

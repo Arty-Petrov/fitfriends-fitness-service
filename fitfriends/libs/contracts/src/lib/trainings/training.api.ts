@@ -7,7 +7,7 @@ import {
   TrainingApiError,
   TrainingCaloriesLoss,
   TrainingDescriptionLength,
-  TrainingNameLength,
+  TrainingTitleLength,
 } from './training.constant';
 
 export class TrainingApi {
@@ -23,7 +23,7 @@ export class TrainingApi {
     description: TrainingApiDescription.Title,
   })
   @IsString()
-  @Length(TrainingNameLength.Min, TrainingNameLength.Max, {
+  @Length(TrainingTitleLength.Min, TrainingTitleLength.Max, {
     message: TrainingApiError.NameNotValid,
   })
   public title?: string;

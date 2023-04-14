@@ -3,7 +3,7 @@ import { ApiProperty, PickType } from '@nestjs/swagger';
 import { IsOptional } from 'class-validator';
 import { GymApi } from '../gym.api';
 
-export class GymUpdateDataDto extends PickType(GymApi, ['id', 'name', 'location', 'isVerified', 'features', 'photos', 'description', 'price']) {
+export class GymUpdateDataDto extends PickType(GymApi, ['id', 'title', 'location', 'isVerified', 'features', 'photos', 'description', 'price']) {
   @ApiProperty({
     required: true,
   })

@@ -1,5 +1,6 @@
 import {
   TrainingCreate,
+  TrainingCreateMany,
   TrainingGetList,
   TrainingGetMyList,
   TrainingGetOne,
@@ -8,6 +9,7 @@ import {
   TrainingUpdateVideo,
 } from '@fitfriends/contracts';
 import { fillObject } from '@fitfriends/core';
+import { UserNotAuthorizedException } from '@fitfriends/exceptions';
 import { Controller } from '@nestjs/common';
 import { RMQRoute, RMQValidate } from 'nestjs-rmq';
 import { TrainingsService } from './trainings.service';
@@ -23,6 +25,15 @@ export class TrainingsController {
   ): Promise<TrainingCreate.Response> {
     const training = await this.trainingsService.create(dto);
     return fillObject(TrainingCreate.Response, training);
+  }
+
+  @RMQValidate()
+  @RMQRoute(TrainingCreateMany.topic)
+  public async createMany(
+    dtos: TrainingCreateMany.Request
+  ): Promise<TrainingCreateMany.Response> {
+    const trainings = await this.trainingsService.createMany(dtos);
+    return fillObject(TrainingCreateMany.Response, trainings);
   }
 
   @RMQValidate()
@@ -57,6 +68,11 @@ export class TrainingsController {
   public async updateData(
     dto: TrainingUpdateData.Request
   ): Promise<TrainingUpdateData.Response> {
+    const {authorId, id} = dto;
+    const isOwner = await this.trainingsService.isOwner(authorId, id);
+    if (!isOwner) {
+      throw new UserNotAuthorizedException(id);
+    }
     const training = await this.trainingsService.update(dto);
     return fillObject(TrainingUpdateData.Response, training);
   }
@@ -66,6 +82,11 @@ export class TrainingsController {
   public async updateImage(
     dto: TrainingUpdateImage.Request
   ): Promise<TrainingUpdateImage.Response> {
+    const {authorId, id} = dto;
+    const isOwner = await this.trainingsService.isOwner(authorId, id);
+    if (!isOwner) {
+      throw new UserNotAuthorizedException(id);
+    }
     const training = await this.trainingsService.updateFiles(dto);
     return fillObject(TrainingUpdateImage.Response, training);
   }
@@ -75,6 +96,11 @@ export class TrainingsController {
   public async updateVideo(
     dto: TrainingUpdateVideo.Request
   ): Promise<TrainingUpdateVideo.Response> {
+    const {authorId, id} = dto;
+    const isOwner = await this.trainingsService.isOwner(authorId, id);
+    if (!isOwner) {
+      throw new UserNotAuthorizedException(id);
+    }
     const training = await this.trainingsService.updateFiles(dto);
     return fillObject(TrainingUpdateVideo.Response, training);
   }

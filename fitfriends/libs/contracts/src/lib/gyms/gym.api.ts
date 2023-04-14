@@ -1,7 +1,19 @@
 import { Gym, GymFeature, SortOrder, SubwayStation } from '@fitfriends/shared-types';
 import { ApiProperty } from '@nestjs/swagger';
 import { Transform } from 'class-transformer';
-import { ArrayMaxSize, ArrayNotEmpty, IsArray, IsBooleanString, IsEnum, IsMongoId, IsNumber, IsString, Length, Max, Min } from 'class-validator';
+import {
+  ArrayMaxSize,
+  ArrayNotEmpty,
+  IsArray,
+  IsBooleanString,
+  IsEnum,
+  IsMongoId,
+  IsNumber,
+  IsString,
+  Length,
+  Max,
+  Min,
+} from 'class-validator';
 import {
   DEFAULT_GYM_COUNT_LIMIT,
   DEFAULT_GYM_PAGINATION_COUNT,
@@ -29,7 +41,7 @@ export class GymApi implements Gym {
   @Length(GymNameLength.Min, GymNameLength.Max, {
     message: GymApiError.NameNotValid,
   })
-  public name: string;
+  public title: string;
 
   @ApiProperty({
     required: true,

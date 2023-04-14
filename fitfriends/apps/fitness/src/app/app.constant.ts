@@ -1,4 +1,4 @@
-export const SERVICES_SERVICE_ENV_PATH = 'envs/.env';
+export const FITNESS_SERVICE_ENV_PATH = 'envs/.env';
 
 export const enum EnvValidationMessage {
   RmqServiceNameRequired = 'RabbitMQ service name is required',

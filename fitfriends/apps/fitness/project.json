@@ -1,7 +1,7 @@
 {
-  "name": "services",
+  "name": "fitness",
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
-  "sourceRoot": "apps/services/src",
+  "sourceRoot": "apps/fitness/src",
   "projectType": "application",
   "targets": {
     "build": {
@@ -12,14 +12,14 @@
       "options": {
         "target": "node",
         "compiler": "tsc",
-        "outputPath": "dist/apps/services",
-        "main": "apps/services/src/main.ts",
-        "tsConfig": "apps/services/tsconfig.app.json",
+        "outputPath": "dist/apps/fitness",
+        "main": "apps/fitness/src/main.ts",
+        "tsConfig": "apps/fitness/tsconfig.app.json",
         "assets": [
-          "apps/services/src/assets"
+          "apps/fitness/src/assets"
         ],
         "isolatedConfig": true,
-        "webpackConfig": "apps/services/webpack.config.js"
+        "webpackConfig": "apps/fitness/webpack.config.js"
       },
       "configurations": {
         "production": {
@@ -32,11 +32,11 @@
     "serve": {
       "executor": "@nrwl/js:node",
       "options": {
-        "buildTarget": "services:build"
+        "buildTarget": "fitness:build"
       },
       "configurations": {
         "production": {
-          "buildTarget": "services:build:production"
+          "buildTarget": "fitness:build:production"
         }
       }
     },
@@ -47,7 +47,7 @@
       ],
       "options": {
         "lintFilePatterns": [
-          "apps/services/**/*.ts"
+          "apps/fitness/**/*.ts"
         ]
       }
     },
@@ -57,7 +57,7 @@
         "{workspaceRoot}/coverage/{projectRoot}"
       ],
       "options": {
-        "jestConfig": "apps/services/jest.config.ts",
+        "jestConfig": "apps/fitness/jest.config.ts",
         "passWithNoTests": true
       }
     },
@@ -65,34 +65,49 @@
       "executor": "nx:run-commands",
       "options": {
         "command": "npx prisma validate --schema ./prisma/schema.prisma",
-        "cwd": "apps/services"
+        "cwd": "apps/fitness"
       }
     },
     "db-migrate": {
       "executor": "nx:run-commands",
       "options": {
         "command": "npx prisma migrate dev --schema ./prisma/schema.prisma --name initial --skip-generate --skip-seed",
-        "cwd": "apps/services"
+        "cwd": "apps/fitness"
       }
     },
     "db-reset": {
       "executor": "nx:run-commands",
       "options": {
         "command": "npx prisma migrate reset --schema ./prisma/schema.prisma --force --skip-generate --skip-seed",
-        "cwd": "apps/services"
+        "cwd": "apps/fitness"
       }
     },
     "db-generate": {
       "executor": "nx:run-commands",
       "options": {
-        "command": "npx prisma generate --schema apps/services/prisma/schema.prisma"
-      }
+        "command": "npx prisma generate --schema prisma/schema.prisma",
+        "cwd": "apps/fitness"
+      }  
     },
-    "db-fill": {
+    "docker-up": {
       "executor": "nx:run-commands",
       "options": {
-        "command": "npx prisma db seed",
-        "cwd": "apps/services"
+        "command": "docker-compose up -d",
+        "cwd": "apps/fitness"
+      }
+    },
+    "docker-start": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "docker-compose start",
+        "cwd": "apps/fitness"
+      }
+    },
+    "docker-stop": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "docker-compose stop",
+        "cwd": "apps/fitness"
       }
     }
   },

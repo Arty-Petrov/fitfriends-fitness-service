@@ -7,7 +7,7 @@ export const rabbitMqOptions = registerAs('rmq', () => ({
   user: process.env.RMQ_USER,
   password: process.env.RMQ_PASSWORD,
   host: process.env.RMQ_HOST_NAME,
-  queue: process.env.RMQ_SERVICES_QUEUE,
+  queue: process.env.RMQ_FITNESS_QUEUE,
 }));
 
 export const getRabbitMqConfig = (): IRMQServiceAsyncOptions => ({

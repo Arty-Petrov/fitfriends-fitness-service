@@ -7,14 +7,14 @@ import {
 } from '@fitfriends/contracts';
 import { UploadField } from '@fitfriends/core';
 import { ItemNotFoundException } from '@fitfriends/exceptions';
-import { Training, TrainingQuery } from '@fitfriends/shared-types';
+import { AuthorizeOwner, Training, TrainingQuery } from '@fitfriends/shared-types';
 import { Injectable } from '@nestjs/common';
 import { RMQService } from 'nestjs-rmq';
 import { TrainingEntity } from './training.entity';
 import { TrainingsRepository } from './trainings.repository';
 
 @Injectable()
-export class TrainingsService {
+export class TrainingsService implements AuthorizeOwner {
   constructor(
     private readonly trainingsRepository: TrainingsRepository,
     private readonly rmqService: RMQService
@@ -25,6 +25,13 @@ export class TrainingsService {
   ): Promise<Training> {
     const trainingEntity = new TrainingEntity(dto);
     return this.trainingsRepository.create(trainingEntity);
+  }
+
+  public async createMany(
+    dtos: TrainingCreateDto[]
+  ): Promise<Training[]> {
+    const trainings = dtos.map((dto) => new TrainingEntity(dto));
+    return this.trainingsRepository.createMany(trainings);
   }
 
   public async getById(
@@ -65,5 +72,13 @@ export class TrainingsService {
       { fileName: filePath }
     );
     return this.update({...existTraining, [fieldName]: dto[fieldName] });
+  }
+
+  public async isOwner(
+    currentUserId: string,
+    objectId: string | number
+  ): Promise<boolean> {
+    const { authorId } = await this.getById(parseInt(objectId));
+    return currentUserId === authorId;
   }
 }
