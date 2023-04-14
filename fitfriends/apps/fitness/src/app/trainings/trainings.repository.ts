@@ -32,7 +32,6 @@ export class TrainingsRepository
       page,
       count,
       sortCreation,
-      sortPrice,
       priceMin,
       priceMax,
       caloriesMin,
