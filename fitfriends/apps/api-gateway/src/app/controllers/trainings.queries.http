@@ -1,0 +1,105 @@
+# USERS CONTROLLEWR
+# @name GET TRAINING BY ID
+GET {{baseUrl}}trainings/1 HTTP/1.1
+Authorization: Bearer {{accessToken}}
+
+###
+
+# @name GET TRAININGS BY QUERY
+GET {{baseUrl}}trainings/?page=1&count=2&sortCreation=asc&sortBy=low-price&priceMin=1000&priceMax=1500&caloriesMin=1300&caloriesMax=2000&ratingMin=1&ratingMax=5&types=бокс&durations=half-an-hour,two-hours HTTP/1.1
+Authorization: Bearer {{accessToken}}
+
+###
+# @name CREATE TRAINING
+POST {{baseUrl}}trainings/ HTTP/1.1
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{
+  "title": "Аэробика",
+  "image": "uploads/training-image/1680854625/promo-1.png",
+  "experience": "профессионал",
+  "type": "аэробика",
+  "duration": "half-an-hour",
+  "price": 1500,
+  "caloriesLoss": 3800,
+  "description": "Интенсивная тренировка",
+  "gender": "женский",
+  "video": "uploads/training-video/1680855910/Video_html_Academy.mov",
+  "isSpecialOffer": false
+}
+###
+
+# @name CREATE TRAINIG IMAGE
+POST {{baseUrl}}trainings/image/ HTTP/1.1
+Authorization: Bearer {{accessToken}}
+Content-Type: multipart/form-data; boundary=WebKitFormBoundary
+
+--WebKitFormBoundary
+Content-Disposition: form-data; name="image"; filename="promo-1.png"
+Content-Type: image/png
+
+< ../../mock-files/promo-1.png
+--WebKitFormBoundary--
+###
+
+# @name CREATE TRAINING VIDEO
+POST {{baseUrl}}/trainings/video/ HTTP/1.1
+Authorization: Bearer {{accessToken}}
+Content-Type: multipart/form-data; boundary=WebKitFormBoundary
+
+--WebKitFormBoundary
+Content-Disposition: form-data; name="video"; filename="Video_html_Academy.mov"
+Content-Type: <Content-Type header here>
+
+< ../../mock-files/certificate-1.pdf
+--WebKitFormBoundary--
+###
+###
+
+# @name UPDATE TRAINING DATA
+PATCH {{baseUrl}}trainings/5 HTTP/1.1
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{
+  "title": "Аэробика",
+  "image": "uploads/training-image/1680854625/promo-1.png",
+  "experience": "профессионал",
+  "type": "аэробика",
+  "duration": "hour",
+  "price": 1000,
+  "caloriesLoss": 2800,
+  "description": "Интенсивная тренировка",
+  "gender": "женский",
+  "video": "uploads/training-video/1680855910/Video_html_Academy.mov",
+  "isSpecialOffer": false
+}
+###
+
+# @name UPLOAD TRAINIG IMAGE
+PATCH {{baseUrl}}trainings/image/13 HTTP/1.1
+Authorization: Bearer {{accessToken}}
+Content-Type: multipart/form-data; boundary=WebKitFormBoundary
+
+--WebKitFormBoundary
+Content-Disposition: form-data; name="image"; filename="promo-1.png"
+Content-Type: image/png
+
+< ../../mock-files/promo-1.png
+--WebKitFormBoundary--
+###
+
+# @name UPLOAD TRAINING VIDEO
+PATCH {{baseUrl}}/auth/certificate/ HTTP/1.1
+Authorization: Bearer {{accessToken}}
+Content-Type: multipart/form-data; boundary=WebKitFormBoundary
+
+--WebKitFormBoundary
+Content-Disposition: form-data; name="video"; filename="Video_html_Academy.mov"
+Content-Type: <Content-Type header here>
+
+< ../../mock-files/certificate-1.pdf
+--WebKitFormBoundary--
+###
+

@@ -2,7 +2,14 @@
   "name": "fitfriends",
   "version": "0.0.0",
   "license": "MIT",
-  "scripts": {},
+  "scripts": {
+    "services:docker-up": "nx run api-gateway:docker-up && nx run users:docker-up && nx run fitness:docker-up",
+    "services:docker-stop": "nx run api-gateway:docker-stop && nx run users:docker-stop && nx run fitness:docker-stop",
+    "services:docker-start": "nx run api-gateway:docker-start && nx run users:docker-start && nx run fitness:docker-start",
+    "services:db-init": "nx run fitness:db-migrate && nx run fitness:db-generate",
+    "services:seed": "nx run cli:build && node ./dist/apps/cli/main.js seed",
+    "services:start": "concurrently \"nx run api-gateway:serve\"  \"nx run users:serve\" \"nx run fitness:serve\" \"nx run storage:serve\""
+  },
   "private": true,
   "dependencies": {
     "@nestjs/common": "^9.3.9",
@@ -21,6 +28,7 @@
     "dayjs": "1.11.7",
     "fs-extra": "11.1.0",
     "mongoose": "^6.10.4",
+    "nest-commander": "^3.6.1",
     "nestjs-rmq": "^2.8.0",
     "passport": "^0.6.0",
     "passport-jwt": "^4.0.1",
@@ -32,6 +40,7 @@
   },
   "devDependencies": {
     "@babel/preset-react": "^7.14.5",
+    "@faker-js/faker": "^7.6.0",
     "@jridgewell/sourcemap-codec": "^1.4.14",
     "@nestjs/schematics": "^9.0.0",
     "@nestjs/testing": "^9.0.0",
@@ -60,6 +69,7 @@
     "@typescript-eslint/eslint-plugin": "^5.36.1",
     "@typescript-eslint/parser": "^5.36.1",
     "babel-jest": "^29.4.1",
+    "concurrently": "^8.0.1",
     "cypress": "^12.2.0",
     "eslint": "~8.15.0",
     "eslint-config-prettier": "8.1.0",

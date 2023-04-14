@@ -32,7 +32,7 @@ export class UserService {
     for (const dto of dtos) {
       const { email, password } = dto;
       delete dto.password;
-      const existUser = await this.userRepository.findByEmail(dto.email);
+      const existUser = await this.userRepository.findByEmail(email);
       if (existUser ) {
         break;
       }

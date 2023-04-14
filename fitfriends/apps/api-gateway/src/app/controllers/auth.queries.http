@@ -1,0 +1,106 @@
+# AUTH CONTROLLER
+# @name UPLOAD USER'S AVATAR FOR SING UP
+POST {{baseUrl}}/auth/users/avatar HTTP/1.1
+Content-Type: multipart/form-data; boundary=WebKitFormBoundary
+
+--WebKitFormBoundary
+Content-Disposition: form-data; name="avatar"; filename="photo-1.png"
+Content-Type: image/png
+
+< ../../mock-files/photo-1.png
+--WebKitFormBoundary--
+###
+
+# @name UPLOAD COACHER'S CERTIFICATE FOR SING UP
+POST {{baseUrl}}/auth/certificate/ HTTP/1.1
+Content-Type: multipart/form-data; boundary=WebKitFormBoundary
+
+--WebKitFormBoundary
+Content-Disposition: form-data; name="cerificate"; filename="certificate-1.pdf"
+Content-Type: application/pdf
+
+< ../../mock-files/certificate-1.pdf
+--WebKitFormBoundary--
+###
+
+# @name CREATE A NEW COACH USER
+#Request contains unnecessary customer's fields to show request validations
+POST {{baseUrl}}/auth/sign-up HTTP/1.1
+Content-Type: application/json
+
+{
+  "name": "Keks-Coach",
+  "email": "coach@fitfriends.local",
+  "avatar": "uploads/avatar/1680168642/photo1.png",
+  "password": "123456",
+  "gender": "женский",
+  "dateBirth":"2011-11-11",
+  "role": "coach",
+  "location":"Пионерская",
+  "experience":"любитель",
+  "trainingTypes": ["бокс", "стретчинг", "кроссфит"],
+  "certificate": "uploads/certificate/1680166624/certificate-1.pdf",
+  "awards": "Персональный тренер и инструктор групповых программ с опытом  более 4х лет. Специализация: коррекция фигуры и осанки.",
+  "isPersonalCoach": true,
+  "caloriesLoss": 1500,
+  "caloriesConsumption": 1500,
+  "isReadyForInvite": false
+}
+###
+
+# @name CREATE A NEW CUSTOMER USER
+#Request contains unnecessary coacer's fields to show request validations
+POST {{baseUrl}}/auth/sign-up HTTP/1.1
+Content-Type: application/json
+
+{
+  "name": "Keks-Coach",
+  "email": "cusomer@fitfriends.local",
+  "avatar": "uploads/avatar/1680168642/photo1.png",
+  "password": "123456",
+  "gender": "женский",
+  "dateBirth":"2011-11-11",
+  "role": "customer",
+  "location":"Пионерская",
+  "experience":"любитель",
+  "trainingTypes": ["бокс"],
+  "trainingDuration": "half-an-hour",
+  "caloriesLoss": 1500,
+  "caloriesConsumption": 1500,
+  "isReadyForInvite": false,
+  "certificate": "uploads/certificate/1680166624/certificate-1.pdf",
+  "awards": "Персональный тренер и инструктор групповых программ с опытом  более 4х лет. Специализация: коррекция фигуры и осанки.",
+  "isPersonalCoach": true
+}
+
+###
+# @name SIGN IN USER
+POST {{baseUrl}}/auth/sign-in HTTP/1.1
+Content-Type: application/json
+
+{
+  "email": "customer@fitfriends.local",
+  "password": "123456"
+}
+> {%
+  client.log(request.body())
+  client.global.set("accessToken", response.body.access_token);
+  client.global.set("refreshToken", response.body.refresh_token);
+%}
+###
+
+# @name SIGN OUT USER
+POST {{baseUrl}}/auth/sign-out HTTP/1.1
+Authorization: Bearer {{refershToken}}
+###
+
+# @name REFRESH USER'S AUTH TOKENS
+POST {{baseUrl}}/auth/refresh HTTP/1.1
+Authorization: Bearer {{refershToken}}
+
+> {%
+  client.log(request.body())
+  client.global.set("accessToken", response.body.access_token);
+  client.global.set("refreshToken", response.body.refresh_token);
+%}
+###
