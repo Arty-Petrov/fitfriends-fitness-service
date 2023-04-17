@@ -1,32 +1,35 @@
 import { AuthorizeOwner } from '@fitfriends/shared-types';
-import { CanActivate, ExecutionContext, mixin, Type, UnauthorizedException } from '@nestjs/common';
+import { CanActivate, ExecutionContext, HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
 
-export const OwnerGuard = (
-  service: AuthorizeOwner,
-  param: string
-): Type<CanActivate> => {
-  class OwnerGuardMixin {
-    async canActivate(context: ExecutionContext) {
-      const getUserId = (context: ExecutionContext) => {
-        let request: Request;
-        if (context.getType() === 'rpc') {
-          request = context.switchToRpc().getData().getBody();
-        } else if (context.getType() === 'http') {
-          request = context.switchToHttp().getRequest();
-        }
-        console.log(request)
-        return {
-          userId: request['user']['sub'],
-          // itemId: request[this.param],
-        };
-      };
+@Injectable()
+export class OwnerGuard implements CanActivate {
+  constructor(@Inject('SERVICE') private service: AuthorizeOwner) { }
 
-      const { userId} = getUserId(context);
-      if (!userId) {
-        throw new UnauthorizedException();
-      }
-      return true;//service.isOwner(userId, itemId);
-    }
+  canActivate(
+    context: ExecutionContext
+  ): boolean | Promise<boolean> {
+    const requestData = this.getRequestData(context);
+    console.log(requestData)
+    const userId = requestData['user']['sub'];
+    const itemId = requestData['body']['id'];
+    console.log(userId, itemId)
+    return this.service.isOwner(userId, itemId);
   }
-  return mixin(OwnerGuardMixin);
-};
+
+  private getRequestData(context: ExecutionContext) {
+    let requestData: string;
+    if (context.getType() === 'rpc') {
+      requestData = context.switchToRpc().getData().request;
+    } else if (context.getType() === 'http') {
+      requestData = context.switchToHttp().getRequest();
+    }
+    if (!requestData) {
+      throw new HttpException(
+        'No value was provided to check ownership',
+        HttpStatus.NO_CONTENT
+      );
+    }
+    return requestData;
+  }
+}
+

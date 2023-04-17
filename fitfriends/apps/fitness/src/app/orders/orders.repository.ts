@@ -1,9 +1,9 @@
 import { OrderCoachListRdo } from '@fitfriends/contracts';
 import { CRUDRepository, Order, OrderQuery, OrderSortType, SortOrder } from '@fitfriends/shared-types';
 import { Injectable } from '@nestjs/common';
+import { Prisma } from '@prisma/client';
 import { PrismaService } from '../prisma/prisma.service';
 import { OrderEntity } from './order.entity';
-import { Prisma } from '.prisma/fitfriends-fitness';
 
 @Injectable()
 export class OrdersRepository

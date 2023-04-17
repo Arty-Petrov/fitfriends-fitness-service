@@ -5,7 +5,11 @@ import { TrainingsService } from './trainings.service';
 
 @Module({
   controllers: [TrainingsController],
-  providers: [TrainingsRepository, TrainingsService],
+  providers: [
+    TrainingsRepository,
+    TrainingsService,
+    { provide: 'SERVICE', useClass: TrainingsService },
+  ],
   exports: [],
 })
-export class TrainingsModule {}
+export class TrainingsModule { }
