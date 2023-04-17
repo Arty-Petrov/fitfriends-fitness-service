@@ -6,7 +6,7 @@ import {
   TrainingUpdateVideoDto,
 } from '@fitfriends/contracts';
 import { UploadField } from '@fitfriends/core';
-import { ItemNotFoundException } from '@fitfriends/exceptions';
+import { ItemNotFoundException, UserNotAuthorizedException } from '@fitfriends/exceptions';
 import { AuthorizeOwner, Training, TrainingQuery } from '@fitfriends/shared-types';
 import { Injectable } from '@nestjs/common';
 import { RMQService } from 'nestjs-rmq';
@@ -53,7 +53,11 @@ export class TrainingsService implements AuthorizeOwner {
   public async update(
     dto: TrainingUpdateDataDto
   ): Promise<Training> {
-    const { id } = dto;
+    const { authorId, id } = dto;
+    const isOwner = await this.isOwner(authorId, id);
+    if (!isOwner) {
+      throw new UserNotAuthorizedException(id);
+    }
     const existTraining = await this.getById(id);
     const trainingEntity = new TrainingEntity({ ...existTraining, ...dto });
     return this.trainingsRepository.update(id, trainingEntity);
@@ -62,7 +66,11 @@ export class TrainingsService implements AuthorizeOwner {
   public async updateFiles(
     dto: TrainingUpdateImageDto | TrainingUpdateVideoDto
   ): Promise<Training> {
-    const { id } = dto;
+    const { authorId, id } = dto;
+    const isOwner = await this.isOwner(authorId, id);
+    if (!isOwner) {
+      throw new UserNotAuthorizedException(id);
+    }
     const fieldName = Object.values(UploadField)
       .find((field) => dto[field]);
     const existTraining = await this.getById(id);
