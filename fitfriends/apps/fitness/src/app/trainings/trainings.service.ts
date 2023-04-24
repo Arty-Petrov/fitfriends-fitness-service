@@ -6,10 +6,11 @@ import {
   TrainingUpdateVideoDto,
 } from '@fitfriends/contracts';
 import { UploadField } from '@fitfriends/core';
-import { ItemNotFoundException, UserNotAuthorizedException } from '@fitfriends/exceptions';
+import { ItemNotFoundException } from '@fitfriends/exceptions';
+import { Exchanges } from '@fitfriends/rmq';
 import { AuthorizeOwner, Training, TrainingQuery } from '@fitfriends/shared-types';
+import { AmqpConnection } from '@golevelup/nestjs-rabbitmq';
 import { Injectable } from '@nestjs/common';
-import { RMQService } from 'nestjs-rmq';
 import { TrainingEntity } from './training.entity';
 import { TrainingsRepository } from './trainings.repository';
 
@@ -17,7 +18,7 @@ import { TrainingsRepository } from './trainings.repository';
 export class TrainingsService implements AuthorizeOwner {
   constructor(
     private readonly trainingsRepository: TrainingsRepository,
-    private readonly rmqService: RMQService
+    private readonly amqpConnection: AmqpConnection
   ) { }
 
   public async create(
@@ -53,11 +54,7 @@ export class TrainingsService implements AuthorizeOwner {
   public async update(
     dto: TrainingUpdateDataDto
   ): Promise<Training> {
-    const { authorId, id } = dto;
-    const isOwner = await this.isOwner(authorId, id);
-    if (!isOwner) {
-      throw new UserNotAuthorizedException(id);
-    }
+    const { id } = dto;
     const existTraining = await this.getById(id);
     const trainingEntity = new TrainingEntity({ ...existTraining, ...dto });
     return this.trainingsRepository.update(id, trainingEntity);
@@ -66,19 +63,16 @@ export class TrainingsService implements AuthorizeOwner {
   public async updateFiles(
     dto: TrainingUpdateImageDto | TrainingUpdateVideoDto
   ): Promise<Training> {
-    const { authorId, id } = dto;
-    const isOwner = await this.isOwner(authorId, id);
-    if (!isOwner) {
-      throw new UserNotAuthorizedException(id);
-    }
+    const { id } = dto;
     const fieldName = Object.values(UploadField)
       .find((field) => dto[field]);
     const existTraining = await this.getById(id);
     const filePath = existTraining[fieldName];
-    await this.rmqService.notify<StorageDeleteFile.Request>(
-      StorageDeleteFile.topic,
-      { fileName: filePath }
-    );
+    await this.amqpConnection.request<StorageDeleteFile.Response>({
+      exchange: Exchanges.storage.name,
+      routingKey: StorageDeleteFile.topic,
+      payload: { fileName: filePath },
+    });
     return this.update({...existTraining, [fieldName]: dto[fieldName] });
   }
 
@@ -86,6 +80,7 @@ export class TrainingsService implements AuthorizeOwner {
     currentUserId: string,
     objectId: string | number
   ): Promise<boolean> {
+    console.log('check owner')
     const { authorId } = await this.getById(objectId as number);
     return currentUserId === authorId;
   }

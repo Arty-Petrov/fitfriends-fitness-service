@@ -9,9 +9,10 @@ import {
   UserSeedFriends,
   UserSignUpDto,
 } from '@fitfriends/contracts';
+import { Exchanges } from '@fitfriends/rmq';
 import { Order, Review, Training, User, UserFriends, UserRole } from '@fitfriends/shared-types';
+import { AmqpConnection } from '@golevelup/nestjs-rabbitmq';
 import { Command, CommandRunner } from 'nest-commander';
-import { RMQService } from 'nestjs-rmq';
 import { generateFriendList, generateOrder, generateReview, generateTraining, generateUser } from '../mock-generators';
 import {
   CoacherTrainingsCount,
@@ -32,7 +33,7 @@ export class SeedCommand extends CommandRunner {
   private reviews: Review[];
   private orders: Order[];
 
-  constructor(private readonly rmqService: RMQService) {
+  constructor(private readonly amqpConnection: AmqpConnection) {
     super();
   }
   async run() {
@@ -51,11 +52,16 @@ export class SeedCommand extends CommandRunner {
       ))
     );
     const defaultCustomer = customers.shift();
-    customers = [...customers, {...defaultCustomer, email: DefaultEmail.Customer}]
-    this.customers = (await this.rmqService.send<
-      UserCreateMany.Request,
-      UserCreateMany.Response
-    >(UserCreateMany.topic, customers)) as unknown as User[];
+    customers = [
+      ...customers,
+      { ...defaultCustomer, email: DefaultEmail.Customer },
+    ];
+    this.customers =
+      (await this.amqpConnection.request<UserCreateMany.Response>({
+        exchange: Exchanges.user.name,
+        routingKey: UserCreateMany.topic,
+        payload: customers,
+      })) as unknown as User[];
     let coaches: Array<UserSignUpDto>;
     await Promise.all(
       (coaches = Array.from({ length: COACHES_COUNT }, () =>
@@ -63,11 +69,12 @@ export class SeedCommand extends CommandRunner {
       ))
     );
     const defaultCoach = coaches.shift();
-    coaches = [...coaches, {...defaultCoach, email: DefaultEmail.Coach}]
-    this.coaches = (await this.rmqService.send<
-      UserCreateMany.Request,
-      UserCreateMany.Response
-    >(UserCreateMany.topic, coaches)) as unknown as User[];
+    coaches = [...coaches, { ...defaultCoach, email: DefaultEmail.Coach }];
+    this.coaches = (await this.amqpConnection.request<UserCreateMany.Response>({
+      exchange: Exchanges.user.name,
+      routingKey: UserCreateMany.topic,
+      payload: customers,
+    })) as unknown as User[];
     console.log('users are created');
   }
 
@@ -89,12 +96,13 @@ export class SeedCommand extends CommandRunner {
         return generateFriendList(userId, friendIds);
       }))
     );
-
-    this.friends = (await this.rmqService.send<
-      UserSeedFriends.Request,
-      UserSeedFriends.Response
-    >(UserSeedFriends.topic, friends)) as unknown as UserFriends[];
-
+    this.friends = (await this.amqpConnection.request<UserSeedFriends.Response>(
+      {
+        exchange: Exchanges.user.name,
+        routingKey: UserSeedFriends.topic,
+        payload: friends,
+      }
+    )) as unknown as UserFriends[];
     console.log('user friends are created');
   }
 
@@ -117,10 +125,12 @@ export class SeedCommand extends CommandRunner {
         })
         .flat())
     );
-    this.trainings = (await this.rmqService.send<
-      TrainingCreateMany.Request,
-      TrainingCreateMany.Response
-    >(TrainingCreateMany.topic, trainings)) as unknown as Training[];
+    this.trainings =
+      (await this.amqpConnection.request<TrainingCreateMany.Response>({
+        exchange: Exchanges.trainings.name,
+        routingKey: TrainingCreateMany.topic,
+        payload: trainings,
+      })) as unknown as Training[];
     console.log('trainings are created');
   }
 
@@ -146,10 +156,12 @@ export class SeedCommand extends CommandRunner {
         )
         .flat())
     );
-    this.reviews = (await this.rmqService.send<
-      ReviewCreateMany.Request,
-      ReviewCreateMany.Response
-    >(ReviewCreateMany.topic, reviews)) as unknown as Review[];
+    this.reviews =
+      (await this.amqpConnection.request<ReviewCreateMany.Response>({
+        exchange: Exchanges.reviews.name,
+        routingKey: ReviewCreateMany.topic,
+        payload: reviews,
+      })) as unknown as Review[];
     console.log('reviews are created');
   }
 
@@ -173,10 +185,11 @@ export class SeedCommand extends CommandRunner {
         )
         .flat())
     );
-    this.orders = (await this.rmqService.send<
-      OrderCreateMany.Request,
-      OrderCreateMany.Response
-    >(OrderCreateMany.topic, orders)) as unknown as Order[];
+    this.orders = (await this.amqpConnection.request<OrderCreateMany.Response>({
+      exchange: Exchanges.reviews.name,
+      routingKey: OrderCreateMany.topic,
+      payload: orders,
+    })) as unknown as Order[];
     console.log('orders are created');
   }
 }

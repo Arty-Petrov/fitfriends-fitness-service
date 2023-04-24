@@ -4,7 +4,9 @@ import { UserCardRdo } from '../rdo/user-card.rdo';
 export namespace UserAddFriend {
   export const topic = 'user.add-friend.command';
 
+  export const queue = 'user.add-friend';
+
   export class Request extends UserUpdateFriendListDto { }
 
-  export class Response extends UserCardRdo{}
+  export class Response extends UserCardRdo { }
 }

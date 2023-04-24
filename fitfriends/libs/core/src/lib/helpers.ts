@@ -10,6 +10,9 @@ export function getMongoConnectionString({ username, password, host, port, datab
   return `mongodb://${username}:${password}@${host}:${port}/${databaseName}?authSource=${authDatabase}`;
 }
 
+export  function getRabbitConnectionString({ username, password, host, port }): string {
+  return `amqp://${username}:${password}@${host}:${port}`;
+}
 export function fillObject<T, V>(dto: ClassConstructor<T>, plainObject: V, groups: string[] = []) {
   const options = !groups.length ? { excludeExtraneousValues: true } : { excludeExtraneousValues: true, groups: [...groups] };
   return plainToInstance(dto, plainObject, { ...options });

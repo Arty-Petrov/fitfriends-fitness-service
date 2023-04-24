@@ -5,6 +5,8 @@ import { GymRdo } from '../rdo/gym.rdo';
 export namespace GymGetOne {
   export const topic = 'gym.get-one.query';
 
+  export const queue = 'gym.get-one';
+
   export class Request extends PickType(GymApi, ['id']) { }
 
   export class Response extends GymRdo { }

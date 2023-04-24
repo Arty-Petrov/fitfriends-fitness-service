@@ -1,5 +1,6 @@
 import { AuthorizeOwner } from '@fitfriends/shared-types';
-import { CanActivate, ExecutionContext, HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
+import { CanActivate, ExecutionContext, HttpStatus, Inject, Injectable } from '@nestjs/common';
+import { RpcException } from '@nestjs/microservices';
 
 @Injectable()
 export class OwnerGuard implements CanActivate {
@@ -9,25 +10,18 @@ export class OwnerGuard implements CanActivate {
     context: ExecutionContext
   ): boolean | Promise<boolean> {
     const requestData = this.getRequestData(context);
-    console.log(requestData)
-    const userId = requestData['user']['sub'];
-    const itemId = requestData['body']['id'];
-    console.log(userId, itemId)
+    const userId = requestData['authorId'];
+    const itemId = requestData['id'];
     return this.service.isOwner(userId, itemId);
   }
 
   private getRequestData(context: ExecutionContext) {
-    let requestData: string;
-    if (context.getType() === 'rpc') {
-      requestData = context.switchToRpc().getData().request;
-    } else if (context.getType() === 'http') {
-      requestData = context.switchToHttp().getRequest();
-    }
+    const requestData = context.switchToRpc().getData();
     if (!requestData) {
-      throw new HttpException(
-        'No value was provided to check ownership',
-        HttpStatus.NO_CONTENT
-      );
+      throw new RpcException({
+        message: 'No value was provided to check ownership',
+        status: HttpStatus.NO_CONTENT
+      });
     }
     return requestData;
   }

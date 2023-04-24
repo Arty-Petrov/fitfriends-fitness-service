@@ -7,63 +7,89 @@ import {
   UserUploadCertificate,
 } from '@fitfriends/contracts';
 import { fillObject } from '@fitfriends/core';
-import { Body, Controller } from '@nestjs/common';
-import { RMQRoute, RMQValidate } from 'nestjs-rmq';
+import { rmqErrorCallback } from '@fitfriends/exceptions';
+import { Exchanges } from '@fitfriends/rmq';
+import { RabbitRPC } from '@golevelup/nestjs-rabbitmq';
+import { Controller } from '@nestjs/common';
 import { UserService } from './user.service';
 
 @Controller()
 export class UserController {
   constructor(private readonly userService: UserService) { }
 
-  @RMQValidate()
-  @RMQRoute(UserCreateMany.topic)
+  @RabbitRPC({
+    exchange: Exchanges.user.name,
+    routingKey: UserCreateMany.topic,
+    queue: UserCreateMany.queue,
+    errorHandler: rmqErrorCallback,
+  })
   public async createMany(
-    @Body() dto: UserCreateMany.Request
+    dto: UserCreateMany.Request
   ): Promise<UserCreateMany.Response> {
     const users = await this.userService.createMany(dto);
     return fillObject (UserCreateMany.Response, users);
   }
 
-  @RMQValidate()
-  @RMQRoute(UserGetOne.topic)
+  @RabbitRPC({
+    exchange: Exchanges.user.name,
+    routingKey: UserGetOne.topic,
+    queue: UserGetOne.queue,
+    errorHandler: rmqErrorCallback,
+  })
   public async getOne(
-    @Body() { id }: UserGetOne.Request
+    { id }: UserGetOne.Request
   ): Promise<UserGetOne.Response> {
     const user = await this.userService.getById(id);
     return fillObject(UserGetOne.Response, user, [user.role]);
   }
 
-  @RMQValidate()
-  @RMQRoute(UserGetList.topic)
+  @RabbitRPC({
+    exchange: Exchanges.user.name,
+    routingKey: UserGetList.topic,
+    queue: UserGetList.queue,
+    errorHandler: rmqErrorCallback,
+  })
   public async getList(
-    @Body() dto: UserGetList.Request
+    dto: UserGetList.Request
   ): Promise<UserGetList.Response> {
     const users = await this.userService.getUsersList(dto);
     return fillObject(UserGetList.Response, users);
   }
 
-  @RMQValidate()
-  @RMQRoute(UserUpdateData.topic)
+  @RabbitRPC({
+    exchange: Exchanges.user.name,
+    routingKey: UserUpdateData.topic,
+    queue: UserUpdateData.queue,
+    errorHandler: rmqErrorCallback,
+  })
   public async update(
-    @Body() dto: UserUpdateData.Request
+    dto: UserUpdateData.Request
   ): Promise<UserUpdateData.Response> {
     const user = await this.userService.update(dto);
     return fillObject(UserUpdateData.Response, user, [user.role]);
   }
 
-  @RMQValidate()
-  @RMQRoute(UserUploadAvatar.topic)
+  @RabbitRPC({
+    exchange: Exchanges.user.name,
+    routingKey: UserUploadAvatar.topic,
+    queue: UserUploadAvatar.queue,
+    errorHandler: rmqErrorCallback,
+  })
   public async updateAvatar(
-    @Body() dto: UserUploadAvatar.Request
+    dto: UserUploadAvatar.Request
   ): Promise<UserUploadAvatar.Response> {
     const user = await this.userService.updateFiles(dto);
     return fillObject(UserUploadAvatar.Response, user, [user.role]);
   }
 
-  @RMQValidate()
-  @RMQRoute(UserUploadCertificate.topic)
+  @RabbitRPC({
+    exchange: Exchanges.user.name,
+    routingKey: UserUploadCertificate.topic,
+    queue: UserUploadCertificate.queue,
+    errorHandler: rmqErrorCallback,
+  })
   public async updateCertificate(
-    @Body() dto: UserUploadCertificate.Request
+    dto: UserUploadCertificate.Request
   ): Promise<UserUploadCertificate.Response> {
     const user = await this.userService.updateFiles(dto);
     return fillObject(UserUploadCertificate.Response, user, [user.role]);

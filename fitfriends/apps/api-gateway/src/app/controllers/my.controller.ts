@@ -5,10 +5,11 @@ import {
   UserFriendListQuery,
   UserGetFriendList,
 } from '@fitfriends/contracts';
+import { Exchanges } from '@fitfriends/rmq';
 import { UserRole } from '@fitfriends/shared-types';
+import { AmqpConnection } from '@golevelup/nestjs-rabbitmq';
 import { Controller, Get, HttpStatus, Query, UseGuards } from '@nestjs/common';
 import { ApiResponse } from '@nestjs/swagger';
-import { RMQService } from 'nestjs-rmq';
 import { Roles } from '../decorators/roles.decorator';
 import { UserData } from '../decorators/user-data.decorator';
 import { JwtAccessGuard } from '../guards/jwt-access.guard';
@@ -16,7 +17,7 @@ import { RolesGuard } from '../guards/roles.guard';
 
 @Controller('my')
 export class MyController {
-  constructor(private readonly rmqService: RMQService) {}
+  constructor(private readonly amqpConnection: AmqpConnection) { }
 
   @Get('friends')
   @ApiResponse({
@@ -29,10 +30,11 @@ export class MyController {
     @Query() query: UserFriendListQuery,
     @UserData('sub') id: string
   ): Promise<UserGetFriendList.Response> {
-    return await this.rmqService.send<
-      UserGetFriendList.Request,
-      UserGetFriendList.Response
-    >(UserGetFriendList.topic, { ...query, userId: id });
+    return await this.amqpConnection.request<UserGetFriendList.Response>({
+      exchange: Exchanges.user.name,
+      routingKey: UserGetFriendList.topic,
+      payload: { ...query, userId: id },
+    });
   }
 
   @Get('orders')
@@ -47,9 +49,10 @@ export class MyController {
     @Query() query: OrderCoachListQuery,
     @UserData('sub') id: string
   ): Promise<OrderGetCoachList.Response> {
-    return await this.rmqService.send<
-      OrderGetCoachList.Request,
-      OrderGetCoachList.Response
-    >(OrderGetCoachList.topic, { ...query, coachId: id });
+    return await this.amqpConnection.request<OrderGetCoachList.Response>({
+      exchange: Exchanges.orders.name,
+      routingKey: OrderGetCoachList.topic,
+      payload: { ...query, coachId: id },
+    });
   }
 }

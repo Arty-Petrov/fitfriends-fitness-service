@@ -5,6 +5,8 @@ import { ReviewApi } from '../review.api';
 export namespace ReviewGetList {
   export const topic = 'review.get-list.query';
 
+  export const queue = 'review.get-list';
+
   export class Request extends PickType(ReviewApi, ['trainingId']) { }
 
   export class Response extends ReviewListRdo { }

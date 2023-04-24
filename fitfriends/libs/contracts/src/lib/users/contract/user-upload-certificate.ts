@@ -4,6 +4,8 @@ import { UserUploadCertificateRdo } from '../rdo/user-upload-certificate.rdo';
 export namespace UserUploadCertificate {
   export const topic = 'user.upload-certificate.command';
 
+  export const queue = 'user.upload-certificate';
+
   export class Request extends UserUploadCertificateDto { }
 
   export class Response extends UserUploadCertificateRdo { }

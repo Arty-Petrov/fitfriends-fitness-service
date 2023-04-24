@@ -15,6 +15,7 @@ import { RefreshTokenPayload, User } from '@fitfriends/shared-types';
 import { HttpStatus, Inject, Injectable } from '@nestjs/common';
 import { ConfigType } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
+import { RpcException } from '@nestjs/microservices';
 import { randomUUID } from 'crypto';
 import { jwtOptions } from '../../config/jwt.config';
 import { RefreshTokenService } from '../refresh-token/refresh-token.service';
@@ -35,7 +36,7 @@ export class AuthService {
     const existUser = await this.userRepository.findByEmail(email);
 
     if (!existUser) {
-      throw new UserNotRegisteredException(email);
+      throw new RpcException(new UserNotRegisteredException(email))
     }
 
     const userEntity = new UserEntity(existUser);

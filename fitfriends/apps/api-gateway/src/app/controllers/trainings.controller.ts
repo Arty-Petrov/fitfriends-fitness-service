@@ -9,7 +9,9 @@ import {
   UserCardRdo,
 } from '@fitfriends/contracts';
 import { UploadField } from '@fitfriends/core';
+import { Exchanges } from '@fitfriends/rmq';
 import { UserRole } from '@fitfriends/shared-types';
+import { AmqpConnection } from '@golevelup/nestjs-rabbitmq';
 import {
   Body,
   Controller,
@@ -25,7 +27,6 @@ import {
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ApiResponse, ApiTags } from '@nestjs/swagger';
-import { RMQService } from 'nestjs-rmq';
 import { MulterOptions } from '../../config/multer.config';
 import { Roles } from '../decorators/roles.decorator';
 import { UserData } from '../decorators/user-data.decorator';
@@ -35,7 +36,7 @@ import { RolesGuard } from '../guards/roles.guard';
 @ApiTags('trainings')
 @Controller('trainings')
 export class TrainingsController {
-  constructor(private readonly rmqService: RMQService) { }
+  constructor(private readonly amqpConnection: AmqpConnection) { }
 
   @Post('image')
   @ApiResponse({
@@ -45,11 +46,11 @@ export class TrainingsController {
   })
   @Roles(UserRole.Coach)
   @UseGuards(JwtAccessGuard, RolesGuard)
-  @UseInterceptors(FileInterceptor(UploadField.TrainingImage, MulterOptions.TrainingImage))
-  public async uploadImage(
-    @UploadedFile() file: Express.Multer.File,
-  ) {
-    return { image: file.path }
+  @UseInterceptors(
+    FileInterceptor(UploadField.TrainingImage, MulterOptions.TrainingImage)
+  )
+  public async uploadImage(@UploadedFile() file: Express.Multer.File) {
+    return { image: file.path };
   }
 
   @Post('video')
@@ -60,11 +61,11 @@ export class TrainingsController {
   })
   @Roles(UserRole.Coach)
   @UseGuards(JwtAccessGuard, RolesGuard)
-  @UseInterceptors(FileInterceptor(UploadField.TrainingVideo, MulterOptions.TrainingVideo))
-  public async uploadVideo(
-    @UploadedFile() file: Express.Multer.File,
-  ) {
-    return { video: file.path }
+  @UseInterceptors(
+    FileInterceptor(UploadField.TrainingVideo, MulterOptions.TrainingVideo)
+  )
+  public async uploadVideo(@UploadedFile() file: Express.Multer.File) {
+    return { video: file.path };
   }
 
   @Post()
@@ -77,12 +78,13 @@ export class TrainingsController {
   @UseGuards(JwtAccessGuard, RolesGuard)
   async create(
     @UserData('sub') id: string,
-    @Body() dto: TrainingCreate.Request,
+    @Body() dto: TrainingCreate.Request
   ): Promise<TrainingCreate.Response> {
-    return await this.rmqService.send<TrainingCreate.Request, TrainingCreate.Response>(
-      TrainingCreate.topic,
-      { ...dto, authorId: id }
-    );
+    return await this.amqpConnection.request<TrainingCreate.Response>({
+      exchange: Exchanges.trainings.name,
+      routingKey: TrainingCreate.topic,
+      payload: { ...dto, authorId: id },
+    });
   }
 
   @Get(':id')
@@ -93,12 +95,13 @@ export class TrainingsController {
   })
   @UseGuards(JwtAccessGuard)
   async getOne(
-    @Param('id') trainingId: number,
+    @Param('id') trainingId: number
   ): Promise<TrainingGetOne.Response> {
-    return await this.rmqService.send<TrainingGetOne.Request, TrainingGetOne.Response>(
-      TrainingGetOne.topic,
-      { id: trainingId }
-    );
+    return await this.amqpConnection.request<TrainingGetOne.Response>({
+      exchange: Exchanges.trainings.name,
+      routingKey: TrainingGetOne.topic,
+      payload: { id: trainingId },
+    });
   }
 
   @Get()
@@ -109,10 +112,13 @@ export class TrainingsController {
   })
   @UseGuards(JwtAccessGuard)
   async getList(
-    @Query() dto: TrainingGetList.Request,
+    @Query() dto: TrainingGetList.Request
   ): Promise<TrainingGetList.Response> {
-    return await this.rmqService.send<TrainingGetList.Request, TrainingGetList.Response>(
-      TrainingGetList.topic, dto);
+    return await this.amqpConnection.request<TrainingGetList.Response>({
+      exchange: Exchanges.trainings.name,
+      routingKey: TrainingGetList.topic,
+      payload: dto,
+    });
   }
 
   @Patch('image/:id')
@@ -123,21 +129,23 @@ export class TrainingsController {
   })
   @Roles(UserRole.Coach)
   @UseGuards(JwtAccessGuard, RolesGuard)
-  @UseInterceptors(FileInterceptor(UploadField.TrainingImage, MulterOptions.TrainingImage))
+  @UseInterceptors(
+    FileInterceptor(UploadField.TrainingImage, MulterOptions.TrainingImage)
+  )
   public async updateImage(
     @Param('id') trainingId: number,
     @UploadedFile() file: Express.Multer.File,
-    @UserData('sub') userId: string,
+    @UserData('sub') userId: string
   ): Promise<TrainingUpdateImage.Response> {
-    const dto = {
-      id: trainingId,
-      image: file.path,
-      authorId: userId,
-    }
-    return await this.rmqService.send<
-      TrainingUpdateImage.Request,
-      TrainingUpdateImage.Response
-    >(TrainingUpdateImage.topic, dto);
+    return await this.amqpConnection.request<TrainingUpdateImage.Response>({
+      exchange: Exchanges.trainings.name,
+      routingKey: TrainingUpdateImage.topic,
+      payload: {
+        id: trainingId,
+        image: file.path,
+        authorId: userId,
+      },
+    });
   }
 
   @Patch('video/:id')
@@ -148,21 +156,23 @@ export class TrainingsController {
   })
   @Roles(UserRole.Coach)
   @UseGuards(JwtAccessGuard, RolesGuard)
-  @UseInterceptors(FileInterceptor(UploadField.TrainingVideo, MulterOptions.TrainingVideo))
+  @UseInterceptors(
+    FileInterceptor(UploadField.TrainingVideo, MulterOptions.TrainingVideo)
+  )
   public async updateVideo(
     @Param('id') trainingId: number,
     @UploadedFile() file: Express.Multer.File,
-    @UserData('sub') userId: string,
+    @UserData('sub') userId: string
   ): Promise<TrainingUpdateVideo.Response> {
-    const dto = {
-      id: trainingId,
-      video: file.path,
-      authorId: userId,
-    }
-    return await this.rmqService.send<
-      TrainingUpdateVideo.Request,
-      TrainingUpdateVideo.Response
-    >(TrainingUpdateVideo.topic, dto);
+    return await this.amqpConnection.request<TrainingUpdateVideo.Response>({
+      exchange: Exchanges.trainings.name,
+      routingKey: TrainingUpdateVideo.topic,
+      payload: {
+        id: trainingId,
+        video: file.path,
+        authorId: userId,
+      },
+    });
   }
 
   @Patch(':id')
@@ -176,15 +186,16 @@ export class TrainingsController {
   async updateData(
     @Param('id') trainingId: number,
     @Body() dto: TrainingUpdateData.Request,
-    @UserData('sub') userId: string,
+    @UserData('sub') userId: string
   ): Promise<TrainingUpdateData.Response> {
-    return await this.rmqService.send<
-      TrainingUpdateData.Request,
-      TrainingUpdateData.Response
-    >(TrainingUpdateData.topic, {
-      ...dto,
-      id: trainingId,
-      authorId: userId
+    return await this.amqpConnection.request<TrainingUpdateData.Response>({
+      exchange: Exchanges.trainings.name,
+      routingKey: TrainingUpdateData.topic,
+      payload: {
+        ...dto,
+        id: trainingId,
+        authorId: userId,
+      },
     });
   }
 }

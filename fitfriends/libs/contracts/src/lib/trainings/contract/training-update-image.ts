@@ -6,6 +6,8 @@ import { TrainingApi } from '../training.api';
 export namespace TrainingUpdateImage {
   export const topic = 'training.update-image.command';
 
+  export const queue = 'training.update-image';
+
   export class Request extends TrainingUpdateImageDto { }
 
   export class Response extends PickType(TrainingApi, ['image']) {

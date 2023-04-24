@@ -4,6 +4,8 @@ import { OrderCoachListRdo } from '../rdo/order-coach-list.rdo';
 export namespace OrderGetCoachList {
   export const topic = 'order.get-coach-list.query';
 
+  export const queue = 'order.get-coach-list';
+
   export class Request extends OrderCoachListQuery { }
 
   export class Response extends Array<OrderCoachListRdo> { }

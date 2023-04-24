@@ -1,7 +1,6 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
-import { RMQModule } from 'nestjs-rmq';
-import { getRabbitMqConfig, rabbitMqOptions } from '../config/rabbitmq.config';
+import { rabbitMqOptions } from '../config/rabbitmq.config';
 import { FITNESS_SERVICE_ENV_PATH } from './app.constant';
 import { validateEnvironments } from './env.valitation';
 import { OrdersModule } from './orders/orders.module';
@@ -19,7 +18,6 @@ import { TrainingsModule } from './trainings/trainings.module';
       validate: validateEnvironments,
     }),
     PrismaModule,
-    RMQModule.forRootAsync(getRabbitMqConfig()),
     OrdersModule,
     ReviewsModule,
     TrainingsModule,

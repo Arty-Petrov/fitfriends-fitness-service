@@ -1,51 +1,63 @@
-import {
-  UserAddFriend,
-  UserGetFriendList,
-  UserGetList,
-  UserRemoveFriend,
-  UserSeedFriends,
-} from '@fitfriends/contracts';
+import { UserAddFriend, UserGetFriendList, UserRemoveFriend, UserSeedFriends } from '@fitfriends/contracts';
 import { fillObject } from '@fitfriends/core';
-import { Body, Controller, HttpStatus } from '@nestjs/common';
-import { RMQRoute, RMQValidate } from 'nestjs-rmq';
+import { rmqErrorCallback } from '@fitfriends/exceptions';
+import { Exchanges } from '@fitfriends/rmq';
+import { RabbitRPC } from '@golevelup/nestjs-rabbitmq';
+import { Controller, HttpStatus } from '@nestjs/common';
 import { UserFriendsService } from './user-friends.service';
 
 @Controller()
 export class UserFriendsController {
   constructor(private readonly userFriendsService: UserFriendsService) { }
 
-  @RMQValidate()
-  @RMQRoute(UserSeedFriends.topic)
+  @RabbitRPC({
+    exchange: Exchanges.user.name,
+    routingKey: UserSeedFriends.topic,
+    queue: UserSeedFriends.queue,
+    errorHandler: rmqErrorCallback,
+  })
   public async createMany(
-    @Body() dtos: UserSeedFriends.Request
+    dtos: UserSeedFriends.Request
   ): Promise<UserSeedFriends.Response> {
     const userFriends = await this.userFriendsService.createMany(dtos);
     return fillObject(UserSeedFriends.Response, userFriends);
   }
 
-  @RMQValidate()
-  @RMQRoute(UserGetFriendList.topic)
+  @RabbitRPC({
+    exchange: Exchanges.user.name,
+    routingKey: UserGetFriendList.topic,
+    queue: UserGetFriendList.queue,
+    errorHandler: rmqErrorCallback,
+  })
   public async getList(
-    @Body() dto: UserGetList.Request
-  ): Promise<UserGetList.Response> {
+    dto: UserGetFriendList.Request
+  ): Promise<UserGetFriendList.Response> {
     const user = await this.userFriendsService.getFriendList(dto);
-    return fillObject(UserGetList.Response, user);
+    return fillObject(UserGetFriendList.Response, user);
   }
 
 
-  @RMQValidate()
-  @RMQRoute(UserAddFriend.topic)
+  @RabbitRPC({
+    exchange: Exchanges.user.name,
+    routingKey: UserAddFriend.topic,
+    queue: UserAddFriend.queue,
+    errorHandler: rmqErrorCallback,
+  })
   public async addFriend(
-    @Body() { userId, friendId }: UserAddFriend.Request
+    { userId, friendId }: UserAddFriend.Request
   ): Promise<UserAddFriend.Response> {
     const user = await this.userFriendsService.addFriend(userId, friendId);
     return fillObject(UserAddFriend.Response, user, [user.role]);
   }
 
-  @RMQValidate()
-  @RMQRoute(UserRemoveFriend.topic)
+  @RabbitRPC({
+    exchange: Exchanges.user.name,
+    routingKey: UserRemoveFriend.topic,
+    queue: UserRemoveFriend.queue,
+    errorHandler: rmqErrorCallback,
+  })
   public async removeFriend(
-    @Body() { userId, friendId }: UserRemoveFriend.Request
+    { userId, friendId }: UserRemoveFriend.Request
   ): Promise<void | HttpStatus.ACCEPTED> {
     return this.userFriendsService.removeFriend(userId, friendId);
   }

@@ -1,7 +1,7 @@
+import { RmqModule } from '@fitfriends/rmq';
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
-import { RMQModule } from 'nestjs-rmq';
-import { getRabbitMqConfig, rabbitMqOptions } from '../config/rabbitmq.config';
+import { rabbitMqOptions } from '../config/rabbitmq.config';
 import { STORAGE_SERVICE_ENV_PATH } from './app.constant';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
@@ -16,7 +16,7 @@ import { validateEnvironments } from './env.validation';
 			load: [rabbitMqOptions],
 			validate: validateEnvironments,
 		}),
-		RMQModule.forRootAsync(getRabbitMqConfig()),
+		RmqModule,
 	],
   controllers: [AppController],
   providers: [AppService],
