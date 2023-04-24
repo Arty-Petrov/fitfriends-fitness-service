@@ -131,7 +131,8 @@ export class UsersController {
     status: HttpStatus.OK,
     description: 'User placed to friends list',
   })
-  @UseGuards(JwtAccessGuard)
+  @Roles(UserRole.Customer)
+  @UseGuards(JwtAccessGuard, RolesGuard)
   async addFriend(
     @Param('id') friendId: string,
     @UserData('sub') userId: string
