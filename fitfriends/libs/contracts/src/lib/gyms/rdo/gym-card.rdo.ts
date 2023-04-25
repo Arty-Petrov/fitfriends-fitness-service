@@ -3,7 +3,17 @@ import { PickType } from '@nestjs/swagger';
 import { Expose } from 'class-transformer';
 import { GymApi } from '../gym.api';
 
-export class GymRdo extends PickType(GymApi, ['id', 'title', 'location', 'isVerified', 'features', 'photos', 'description', 'price', 'createdAt']) {
+export class GymCardRdo extends PickType(GymApi, [
+  'id',
+  'title',
+  'location',
+  'isVerified',
+  'features',
+  'photos',
+  'description',
+  'price',
+  'createdAt',
+]) {
   @Expose()
   public id: number;
 
@@ -14,7 +24,7 @@ export class GymRdo extends PickType(GymApi, ['id', 'title', 'location', 'isVeri
   public location: SubwayStation;
 
   @Expose()
-  public isVerifyed: boolean;
+  public isVerified: boolean;
 
   @Expose()
   public features: GymFeature[];

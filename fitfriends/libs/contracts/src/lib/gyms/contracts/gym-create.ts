@@ -1,5 +1,5 @@
 import { GymCreateDto } from '../dto/gym-create.dto';
-import { GymRdo } from '../rdo/gym.rdo';
+import { GymCardRdo } from '../rdo/gym-card.rdo';
 
 export namespace GymCreate {
   export const topic = 'gym.create.command';
@@ -8,5 +8,5 @@ export namespace GymCreate {
 
   export class Request extends GymCreateDto { }
 
-  export class Response extends GymRdo { }
+  export class Response extends GymCardRdo { }
 }

@@ -1,5 +1,4 @@
-export * from './lib/gyms/gym.api';
-export * from './lib/gyms/gym.constant';
+export * from './lib/gyms/index';
 
 export * from './lib/invites/invite.api';
 export * from './lib/invites/invite.constant';
@@ -20,5 +19,6 @@ export * from './lib/orders/index';
 export * from './lib/trainings/index';
 
 export * from './lib/reviews/index';
+
 export * from './lib/users/index';
 

@@ -1,5 +1,7 @@
 import { faker } from '@faker-js/faker';
 import {
+  GymCreateDto,
+  GymCreateMany,
   OrderCreateMany,
   ReviewCreateMany,
   TrainingCreateDto,
@@ -10,20 +12,24 @@ import {
   UserSignUpDto,
 } from '@fitfriends/contracts';
 import { Exchanges } from '@fitfriends/rmq';
-import { Order, Review, Training, User, UserFriends, UserRole } from '@fitfriends/shared-types';
+import { Gym, Order, Review, Training, User, UserFriends, UserRole } from '@fitfriends/shared-types';
 import { AmqpConnection } from '@golevelup/nestjs-rabbitmq';
+import { Injectable } from '@nestjs/common';
 import { Command, CommandRunner } from 'nest-commander';
 import { generateFriendList, generateOrder, generateReview, generateTraining, generateUser } from '../mock-generators';
+import { generateGym } from '../mock-generators/generate-gym';
 import {
   CoacherTrainingsCount,
   COACHES_COUNT,
   CustomerOrdersCount,
   CUSTOMERS_COUNT,
   DefaultEmail,
+  GYMS_COUNT,
   TrainingReviewersCount,
   UserFriendsCount,
 } from './seed.constant';
 
+@Injectable()
 @Command({ name: 'seed' })
 export class SeedCommand extends CommandRunner {
   private customers: User[];
@@ -32,6 +38,7 @@ export class SeedCommand extends CommandRunner {
   private trainings: Training[];
   private reviews: Review[];
   private orders: Order[];
+  private gyms: Gym[];
 
   constructor(private readonly amqpConnection: AmqpConnection) {
     super();
@@ -39,6 +46,7 @@ export class SeedCommand extends CommandRunner {
   async run() {
     await this.seedUsers();
     await this.seedFriends();
+    await this.seedGyms();
     await this.seedTrainigs();
     await this.seedReviews();
     await this.seedOrders();
@@ -73,7 +81,7 @@ export class SeedCommand extends CommandRunner {
     this.coaches = (await this.amqpConnection.request<UserCreateMany.Response>({
       exchange: Exchanges.user.name,
       routingKey: UserCreateMany.topic,
-      payload: customers,
+      payload: coaches,
     })) as unknown as User[];
     console.log('users are created');
   }
@@ -104,6 +112,20 @@ export class SeedCommand extends CommandRunner {
       }
     )) as unknown as UserFriends[];
     console.log('user friends are created');
+  }
+
+  private async seedGyms() {
+    console.log('creating gyms');
+    let gyms: Array<GymCreateDto>;
+    await Promise.all(
+      (gyms = Array.from({ length: GYMS_COUNT }, () => generateGym()))
+    );
+    this.gyms = (await this.amqpConnection.request<GymCreateMany.Response>({
+      exchange: Exchanges.user.name,
+      routingKey: GymCreateMany.topic,
+      payload: gyms,
+    })) as unknown as Gym[];
+    console.log('gyms are created');
   }
 
   private async seedTrainigs() {

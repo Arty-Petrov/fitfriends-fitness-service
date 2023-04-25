@@ -8,7 +8,7 @@ import {
 import { Exchanges } from '@fitfriends/rmq';
 import { UserRole } from '@fitfriends/shared-types';
 import { AmqpConnection } from '@golevelup/nestjs-rabbitmq';
-import { Controller, Get, HttpStatus, Query, UseGuards } from '@nestjs/common';
+import { Controller, Get, HttpStatus, NotImplementedException, Query, UseGuards } from '@nestjs/common';
 import { ApiResponse } from '@nestjs/swagger';
 import { Roles } from '../decorators/roles.decorator';
 import { UserData } from '../decorators/user-data.decorator';
@@ -54,5 +54,33 @@ export class MyController {
       routingKey: OrderGetCoachList.topic,
       payload: { ...query, coachId: id },
     });
+  }
+
+  @Get('gyms')
+  @Roles(UserRole.Customer)
+  @UseGuards(JwtAccessGuard, RolesGuard)
+  public async getGyms() {
+    throw new NotImplementedException();
+  }
+
+  @Get('purchases')
+  @Roles(UserRole.Customer)
+  @UseGuards(JwtAccessGuard, RolesGuard)
+  public async getPurchases() {
+    throw new NotImplementedException();
+  }
+
+  @Get('activity')
+  @Roles(UserRole.Customer)
+  @UseGuards(JwtAccessGuard, RolesGuard)
+  public async getActivity() {
+    throw new NotImplementedException();
+  }
+
+  @Get('feeding')
+  @Roles(UserRole.Customer)
+  @UseGuards(JwtAccessGuard, RolesGuard)
+  public async getFeeding() {
+    throw new NotImplementedException();
   }
 }

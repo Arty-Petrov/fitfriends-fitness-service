@@ -1,4 +1,8 @@
 export const Exchanges = {
+  gyms: {
+    name: 'fitfriends',
+    type: 'topic',
+  },
   user: {
     name: 'fitfriends',
     type: 'topic',
