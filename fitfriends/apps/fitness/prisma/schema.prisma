@@ -67,5 +67,6 @@ model Training {
   authorId       String
   isSpecialOffer Boolean
   reviews        Review[]
+  rating         Float?
   createdAt      DateTime @default(now())
 }

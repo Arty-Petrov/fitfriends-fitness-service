@@ -65,6 +65,12 @@ export class TrainingsRepository
     }) as unknown as Training;
   }
 
+  public async updateRating(id: number, rating: number): Promise<void> {
+    await this.prisma.training.update({
+      where: { id },
+      data: { rating: rating },
+    }) as unknown as Training;
+  }
   public async destroy(id: number): Promise<void> {
     await this.prisma.training.delete({
       where: { id },

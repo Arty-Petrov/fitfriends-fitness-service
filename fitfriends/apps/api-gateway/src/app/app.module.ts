@@ -9,6 +9,7 @@ import { API_GATEWAY_APP_ENV_PATH } from './app.constant';
 import { AuthController } from './controllers/auth.controller';
 import { GymsController } from './controllers/gyms.controller';
 import { MyController } from './controllers/my.controller';
+import { ReviewsController } from './controllers/reviews.controller';
 import { TrainingsController } from './controllers/trainings.controller';
 import { UsersController } from './controllers/user.controller';
 import { validateEnvironments } from './env.validation';
@@ -32,6 +33,7 @@ import { JwtRefreshStrategy } from './strategies/jwt-refresh.strategy';
     AuthController,
     GymsController,
     MyController,
+    ReviewsController,
     TrainingsController,
     UsersController,
   ],

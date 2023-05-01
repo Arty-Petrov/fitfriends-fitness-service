@@ -13,5 +13,6 @@ import { TrainingsService } from './trainings.service';
     TrainingsService,
     { provide: 'OWNER_SERVICE', useClass: TrainingsService },
   ],
+  exports: [TrainingsRepository],
 })
 export class TrainingsModule { }

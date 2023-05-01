@@ -87,6 +87,7 @@ export class TrainingsController {
     });
   }
 
+
   @Get(':id')
   @ApiResponse({
     type: TrainingCardRdo,

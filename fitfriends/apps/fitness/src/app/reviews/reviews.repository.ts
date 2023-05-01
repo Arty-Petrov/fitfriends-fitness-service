@@ -1,3 +1,5 @@
+import { TRAININGS_RATING_DECIMALS } from '@fitfriends/contracts';
+import { precisionRound } from '@fitfriends/core';
 import { CRUDRepository, Review, ReviewQuery } from '@fitfriends/shared-types';
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
@@ -36,6 +38,14 @@ export class ReviewsRepository
       skip: page > 0 ? count * (page - 1) : undefined,
     }) as unknown as Review[];
   }
+
+  public async getTrainingRating(itemId: number): Promise<number> {
+    const rating = (await this.prisma.review.aggregate({
+      where: { trainingId: itemId },
+      _avg: { evaluation: true }
+    }))._avg.evaluation;
+    return precisionRound(rating, TRAININGS_RATING_DECIMALS);
+  } 
 
   public async update(id: number, entity: ReviewEntity): Promise<Review> {
     return this.prisma.review.update({

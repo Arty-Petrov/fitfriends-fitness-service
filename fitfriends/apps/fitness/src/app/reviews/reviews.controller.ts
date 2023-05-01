@@ -43,9 +43,9 @@ export class ReviewsController {
     errorHandler: rmqErrorCallback,
   })
   public async getList(
-    dto: ReviewGetList.Request
+    query: ReviewGetList.Request
   ): Promise<ReviewGetList.Response> {
-    const reviews = await this.reviewsService.getList(dto);
+    const reviews = await this.reviewsService.getList(query);
     return fillObject(ReviewGetList.Response, reviews);
   }
 }
