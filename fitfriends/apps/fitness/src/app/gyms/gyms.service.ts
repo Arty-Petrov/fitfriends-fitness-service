@@ -24,7 +24,7 @@ export class GymsService implements DocumentExists {
     const { itemId, userId } = query;
     const existGym = await this.gymsRepository.findById(itemId, userId);
     if (!existGym) {
-      throw new RpcException(new ItemNotFoundException('Gym', id));
+      throw new RpcException(new ItemNotFoundException('Gym', itemId));
     }
     return existGym;
   }
