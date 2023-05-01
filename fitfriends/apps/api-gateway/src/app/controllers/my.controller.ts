@@ -1,4 +1,6 @@
 import {
+  GymCardRdo,
+  GymGetFavoriteList,
   OrderCoachListQuery,
   OrderGetCoachList,
   UserCardRdo,
@@ -57,10 +59,22 @@ export class MyController {
   }
 
   @Get('gyms')
+  @ApiResponse({
+    type: GymCardRdo,
+    status: HttpStatus.OK,
+    description: 'Favorite gyms is found',
+  })
   @Roles(UserRole.Customer)
   @UseGuards(JwtAccessGuard, RolesGuard)
-  public async getGyms() {
-    throw new NotImplementedException();
+  public async getFavoriteList(
+    @UserData('sub') userId: string,
+    @Query() query: GymGetFavoriteList.Request
+  ): Promise<GymGetFavoriteList.Response> {
+    return await this.amqpConnection.request<GymGetFavoriteList.Response>({
+      exchange: Exchanges.gyms.name,
+      routingKey: GymGetFavoriteList.topic,
+      payload: { ...query, userId: userId },
+    });
   }
 
   @Get('purchases')

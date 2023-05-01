@@ -94,6 +94,13 @@ export class GymApi implements Gym {
 
   @ApiProperty({
     required: true,
+    description: GymApiDescription.IsFavorite,
+  })
+  @IsBooleanString()
+  public isFavorite: boolean;
+
+  @ApiProperty({
+    required: true,
   })
   public createdAt: Date;
 }

@@ -12,19 +12,19 @@ export class OrdersRepository
   constructor(private readonly prisma: PrismaService) { }
 
   public async create(entity: OrderEntity): Promise<Order> {
-    return this.prisma.orders.create({
+    return this.prisma.order.create({
       data: { ...entity },
     }) as unknown as Order;
   }
 
   public async createMany(entities: OrderEntity[]): Promise<Order[]> {
     return this.prisma.$transaction(
-      entities.map((entity) => this.prisma.orders.create({ data: entity }))
+      entities.map((entity) => this.prisma.order.create({ data: entity }))
     ) as unknown as Order[];
   }
 
   public async findById(id: number): Promise<Order | null> {
-    return this.prisma.orders.findFirst({
+    return this.prisma.order.findFirst({
       where: { id },
     }) as unknown as Order;
   }
@@ -73,7 +73,7 @@ export class OrdersRepository
 
   public async find(query: OrderQuery): Promise<Order[]> {
     const { page, count, sortCreation, type } = query;
-    return this.prisma.orders.findMany({
+    return this.prisma.order.findMany({
       where: {
         productType: type,
       },
@@ -84,14 +84,14 @@ export class OrdersRepository
   }
 
   public async update(id: number, entity: OrderEntity): Promise<Order> {
-    return this.prisma.orders.update({
+    return this.prisma.order.update({
       where: { id },
       data: { ...entity },
     }) as unknown as Order;
   }
 
   public async destroy(id: number): Promise<void> {
-    await this.prisma.orders.delete({
+    await this.prisma.order.delete({
       where: { id },
     });
   }

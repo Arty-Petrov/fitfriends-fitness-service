@@ -12,6 +12,7 @@ export class GymCardRdo extends PickType(GymApi, [
   'photos',
   'description',
   'price',
+  'isFavorite',
   'createdAt',
 ]) {
   @Expose()
@@ -37,6 +38,9 @@ export class GymCardRdo extends PickType(GymApi, [
 
   @Expose()
   public price: number;
+
+  @Expose()
+  public isFavorite: boolean;
 
   @Expose()
   public createdAt: Date;

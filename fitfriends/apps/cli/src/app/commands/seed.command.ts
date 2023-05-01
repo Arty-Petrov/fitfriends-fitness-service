@@ -120,8 +120,9 @@ export class SeedCommand extends CommandRunner {
     await Promise.all(
       (gyms = Array.from({ length: GYMS_COUNT }, () => generateGym()))
     );
+    console.log('seed')
     this.gyms = (await this.amqpConnection.request<GymCreateMany.Response>({
-      exchange: Exchanges.user.name,
+      exchange: Exchanges.gyms.name,
       routingKey: GymCreateMany.topic,
       payload: gyms,
     })) as unknown as Gym[];

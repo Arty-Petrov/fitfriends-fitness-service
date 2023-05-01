@@ -1,6 +1,6 @@
 import { GymFeature, SortOrder, SubwayStation } from '@fitfriends/shared-types';
 import { Transform } from 'class-transformer';
-import { IsArray, IsBoolean, IsEnum, IsNumber, IsOptional, Max } from 'class-validator';
+import { IsArray, IsBoolean, IsEnum, IsMongoId, IsNumber, IsOptional, Max } from 'class-validator';
 import { DEFAULT_GYM_COUNT_LIMIT, DEFAULT_GYM_PAGINATION_COUNT, DEFAULT_GYM_SORT_ORDER } from './gym.constant';
 
 export class GymQueryApi {
@@ -54,8 +54,14 @@ export class GymQueryApi {
   @IsOptional()
   public features?: GymFeature[];
 
-  @Transform(({value}) => JSON.parse(value))
+  @Transform(({ value }) => JSON.parse(value))
   @IsBoolean()
   @IsOptional()
   public isVerified: boolean;
+
+  @IsMongoId()
+  public userId: string;
+  
+  @IsNumber()
+  public itemId: number;
 }

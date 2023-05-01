@@ -7,7 +7,11 @@ import { GymsService } from './gyms.service';
 @Module({
   imports: [RmqModule],
   controllers: [GymsController],
-  providers: [GymsRepository, GymsService],
+  providers: [
+    GymsController,
+    GymsRepository,
+    GymsService,
+    { provide: 'EXISTS_SERVICE', useClass: GymsService },],
   exports: [],
 })
 export class GymsModule { }

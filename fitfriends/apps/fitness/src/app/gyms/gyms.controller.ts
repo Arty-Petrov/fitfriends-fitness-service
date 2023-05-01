@@ -1,9 +1,16 @@
-import { GymCreate, GymCreateMany, GymGetList, GymGetOne } from '@fitfriends/contracts';
-import { fillObject } from '@fitfriends/core';
+import {
+  GymCreate,
+  GymCreateMany,
+  GymGetFavoriteList,
+  GymGetList,
+  GymGetOne,
+  GymToggleFavorite,
+} from '@fitfriends/contracts';
+import { ExistsGuard, fillObject } from '@fitfriends/core';
 import { rmqErrorCallback } from '@fitfriends/exceptions';
 import { Exchanges } from '@fitfriends/rmq';
 import { RabbitRPC } from '@golevelup/nestjs-rabbitmq';
-import { Controller } from '@nestjs/common';
+import { Controller, UseGuards } from '@nestjs/common';
 import { GymsService } from './gyms.service';
 
 @Controller()
@@ -39,8 +46,8 @@ export class GymsController {
     queue: GymGetOne.queue,
     errorHandler: rmqErrorCallback,
   })
-  public async getOne({ id }: GymGetOne.Request): Promise<GymGetOne.Response> {
-    const gym = await this.gymsService.getById(id);
+  public async getOne(query: GymGetOne.Request): Promise<GymGetOne.Response> {
+    const gym = await this.gymsService.getById(query);
     return fillObject(GymGetOne.Response, gym);
   }
 
@@ -55,5 +62,32 @@ export class GymsController {
   ): Promise<GymGetList.Response> {
     const gyms = await this.gymsService.getList(query);
     return fillObject(GymGetList.Response, gyms);
+  }
+
+  @RabbitRPC({
+    exchange: Exchanges.gyms.name,
+    routingKey: GymGetFavoriteList.topic,
+    queue: GymGetFavoriteList.queue,
+    errorHandler: rmqErrorCallback,
+  })
+  public async getFavoriteList(
+    query: GymGetFavoriteList.Request
+  ): Promise<GymGetFavoriteList.Response> {
+    const gyms = await this.gymsService.getFavoriteList(query);
+    return fillObject(GymGetFavoriteList.Response, gyms);
+  }
+
+  @RabbitRPC({
+    exchange: Exchanges.gyms.name,
+    routingKey: GymToggleFavorite.topic,
+    queue: GymToggleFavorite.queue,
+    errorHandler: rmqErrorCallback,
+  })
+  @UseGuards(ExistsGuard)
+  public async toggleFavorite(
+    dto: GymToggleFavorite.Request
+  ): Promise<GymToggleFavorite.Response> {
+    const gym = await this.gymsService.toggleFavorite(dto);
+    return fillObject(GymToggleFavorite.Response, gym);
   }
 }

@@ -46,4 +46,5 @@ export const GymApiDescription = {
   Photos: `Photos uri, file type *.png/jpg/jpeg and max size ${GYM_PHOTO_FILE_MAX_SIZE} bytes allowed to upload`,
   Description: `Gym description, min ${GymDescriptionLength.Min}, max ${GymDescriptionLength.Max} chars`,
   Price: `Gym visit price, min ${GymPriceRange.Min}, max ${GymPriceRange.Max}`,
+  IsFavorite: `Gym favorite status calculated field`,
 } as const;
