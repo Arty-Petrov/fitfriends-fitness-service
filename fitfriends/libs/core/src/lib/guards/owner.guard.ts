@@ -4,7 +4,7 @@ import { RpcException } from '@nestjs/microservices';
 
 @Injectable()
 export class OwnerGuard implements CanActivate {
-  constructor(@Inject('SERVICE') private service: AuthorizeOwner) { }
+  constructor(@Inject('OWNER_SERVICE') private service: AuthorizeOwner) { }
 
   canActivate(
     context: ExecutionContext

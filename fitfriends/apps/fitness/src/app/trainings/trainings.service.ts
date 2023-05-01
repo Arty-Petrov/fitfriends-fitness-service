@@ -80,7 +80,6 @@ export class TrainingsService implements AuthorizeOwner {
     currentUserId: string,
     objectId: string | number
   ): Promise<boolean> {
-    console.log('check owner')
     const { authorId } = await this.getById(objectId as number);
     return currentUserId === authorId;
   }
