@@ -15,7 +15,7 @@ export class OrderCoachListRdo extends PickType(OrderApi, [
   'authorId',
   'productType',
   'productPrice',
-  'quantity',
+  'amount',
   'totalPrice',
   'paymentMethod',
   'createdAt',
@@ -36,7 +36,7 @@ export class OrderCoachListRdo extends PickType(OrderApi, [
   public productPrice: number;
 
   @Expose()
-  public quantity: number;
+  public amount: number;
 
   @Expose()
   public totalPrice?: number;

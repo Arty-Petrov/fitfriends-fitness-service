@@ -1,4 +1,5 @@
 import {
+  OrderCreate,
   TrainingCardRdo,
   TrainingCreate,
   TrainingGetList,
@@ -10,7 +11,7 @@ import {
 } from '@fitfriends/contracts';
 import { UploadField } from '@fitfriends/core';
 import { Exchanges } from '@fitfriends/rmq';
-import { UserRole } from '@fitfriends/shared-types';
+import { ProductType, UserRole } from '@fitfriends/shared-types';
 import { AmqpConnection } from '@golevelup/nestjs-rabbitmq';
 import {
   Body,
@@ -18,6 +19,7 @@ import {
   Get,
   HttpStatus,
   Param,
+  ParseIntPipe,
   Patch,
   Post,
   Query,
@@ -76,7 +78,7 @@ export class TrainingsController {
   })
   @Roles(UserRole.Coach)
   @UseGuards(JwtAccessGuard, RolesGuard)
-  async create(
+  async createPost(
     @UserData('sub') id: string,
     @Body() dto: TrainingCreate.Request
   ): Promise<TrainingCreate.Response> {
@@ -87,6 +89,29 @@ export class TrainingsController {
     });
   }
 
+  @Post('order/:id')
+  @ApiResponse({
+    status: HttpStatus.CREATED,
+    description: 'Training order created',
+  })
+  @Roles(UserRole.Customer)
+  @UseGuards(JwtAccessGuard, RolesGuard)
+  async createOrder(
+    @UserData('sub') userId: string,
+    @Param('id', ParseIntPipe) itemId: number,
+    @Body() dto: OrderCreate.Request
+  ): Promise<OrderCreate.Response> {
+    return await this.amqpConnection.request<OrderCreate.Response>({
+      exchange: Exchanges.orders.name,
+      routingKey: OrderCreate.topic,
+      payload: {
+        ...dto,
+        authorId: userId,
+        productId: itemId,
+        productType: ProductType.Training
+      },
+    });
+  }
 
   @Get(':id')
   @ApiResponse({

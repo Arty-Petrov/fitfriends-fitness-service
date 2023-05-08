@@ -1,4 +1,4 @@
-import { Entity, Order, PaymentMethod, ProductType } from '@fitfriends/shared-types';
+import { Entity, Order, OrderStatus, PaymentMethod, ProductType } from '@fitfriends/shared-types';
 
 export class OrderEntity implements Entity<OrderEntity>, Order {
   id?: number;
@@ -6,8 +6,7 @@ export class OrderEntity implements Entity<OrderEntity>, Order {
   productType: ProductType;
   productId: number;
   productPrice: number;
-  quantity: number;
-  totalPrice: number;
+  status: OrderStatus;
   paymentMethod: PaymentMethod;
   createdAt: Date;
 
@@ -20,14 +19,13 @@ export class OrderEntity implements Entity<OrderEntity>, Order {
   }
 
   fillEntity(entity: Order) {
-  this.id = entity?.id;
-  this.authorId = entity.authorId;
-  this.productType = entity.productType;
-  this.productPrice= entity.productPrice;
-  this.productId = entity.productId;
-  this.quantity = entity.quantity;
-  this.totalPrice = entity.productPrice * entity.quantity;
-  this.paymentMethod = entity.paymentMethod;
-  this.createdAt = entity.createdAt;
+    this.id = entity?.id;
+    this.authorId = entity.authorId;
+    this.productType = entity.productType;
+    this.productId = entity.productId;
+    this.productPrice = entity.productPrice;
+    this.status = entity.status?? OrderStatus.Purchased;
+    this.paymentMethod = entity.paymentMethod;
+    this.createdAt = entity?.createdAt;
   }
 }

@@ -1,18 +1,19 @@
 import { faker } from '@faker-js/faker';
-import { OrderCreateDto, OrderQuantityRange } from '@fitfriends/contracts';
-import { PaymentMethod, ProductType, Training } from '@fitfriends/shared-types';
+import { OrderAmountRange, OrderCreateDto } from '@fitfriends/contracts';
+import { Gym, PaymentMethod, ProductType, Training } from '@fitfriends/shared-types';
 
 export const generateOrder = (
   customerId: string,
-  product: Training 
+  product: Training | Gym,
+  type: ProductType
 ): OrderCreateDto => ({
   authorId: customerId,
-  productType: ProductType.Training,
+  productType: type,
   productId: product.id,
   productPrice: product.price,
-  quantity: faker.datatype.number({
-    min: OrderQuantityRange.Min,
-    max: OrderQuantityRange.Max,
+  amount: faker.datatype.number({
+    min: OrderAmountRange.Min,
+    max: OrderAmountRange.Max,
   }),
   paymentMethod: faker.helpers.objectValue(PaymentMethod),
 });

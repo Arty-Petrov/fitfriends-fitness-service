@@ -28,18 +28,23 @@ model Gym {
   price        Float
   createdAt    DateTime      @default(now())
   favoriteGyms FavoriteGym[]
+  orders       Order[]
 }
 
 model Order {
-  id            Int      @id @default(autoincrement())
+  id            Int       @id @default(autoincrement())
   authorId      String
   productType   String
   productId     Int
-  productPrice  Int
-  quantity      Int
-  totalPrice    Float
+  trainingId    Int?
+  training      Training? @relation(fields: [trainingId], references: [id])
+  gymId         Int?
+  gym           Gym?      @relation(fields: [gymId], references: [id])
+  productPrice  Int?
+  status        String
   paymentMethod String
-  createdAt     DateTime @default(now())
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @default(now())
 }
 
 model Review {
@@ -59,7 +64,7 @@ model Training {
   experience     String
   type           String
   duration       String
-  price          Int
+  price          Int?
   caloriesLoss   Int
   description    String
   gender         String
@@ -67,6 +72,7 @@ model Training {
   authorId       String
   isSpecialOffer Boolean
   reviews        Review[]
-  rating         Float?
+  rating         Float?   @default(0)
   createdAt      DateTime @default(now())
+  orders         Order[]
 }

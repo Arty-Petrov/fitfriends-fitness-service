@@ -1,4 +1,12 @@
-import { OrderCreate, OrderCreateMany, OrderGetCoachList, OrderUpdateData } from '@fitfriends/contracts';
+import {
+  OrderCoachListRdo,
+  OrderCreate,
+  OrderCreateMany,
+  OrderCustomerListRdo,
+  OrderGetCoachList,
+  OrderGetCustomerList,
+  OrderUpdateData,
+} from '@fitfriends/contracts';
 import { fillObject } from '@fitfriends/core';
 import { rmqErrorCallback } from '@fitfriends/exceptions';
 import { Exchanges } from '@fitfriends/rmq';
@@ -18,7 +26,7 @@ export class OrdersController {
   })
   public async create(dto: OrderCreate.Request): Promise<OrderCreate.Response> {
     const order = await this.ordersService.create(dto);
-    return fillObject(OrderCreate.Response, order);
+    return {statusCode: order};
   }
 
   @RabbitRPC({
@@ -30,8 +38,8 @@ export class OrdersController {
   public async createMany(
     dtos: OrderCreateMany.Request
   ): Promise<OrderCreateMany.Response> {
-    const orders = await this.ordersService.createMany(dtos);
-    return fillObject(OrderCreateMany.Response, orders);
+    const order = await this.ordersService.createMany(dtos);
+    return {statusCode: order};
   }
 
   @RabbitRPC({
@@ -40,10 +48,24 @@ export class OrdersController {
     queue: OrderGetCoachList.queue,
     errorHandler: rmqErrorCallback,
   })
-  public async getList(
+  public async getCoachList(
     query: OrderGetCoachList.Request
   ): Promise<OrderGetCoachList.Response> {
-    return this.ordersService.getCoachList(query);
+    const orders = await this.ordersService.getCoachList(query);
+    return orders.map((order) => fillObject(OrderCoachListRdo, order));
+  }
+
+  @RabbitRPC({
+    exchange: Exchanges.orders.name,
+    routingKey: OrderGetCustomerList.topic,
+    queue: OrderGetCustomerList.queue,
+    errorHandler: rmqErrorCallback,
+  })
+  public async getCustomerList(
+    query: OrderGetCustomerList.Request
+  ): Promise<OrderGetCustomerList.Response> {
+    const orders = await this.ordersService.getCustomerList(query);
+    return orders.map((order) => fillObject(OrderCustomerListRdo, order));
   }
 
   @RabbitRPC({

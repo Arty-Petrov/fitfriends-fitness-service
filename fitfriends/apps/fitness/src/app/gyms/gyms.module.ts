@@ -12,6 +12,6 @@ import { GymsService } from './gyms.service';
     GymsRepository,
     GymsService,
     { provide: 'EXISTS_SERVICE', useClass: GymsService },],
-  exports: [],
+  exports: [GymsRepository],
 })
 export class GymsModule { }

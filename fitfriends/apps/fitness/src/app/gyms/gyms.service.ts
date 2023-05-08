@@ -20,13 +20,13 @@ export class GymsService implements DocumentExists {
     return this.gymsRepository.createMany(gyms);
   }
 
-  public async getById(query: GymQuery): Promise<Gym> {
+  public async getOne(query: GymQuery): Promise<Gym> {
     const { itemId, userId } = query;
-    const existGym = await this.gymsRepository.findById(itemId, userId);
-    if (!existGym) {
+    const existGym = await this.gymsRepository.findById(itemId);
+    if (existGym) {
       throw new RpcException(new ItemNotFoundException('Gym', itemId));
     }
-    return existGym;
+     return this.gymsRepository.findUserItem(itemId, userId);
   }
 
   public async getList(query: GymListQuery): Promise<Gym[]> {

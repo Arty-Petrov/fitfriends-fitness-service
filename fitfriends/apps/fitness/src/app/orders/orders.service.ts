@@ -1,22 +1,48 @@
-import { OrderCoachListRdo, OrderCreateDto, OrderUpdateDataDto } from '@fitfriends/contracts';
+import {
+  OrderCoachListQuery,
+  OrderCoachListRdo,
+  OrderCreateDto,
+  OrderCustomerListQuery,
+  OrderCustomerListRdo,
+  OrderUpdateDataDto,
+} from '@fitfriends/contracts';
 import { ItemNotFoundException } from '@fitfriends/exceptions';
-import { AuthorizeOwner, Order, OrderQuery } from '@fitfriends/shared-types';
-import { Injectable } from '@nestjs/common';
+import { AuthorizeOwner, Order, ProductType } from '@fitfriends/shared-types';
+import { HttpStatus, Injectable } from '@nestjs/common';
+import { RpcException } from '@nestjs/microservices';
+import { GymsRepository } from '../gyms/gyms.repository';
+import { TrainingsRepository } from '../trainings/trainings.repository';
 import { OrderEntity } from './order.entity';
 import { OrdersRepository } from './orders.repository';
 
 @Injectable()
 export class OrdersService implements AuthorizeOwner {
-  constructor(private readonly ordersRepository: OrdersRepository) { }
+  constructor(
+    private readonly ordersRepository: OrdersRepository,
+    private readonly trainingsRepository: TrainingsRepository,
+    private readonly gymsRepository: GymsRepository,
+  ) { }
 
-  public async create(dto: OrderCreateDto): Promise<Order> {
-    const orderEntity = new OrderEntity(dto);
-    return this.ordersRepository.create(orderEntity);
+  public async create(dto: OrderCreateDto): Promise<HttpStatus> {
+    const { productType, productId, amount } = dto;
+    const existProduct = (productType === ProductType.Training)
+    ? await this.trainingsRepository.findById(productId)
+    : await this.gymsRepository.findById(productId);
+    if (!existProduct) {
+      throw new RpcException(new ItemNotFoundException(productType, productId));
+    }
+    const orderEntities = Array(amount).fill(new OrderEntity(dto));
+    const orders = await this.ordersRepository.createMany(orderEntities);
+    return (orders) ? HttpStatus.CREATED : HttpStatus.INTERNAL_SERVER_ERROR;
   }
 
-  public async createMany(dtos: OrderCreateDto[]): Promise<Order[]> {
-    const orders = dtos.map((dto) => new OrderEntity(dto));
-    return this.ordersRepository.createMany(orders);
+  public async createMany(dtos: OrderCreateDto[]): Promise<HttpStatus> {
+    const orderEntities = dtos.map(
+      (dto) => Array(dto.amount)
+        .fill(new OrderEntity(dto)))
+      .flat();
+    const orders = await this.ordersRepository.createMany(orderEntities);
+    return (orders) ? HttpStatus.CREATED : HttpStatus.INTERNAL_SERVER_ERROR;
   }
 
   public async getById(id: number): Promise<Order> {
@@ -27,8 +53,12 @@ export class OrdersService implements AuthorizeOwner {
     return existOrder;
   }
 
-  public async getCoachList(query: OrderQuery): Promise<OrderCoachListRdo[]> {
+  public async getCoachList(query: OrderCoachListQuery): Promise<OrderCoachListRdo[]> {
     return this.ordersRepository.findCoachOrders(query);
+  }
+
+  public async getCustomerList(query: OrderCustomerListQuery): Promise<OrderCustomerListRdo[]> {
+    return this.ordersRepository.findCustomerOrders(query);
   }
 
   public async update(dto: OrderUpdateDataDto): Promise<Order> {

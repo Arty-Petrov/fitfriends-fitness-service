@@ -25,7 +25,7 @@ export class GymsRepository {
     ) as unknown as Gym[];
   }
 
-  public async findById(itemId: number, userId: string = null): Promise<Gym> {
+  public async findUserItem(itemId: number, userId: string = null): Promise<Gym> {
     const gym = await this.prisma.gym.findFirst({
       where: { id: itemId },
       include: {
@@ -37,6 +37,13 @@ export class GymsRepository {
     }
     delete gym.favoriteGyms
     return gym;
+  }
+
+  public async findById(itemId: number): Promise<boolean> {
+    const gym = await this.prisma.gym.findFirst({
+      where: { id: itemId },
+    }) as unknown as Gym;
+    return !!gym;
   }
 
   public async find(query: GymListQuery): Promise<Gym[]> {

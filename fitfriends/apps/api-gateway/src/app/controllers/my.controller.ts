@@ -2,7 +2,11 @@ import {
   GymCardRdo,
   GymGetFavoriteList,
   OrderCoachListQuery,
+  OrderCoachListRdo,
+  OrderCustomerListQuery,
+  OrderCustomerListRdo,
   OrderGetCoachList,
+  OrderGetCustomerList,
   UserCardRdo,
   UserFriendListQuery,
   UserGetFriendList,
@@ -41,20 +45,39 @@ export class MyController {
 
   @Get('orders')
   @ApiResponse({
-    type: UserCardRdo,
+    type: OrderCoachListRdo,
     status: HttpStatus.OK,
-    description: 'User friends found',
+    description: 'Coache\'s orders found',
   })
   @Roles(UserRole.Coach)
   @UseGuards(JwtAccessGuard, RolesGuard)
-  async getMyTrainings(
+  async getMyOrders(
     @Query() query: OrderCoachListQuery,
-    @UserData('sub') id: string
+    @UserData('sub') userId: string
   ): Promise<OrderGetCoachList.Response> {
     return await this.amqpConnection.request<OrderGetCoachList.Response>({
       exchange: Exchanges.orders.name,
       routingKey: OrderGetCoachList.topic,
-      payload: { ...query, coachId: id },
+      payload: { ...query, coachId: userId },
+    });
+  }
+
+  @Get('purchases')
+  @ApiResponse({
+    type: OrderCustomerListRdo,
+    status: HttpStatus.OK,
+    description: 'Customers\'s purchases found',
+  })
+  @Roles(UserRole.Customer)
+  @UseGuards(JwtAccessGuard, RolesGuard)
+  async getMyPurchases(
+    @Query() query: OrderCustomerListQuery,
+    @UserData('sub') userId: string
+  ): Promise<OrderGetCustomerList.Response> {
+    return await this.amqpConnection.request<OrderGetCustomerList.Response>({
+      exchange: Exchanges.orders.name,
+      routingKey: OrderGetCustomerList.topic,
+      payload: { ...query, customerId: userId },
     });
   }
 

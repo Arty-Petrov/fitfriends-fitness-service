@@ -47,7 +47,7 @@ export class GymsController {
     errorHandler: rmqErrorCallback,
   })
   public async getOne(query: GymGetOne.Request): Promise<GymGetOne.Response> {
-    const gym = await this.gymsService.getById(query);
+    const gym = await this.gymsService.getOne(query);
     return fillObject(GymGetOne.Response, gym);
   }
 

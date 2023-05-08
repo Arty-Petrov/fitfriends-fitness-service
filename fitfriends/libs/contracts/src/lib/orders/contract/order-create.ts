@@ -1,5 +1,5 @@
+import { HttpStatus } from '@nestjs/common';
 import { OrderCreateDto } from '../dto/order-create.dto';
-import { OrderCardRdo } from '../rdo/order-card.rdo';
 
 export namespace OrderCreate {
   export const topic = 'order.create.command';
@@ -8,5 +8,7 @@ export namespace OrderCreate {
 
   export class Request extends OrderCreateDto { }
 
-  export class Response extends OrderCardRdo { }
+  export class Response {
+  public statusCode: HttpStatus;
+  }
 }

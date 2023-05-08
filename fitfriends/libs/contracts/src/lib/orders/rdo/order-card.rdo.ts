@@ -4,7 +4,7 @@ import { Expose } from 'class-transformer';
 import { OrderApi } from '../order.api';
 
 
-export class OrderCardRdo extends PickType(OrderApi, ['id', 'authorId', 'productType', 'productPrice', 'quantity', 'totalPrice', 'paymentMethod', 'createdAt']) {
+export class OrderCardRdo extends PickType(OrderApi, ['id', 'authorId', 'productType', 'productPrice', 'amount', 'totalPrice', 'paymentMethod', 'createdAt']) {
   @Expose()
   public id: number;
 
@@ -21,7 +21,7 @@ export class OrderCardRdo extends PickType(OrderApi, ['id', 'authorId', 'product
   public productPrice: number;
 
   @Expose()
-  public quantity: number;
+  public amount: number;
 
   @Expose()
   public totalPrice?: number;

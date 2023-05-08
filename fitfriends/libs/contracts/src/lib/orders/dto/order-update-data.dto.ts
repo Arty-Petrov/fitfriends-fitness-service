@@ -6,6 +6,6 @@ export class OrderUpdateDataDto extends PickType(OrderApi, [
   'authorId',
   'productType',
   'productId',
-  'quantity',
+  'amount',
   'paymentMethod',
 ]) { }

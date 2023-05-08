@@ -2,6 +2,7 @@ import { faker } from '@faker-js/faker';
 import {
   GymCreateDto,
   GymCreateMany,
+  OrderCreateDto,
   OrderCreateMany,
   ReviewCreateMany,
   TrainingCreateDto,
@@ -12,7 +13,7 @@ import {
   UserSignUpDto,
 } from '@fitfriends/contracts';
 import { Exchanges } from '@fitfriends/rmq';
-import { Gym, Order, Review, Training, User, UserFriends, UserRole } from '@fitfriends/shared-types';
+import { Gym, Order, ProductType, Review, Training, User, UserFriends, UserRole } from '@fitfriends/shared-types';
 import { AmqpConnection } from '@golevelup/nestjs-rabbitmq';
 import { Injectable } from '@nestjs/common';
 import { Command, CommandRunner } from 'nest-commander';
@@ -120,7 +121,6 @@ export class SeedCommand extends CommandRunner {
     await Promise.all(
       (gyms = Array.from({ length: GYMS_COUNT }, () => generateGym()))
     );
-    console.log('seed')
     this.gyms = (await this.amqpConnection.request<GymCreateMany.Response>({
       exchange: Exchanges.gyms.name,
       routingKey: GymCreateMany.topic,
@@ -189,30 +189,45 @@ export class SeedCommand extends CommandRunner {
   }
 
   private async seedOrders() {
-    let orders: Array<Order>;
+    let gymVisitOrders: Array<OrderCreateDto>;
+    let trainingOrders: Array<OrderCreateDto>;
     console.log('creating orders');
     const customerIds = this.customers.map((customer) => customer?.id);
-    const products = this.trainings;
     await Promise.all(
-      (orders = customerIds
+      (gymVisitOrders = customerIds
         .map((customerId) =>
           faker.helpers
             .arrayElements(
-              products,
+              this.gyms,
               faker.datatype.number({
                 min: CustomerOrdersCount.Min,
                 max: CustomerOrdersCount.Max,
               })
             )
-            .map((product) => generateOrder(customerId, product))
+            .map((product) => generateOrder(customerId, product, ProductType.Gym))
         )
         .flat())
     );
-    this.orders = (await this.amqpConnection.request<OrderCreateMany.Response>({
+    await Promise.all(
+      (trainingOrders = customerIds
+        .map((customerId) =>
+          faker.helpers
+            .arrayElements(
+              this.trainings,
+              faker.datatype.number({
+                min: CustomerOrdersCount.Min,
+                max: CustomerOrdersCount.Max,
+              })
+            )
+            .map((product) => generateOrder(customerId, product, ProductType.Training))
+        )
+        .flat())
+    );
+    await this.amqpConnection.request<OrderCreateMany.Response>({
       exchange: Exchanges.reviews.name,
       routingKey: OrderCreateMany.topic,
-      payload: orders,
-    })) as unknown as Order[];
+      payload: [...trainingOrders, ...gymVisitOrders],
+    });
     console.log('orders are created');
   }
 }

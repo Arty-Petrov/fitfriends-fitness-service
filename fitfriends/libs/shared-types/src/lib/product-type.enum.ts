@@ -1,4 +1,4 @@
 export enum ProductType {
-  GymVisit = 'gym-visit',
+  Gym = 'gym',
   Training = 'training',
 }
