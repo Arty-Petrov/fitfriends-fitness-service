@@ -8,16 +8,23 @@ import {
 import { UploadField } from '@fitfriends/core';
 import { ItemNotFoundException } from '@fitfriends/exceptions';
 import { Exchanges } from '@fitfriends/rmq';
-import { AuthorizeOwner, Training, TrainingQuery } from '@fitfriends/shared-types';
+import { AuthorizeOwner, OrderStatus, ProductType, Training, TrainingQuery, UserRole } from '@fitfriends/shared-types';
 import { AmqpConnection } from '@golevelup/nestjs-rabbitmq';
-import { Injectable } from '@nestjs/common';
+import { ForbiddenException, Injectable } from '@nestjs/common';
+import { OrdersRepository } from '../orders/orders.repository';
 import { TrainingEntity } from './training.entity';
 import { TrainingsRepository } from './trainings.repository';
+
+type WithOrderData<T> = T & {
+  orderId?: number,
+  status?: OrderStatus
+}
 
 @Injectable()
 export class TrainingsService implements AuthorizeOwner {
   constructor(
     private readonly trainingsRepository: TrainingsRepository,
+    private readonly ordersRepository: OrdersRepository,
     private readonly amqpConnection: AmqpConnection
   ) { }
 
@@ -41,6 +48,27 @@ export class TrainingsService implements AuthorizeOwner {
     const existTraining = await this.trainingsRepository.findById(id);
     if (!existTraining) {
       throw new ItemNotFoundException('Training', id);
+    }
+    return existTraining;
+  }
+
+  public async getOne(
+    id: number,
+    userId: string,
+    userRole: UserRole
+  ): Promise<WithOrderData<Training>> {
+    const existTraining = await this.trainingsRepository.findById(id);
+    if (!existTraining) {
+      throw new ItemNotFoundException('Training', id);
+    }
+    if (userRole === UserRole.Customer) {
+      await this.ordersRepository.markExpiredOrders(userId);
+      const trainingStatus = await this.ordersRepository
+        .getOrderStatus(id, ProductType.Training, userId);
+      return { ...existTraining, orderId: trainingStatus.id, status: trainingStatus.status };
+    }
+    if (userId !== existTraining.authorId) {
+      throw new ForbiddenException();
     }
     return existTraining;
   }

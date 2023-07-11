@@ -51,10 +51,11 @@ export class TrainingsController {
     queue: TrainingGetOne.queue,
     errorHandler: rmqErrorCallback,
   })
-  public async getOne({
-    id,
-  }: TrainingGetOne.Request): Promise<TrainingGetOne.Response> {
-    const training = await this.trainingsService.getById(id);
+  public async getOne(
+    query
+  : TrainingGetOne.Request): Promise<TrainingGetOne.Response> {
+    const { id, userId, role } = query;
+    const training = await this.trainingsService.getOne(id, userId, role);
     return fillObject(TrainingGetOne.Response, training);
   }
 

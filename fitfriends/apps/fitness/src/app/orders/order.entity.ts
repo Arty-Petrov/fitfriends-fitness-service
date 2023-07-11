@@ -1,4 +1,6 @@
+import { OrderStatusNotAllowed } from '@fitfriends/exceptions';
 import { Entity, Order, OrderStatus, PaymentMethod, ProductType } from '@fitfriends/shared-types';
+import { RpcException } from '@nestjs/microservices';
 
 export class OrderEntity implements Entity<OrderEntity>, Order {
   id?: number;
@@ -9,6 +11,7 @@ export class OrderEntity implements Entity<OrderEntity>, Order {
   status: OrderStatus;
   paymentMethod: PaymentMethod;
   createdAt: Date;
+  statusFlow: OrderStatus[];
 
   constructor(entity: Order) {
     this.fillEntity(entity);
@@ -16,6 +19,20 @@ export class OrderEntity implements Entity<OrderEntity>, Order {
 
   toObject(): OrderEntity {
     return { ...this };
+  }
+
+  updateStatus(newStatus: OrderStatus): OrderEntity {
+    const statuses = Object.values(OrderStatus);
+    let statusIndex = statuses.indexOf(this.status);
+    const isInvalidStatus =
+      this.status === OrderStatus.Finished ||
+      this.status === OrderStatus.Expired ||
+      newStatus !== statuses[++statusIndex];
+    if (isInvalidStatus) {
+      throw new RpcException(new OrderStatusNotAllowed(this.status, newStatus));
+    }
+    this.status = newStatus;
+  return {...this};
   }
 
   fillEntity(entity: Order) {

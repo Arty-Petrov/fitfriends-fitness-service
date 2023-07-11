@@ -100,13 +100,6 @@ export class MyController {
     });
   }
 
-  @Get('purchases')
-  @Roles(UserRole.Customer)
-  @UseGuards(JwtAccessGuard, RolesGuard)
-  public async getPurchases() {
-    throw new NotImplementedException();
-  }
-
   @Get('activity')
   @Roles(UserRole.Customer)
   @UseGuards(JwtAccessGuard, RolesGuard)

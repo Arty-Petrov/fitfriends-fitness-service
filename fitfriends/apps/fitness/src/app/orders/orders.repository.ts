@@ -3,13 +3,31 @@ import {
   OrderCoachListRdo,
   OrderCustomerListQuery,
   OrderCustomerListRdo,
+  OrderDiaryQuery,
 } from '@fitfriends/contracts';
-import { CRUDRepository, Order, OrderSortType, OrderStatus, ProductType, SortOrder } from '@fitfriends/shared-types';
+import {
+  CRUDRepository,
+  DiaryDay,
+  Order,
+  OrderSortType,
+  OrderStatus,
+  ProductType,
+  SortOrder,
+} from '@fitfriends/shared-types';
 import { Injectable, NotImplementedException } from '@nestjs/common';
 import { RpcException } from '@nestjs/microservices';
 import { Prisma } from '@prisma/client';
+import dayjs from 'dayjs';
+import 'dayjs/locale/ru';
+import duration from 'dayjs/plugin/duration';
+import isoWeek from 'dayjs/plugin/isoWeek';
+import { ORDER_EXPIRATION_PERIOD } from '../app.constant';
 import { PrismaService } from '../prisma/prisma.service';
 import { OrderEntity } from './order.entity';
+
+dayjs.extend(duration);
+dayjs.extend(isoWeek);
+dayjs.locale('ru')
 
 @Injectable()
 export class OrdersRepository
@@ -17,10 +35,10 @@ export class OrdersRepository
 {
   constructor(private readonly prisma: PrismaService) { }
 
-  public async create(entity: OrderEntity): Promise<Order> {
-    throw new RpcException(new NotImplementedException())
+  public async create(_entity: OrderEntity): Promise<Order> {
+    throw new RpcException(new NotImplementedException(_entity))
   }
-A
+
   public async createMany(entities: OrderEntity[]): Promise<Order[]> {
     return this.prisma.$transaction(
       entities.map((entity) => this.prisma.order.create({
@@ -133,7 +151,7 @@ A
       sortCreation === SortOrder.Descended
         ? Prisma.sql`"TR"."createdAt" DESC`
         : Prisma.sql`"TR"."createdAt" ASC`;
-    let orderByType = Prisma.sql``;
+    let orderByType;
     if (sortType === OrderSortType.Amount) {
       orderByType =
         (sortOrder === SortOrder.Descended)
@@ -165,11 +183,109 @@ A
     return coachOrders as unknown as OrderCoachListRdo[];
   }
 
+  public async getOrderStatus(
+    productId: number,
+    productType: ProductType,
+    userId: string
+  ): Promise<Pick<Order, 'id' | 'status'> | null> {
+    const selectStatuses = [
+      OrderStatus.Purchased,
+      OrderStatus.Started
+    ];
+    const productStatuses = await this.prisma.order.groupBy({
+       by: ['status'],
+        where: {
+          productId: productId,
+          productType: productType,
+          authorId: userId,
+          status: { in: selectStatuses }
+      },
+      _min: { id: true },
+    });
+    const statuses = new Map;
+    if (productStatuses.length) {
+      productStatuses.forEach(
+        (item) =>
+          statuses.set(
+            item.status,
+            {id: item._min.id,
+            status: item.status as OrderStatus}
+          ))
+    }
+    switch (statuses.size) {
+      case 0 :
+      return null;
+      case 1 :
+      return statuses.values().next().value;
+      case 2 :
+      return (statuses.has(OrderStatus.Started))
+          ? statuses.get(OrderStatus.Started)
+          : statuses.get(OrderStatus.Purchased);
+    }
+  }
+
+  public async getDiaryDays(query: OrderDiaryQuery): Promise<DiaryDay[]> {
+    const { customerId } = query;
+    const firstDayOfWeek = new Date(dayjs('2023-07-04').isoWeekday(1).format('YYYY-MM-DD'));
+    const lastDayOfWeek = new Date(dayjs('2023-07-04').isoWeekday(7).format('YYYY-MM-DD'));
+    const status = OrderStatus.Finished;
+    const productType = ProductType.Training;
+    return this.prisma.$queryRaw<DiaryDay[]>(Prisma.sql`
+      WITH all_dates AS (
+          SELECT (DATE_TRUNC('week', ${firstDayOfWeek}) + (n || ' day')::interval)::date AS "date"
+          FROM generate_series(1, 7) AS n
+      )
+      SELECT
+      TO_CHAR(ad."date", 'YYYY-MM-DD') AS "date",
+          COALESCE(json_agg(
+            json_build_object(
+              'ordinal', main.row_number,
+              'duration', main.duration,
+              'caloriesLoss', main."caloriesLoss"
+            )
+          ) FILTER (WHERE main.row_number IS NOT NULL), '[]') AS dayData,
+          COALESCE(SUM(main."caloriesLoss")::INTEGER, 0) AS "dayCaloriesLoss"
+      FROM
+        all_dates AS ad
+      LEFT JOIN (
+        SELECT
+          DATE_TRUNC('day', o."updatedAt") AS "date",
+          ROW_NUMBER() OVER (PARTITION BY DATE_TRUNC('day', o."updatedAt") ORDER BY o."updatedAt") AS row_number,
+          t.duration,
+          t."caloriesLoss"
+        FROM
+          "Order" AS o
+        LEFT JOIN "Training" AS t ON o."trainingId" = t.id
+      WHERE
+        o."authorId" = ${customerId}
+        AND o."status" = ${status}
+        AND o."productType" = ${productType}
+        AND o."updatedAt" >= ${firstDayOfWeek}
+        AND o."updatedAt" <= ${lastDayOfWeek}
+      ) AS main ON ad."date" = main."date"
+        GROUP BY
+      ad."date"
+        ORDER BY
+        ad."date"
+    `);
+  }
+
   public async update(id: number, entity: OrderEntity): Promise<Order> {
     return this.prisma.order.update({
       where: { id },
       data: { ...entity },
     }) as unknown as Order;
+  }
+
+  public async markExpiredOrders(customerId: string): Promise<void> {
+    await this.prisma.order.updateMany({
+      where: {
+        authorId: customerId,
+        status: OrderStatus.Started,
+        updatedAt: { lte: dayjs().subtract(dayjs.duration(ORDER_EXPIRATION_PERIOD)).toDate() },
+      },
+      data: { status: OrderStatus.Expired },
+    });
   }
 
   public async destroy(id: number): Promise<void> {

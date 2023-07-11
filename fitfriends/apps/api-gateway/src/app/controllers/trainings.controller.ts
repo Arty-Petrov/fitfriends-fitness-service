@@ -1,5 +1,4 @@
 import {
-  OrderCreate,
   TrainingCardRdo,
   TrainingCreate,
   TrainingGetList,
@@ -11,7 +10,7 @@ import {
 } from '@fitfriends/contracts';
 import { UploadField } from '@fitfriends/core';
 import { Exchanges } from '@fitfriends/rmq';
-import { ProductType, UserRole } from '@fitfriends/shared-types';
+import { UserRole } from '@fitfriends/shared-types';
 import { AmqpConnection } from '@golevelup/nestjs-rabbitmq';
 import {
   Body,
@@ -19,7 +18,6 @@ import {
   Get,
   HttpStatus,
   Param,
-  ParseIntPipe,
   Patch,
   Post,
   Query,
@@ -78,7 +76,7 @@ export class TrainingsController {
   })
   @Roles(UserRole.Coach)
   @UseGuards(JwtAccessGuard, RolesGuard)
-  async createPost(
+  async createTraining(
     @UserData('sub') id: string,
     @Body() dto: TrainingCreate.Request
   ): Promise<TrainingCreate.Response> {
@@ -89,29 +87,6 @@ export class TrainingsController {
     });
   }
 
-  @Post('order/:id')
-  @ApiResponse({
-    status: HttpStatus.CREATED,
-    description: 'Training order created',
-  })
-  @Roles(UserRole.Customer)
-  @UseGuards(JwtAccessGuard, RolesGuard)
-  async createOrder(
-    @UserData('sub') userId: string,
-    @Param('id', ParseIntPipe) itemId: number,
-    @Body() dto: OrderCreate.Request
-  ): Promise<OrderCreate.Response> {
-    return await this.amqpConnection.request<OrderCreate.Response>({
-      exchange: Exchanges.orders.name,
-      routingKey: OrderCreate.topic,
-      payload: {
-        ...dto,
-        authorId: userId,
-        productId: itemId,
-        productType: ProductType.Training
-      },
-    });
-  }
 
   @Get(':id')
   @ApiResponse({
@@ -121,12 +96,18 @@ export class TrainingsController {
   })
   @UseGuards(JwtAccessGuard)
   async getOne(
-    @Param('id') trainingId: number
+    @Param('id') trainingId: number,
+    @UserData('sub') userId: string,
+    @UserData('role') userRole: UserRole,
   ): Promise<TrainingGetOne.Response> {
     return await this.amqpConnection.request<TrainingGetOne.Response>({
       exchange: Exchanges.trainings.name,
       routingKey: TrainingGetOne.topic,
-      payload: { id: trainingId },
+      payload: {
+        id: trainingId,
+        userId: userId,
+        role: userRole,
+      },
     });
   }
 
@@ -138,12 +119,12 @@ export class TrainingsController {
   })
   @UseGuards(JwtAccessGuard)
   async getList(
-    @Query() dto: TrainingGetList.Request
+    @Query() query: TrainingGetList.Request
   ): Promise<TrainingGetList.Response> {
     return await this.amqpConnection.request<TrainingGetList.Response>({
       exchange: Exchanges.trainings.name,
       routingKey: TrainingGetList.topic,
-      payload: dto,
+      payload: query,
     });
   }
 

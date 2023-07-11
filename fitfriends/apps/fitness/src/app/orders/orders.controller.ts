@@ -3,15 +3,17 @@ import {
   OrderCreate,
   OrderCreateMany,
   OrderCustomerListRdo,
+  OrderDiaryPeriodRdo,
   OrderGetCoachList,
   OrderGetCustomerList,
+  OrderGetDiary,
   OrderUpdateData,
 } from '@fitfriends/contracts';
-import { fillObject } from '@fitfriends/core';
+import { fillObject, OwnerGuard } from '@fitfriends/core';
 import { rmqErrorCallback } from '@fitfriends/exceptions';
 import { Exchanges } from '@fitfriends/rmq';
 import { RabbitRPC } from '@golevelup/nestjs-rabbitmq';
-import { Controller } from '@nestjs/common';
+import { Controller, UseGuards } from '@nestjs/common';
 import { OrdersService } from './orders.service';
 
 @Controller()
@@ -70,10 +72,24 @@ export class OrdersController {
 
   @RabbitRPC({
     exchange: Exchanges.orders.name,
+    routingKey: OrderGetDiary.topic,
+    queue: OrderGetDiary.queue,
+    errorHandler: rmqErrorCallback,
+  })
+  public async getDiary(
+    query: OrderGetDiary.Request
+  ): Promise<OrderGetDiary.Response> {
+    const diary = await this.ordersService.getDiary(query);
+    return fillObject(OrderDiaryPeriodRdo, diary);
+  }
+
+  @RabbitRPC({
+    exchange: Exchanges.orders.name,
     routingKey: OrderUpdateData.topic,
     queue: OrderUpdateData.queue,
     errorHandler: rmqErrorCallback,
   })
+  @UseGuards(OwnerGuard)
   public async updateData(
     dto: OrderUpdateData.Request
   ): Promise<OrderUpdateData.Response> {
