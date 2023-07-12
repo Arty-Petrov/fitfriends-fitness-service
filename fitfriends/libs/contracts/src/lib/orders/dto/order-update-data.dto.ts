@@ -4,8 +4,5 @@ import { OrderApi } from '../order.api';
 export class OrderUpdateDataDto extends PickType(OrderApi, [
   'id',
   'authorId',
-  'productType',
-  'productId',
-  'quantity',
-  'paymentMethod',
+  'status',
 ]) { }

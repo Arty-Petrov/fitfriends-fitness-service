@@ -6,18 +6,26 @@ import {
   TrainingUpdateVideoDto,
 } from '@fitfriends/contracts';
 import { UploadField } from '@fitfriends/core';
-import { ItemNotFoundException, UserNotAuthorizedException } from '@fitfriends/exceptions';
-import { AuthorizeOwner, Training, TrainingQuery } from '@fitfriends/shared-types';
-import { Injectable } from '@nestjs/common';
-import { RMQService } from 'nestjs-rmq';
+import { ItemNotFoundException } from '@fitfriends/exceptions';
+import { Exchanges } from '@fitfriends/rmq';
+import { AuthorizeOwner, OrderStatus, ProductType, Training, TrainingQuery, UserRole } from '@fitfriends/shared-types';
+import { AmqpConnection } from '@golevelup/nestjs-rabbitmq';
+import { ForbiddenException, Injectable } from '@nestjs/common';
+import { OrdersRepository } from '../orders/orders.repository';
 import { TrainingEntity } from './training.entity';
 import { TrainingsRepository } from './trainings.repository';
+
+type WithOrderData<T> = T & {
+  orderId?: number,
+  status?: OrderStatus
+}
 
 @Injectable()
 export class TrainingsService implements AuthorizeOwner {
   constructor(
     private readonly trainingsRepository: TrainingsRepository,
-    private readonly rmqService: RMQService
+    private readonly ordersRepository: OrdersRepository,
+    private readonly amqpConnection: AmqpConnection
   ) { }
 
   public async create(
@@ -44,6 +52,27 @@ export class TrainingsService implements AuthorizeOwner {
     return existTraining;
   }
 
+  public async getOne(
+    id: number,
+    userId: string,
+    userRole: UserRole
+  ): Promise<WithOrderData<Training>> {
+    const existTraining = await this.trainingsRepository.findById(id);
+    if (!existTraining) {
+      throw new ItemNotFoundException('Training', id);
+    }
+    if (userRole === UserRole.Customer) {
+      await this.ordersRepository.markExpiredOrders(userId);
+      const trainingStatus = await this.ordersRepository
+        .getOrderStatus(id, ProductType.Training, userId);
+      return { ...existTraining, orderId: trainingStatus.id, status: trainingStatus.status };
+    }
+    if (userId !== existTraining.authorId) {
+      throw new ForbiddenException();
+    }
+    return existTraining;
+  }
+
   public async getList(
     dto: TrainingQuery
   ): Promise<Training[]> {
@@ -53,11 +82,7 @@ export class TrainingsService implements AuthorizeOwner {
   public async update(
     dto: TrainingUpdateDataDto
   ): Promise<Training> {
-    const { authorId, id } = dto;
-    const isOwner = await this.isOwner(authorId, id);
-    if (!isOwner) {
-      throw new UserNotAuthorizedException(id);
-    }
+    const { id } = dto;
     const existTraining = await this.getById(id);
     const trainingEntity = new TrainingEntity({ ...existTraining, ...dto });
     return this.trainingsRepository.update(id, trainingEntity);
@@ -66,19 +91,16 @@ export class TrainingsService implements AuthorizeOwner {
   public async updateFiles(
     dto: TrainingUpdateImageDto | TrainingUpdateVideoDto
   ): Promise<Training> {
-    const { authorId, id } = dto;
-    const isOwner = await this.isOwner(authorId, id);
-    if (!isOwner) {
-      throw new UserNotAuthorizedException(id);
-    }
+    const { id } = dto;
     const fieldName = Object.values(UploadField)
       .find((field) => dto[field]);
     const existTraining = await this.getById(id);
     const filePath = existTraining[fieldName];
-    await this.rmqService.notify<StorageDeleteFile.Request>(
-      StorageDeleteFile.topic,
-      { fileName: filePath }
-    );
+    await this.amqpConnection.request<StorageDeleteFile.Response>({
+      exchange: Exchanges.storage.name,
+      routingKey: StorageDeleteFile.topic,
+      payload: { fileName: filePath },
+    });
     return this.update({...existTraining, [fieldName]: dto[fieldName] });
   }
 

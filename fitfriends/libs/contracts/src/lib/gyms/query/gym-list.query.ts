@@ -1,4 +1,3 @@
-import { PickType } from '@nestjs/swagger';
-import { GymApi } from '../gym.api';
+import { GymQueryApi } from '../gym-query.api';
 
-export class GymListQuery extends PickType(GymApi, ['sort', 'page', 'count']) { }
+export class GymListQuery extends GymQueryApi { }

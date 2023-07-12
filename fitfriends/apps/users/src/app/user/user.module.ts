@@ -1,10 +1,11 @@
+import { RmqModule } from '@fitfriends/rmq';
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { UserFriendsModel, UserFriendsSchema } from '../friends/user-friends.model';
-import { UserModel, UserSchema } from './user.model';
 import UserFriendsRepository from '../friends/user-friends.repository';
-import UserRepository from './user.repository';
 import { UserController } from './user.controller';
+import { UserModel, UserSchema } from './user.model';
+import UserRepository from './user.repository';
 import { UserService } from './user.service';
 
 @Module({
@@ -19,6 +20,7 @@ import { UserService } from './user.service';
         schema: UserFriendsSchema,
       },
     ]),
+    RmqModule,
   ],
   controllers: [UserController],
   providers: [UserRepository, UserFriendsRepository, UserService],

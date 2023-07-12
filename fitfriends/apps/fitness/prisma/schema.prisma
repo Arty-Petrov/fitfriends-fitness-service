@@ -11,54 +11,68 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Gyms {
-  id          Int      @id @default(autoincrement())
-  title       String
-  location    String
-  isVerified  Boolean
-  features    String[]
-  photos      String[]
-  description String
-  price       Float
-  createdAt   DateTime @default(now())
+model FavoriteGym {
+  fanId     String   @id @unique
+  gyms      Gym[]
+  createdAt DateTime @default(now())
 }
 
-model Orders {
-  id            Int      @id @default(autoincrement())
+model Gym {
+  id           Int           @id @default(autoincrement())
+  title        String
+  location     String
+  isVerified   Boolean       @default(false)
+  features     String[]
+  photos       String[]
+  description  String
+  price        Float
+  createdAt    DateTime      @default(now())
+  favoriteGyms FavoriteGym[]
+  orders       Order[]
+}
+
+model Order {
+  id            Int       @id @default(autoincrement())
   authorId      String
   productType   String
   productId     Int
-  productPrice  Int
-  quantity      Int
-  totalPrice    Float
+  trainingId    Int?
+  training      Training? @relation(fields: [trainingId], references: [id])
+  gymId         Int?
+  gym           Gym?      @relation(fields: [gymId], references: [id])
+  productPrice  Int?
+  status        String
   paymentMethod String
-  createdAt     DateTime @default(now())
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
 }
 
-model Reviews {
-  id         Int       @id @default(autoincrement())
+model Review {
+  id         Int      @id @default(autoincrement())
   authorId   String
   trainingId Int
-  training   Trainings @relation(fields: [trainingId], references: [id])
+  training   Training @relation(fields: [trainingId], references: [id])
   text       String
   evaluation Int
-  createdAt  DateTime  @default(now())
+  createdAt  DateTime @default(now())
 }
 
-model Trainings {
-  id             Int       @id @default(autoincrement())
+model Training {
+  id             Int      @id @default(autoincrement())
   title          String
   image          String
   experience     String
   type           String
   duration       String
-  price          Int
+  price          Int?
   caloriesLoss   Int
   description    String
   gender         String
   video          String
   authorId       String
   isSpecialOffer Boolean
-  reviews        Reviews[]
-  createdAt      DateTime  @default(now())
+  reviews        Review[]
+  rating         Float?   @default(0)
+  createdAt      DateTime @default(now())
+  orders         Order[]
 }

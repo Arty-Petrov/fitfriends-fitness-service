@@ -1,7 +1,7 @@
-import { Order, PaymentMethod, ProductType } from '@fitfriends/shared-types';
+import { Order, OrderStatus, PaymentMethod, ProductType } from '@fitfriends/shared-types';
 import { ApiProperty } from '@nestjs/swagger';
 import { IsEnum, IsMongoId, IsNumber, Max, Min } from 'class-validator';
-import { OrderApiDescription, OrderApiError, OrderQuantityRange } from './order.constant';
+import { OrderAmountRange, OrderApiDescription, OrderApiError } from './order.constant';
 
 export class OrderApi implements Order {
   @ApiProperty({
@@ -43,12 +43,21 @@ export class OrderApi implements Order {
 
   @ApiProperty({
     required: true,
-    description: OrderApiDescription.Quantity,
+    description: OrderApiDescription.Status,
+  })
+  @IsEnum(OrderStatus, {
+    message: OrderApiError.OrderStatusIsNotValid,
+  })
+  public status?: OrderStatus;
+
+  @ApiProperty({
+    required: true,
+    description: OrderApiDescription.Amount,
   })
   @IsNumber()
-  @Min(OrderQuantityRange.Min)
-  @Max(OrderQuantityRange.Max)
-  public quantity: number;
+  @Min(OrderAmountRange.Min)
+  @Max(OrderAmountRange.Max)
+  public amount: number;
 
   @ApiProperty({
     required: true,

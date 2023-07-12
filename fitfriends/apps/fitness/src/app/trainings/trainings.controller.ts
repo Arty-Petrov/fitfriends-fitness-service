@@ -8,19 +8,23 @@ import {
   TrainingUpdateImage,
   TrainingUpdateVideo,
 } from '@fitfriends/contracts';
-import { fillObject } from '@fitfriends/core';
-import { RPCExceptionFilter } from '@fitfriends/exceptions';
-import { Controller, UseFilters } from '@nestjs/common';
-import { RMQRoute, RMQValidate } from 'nestjs-rmq';
+import { fillObject, OwnerGuard } from '@fitfriends/core';
+import { rmqErrorCallback } from '@fitfriends/exceptions';
+import { Exchanges } from '@fitfriends/rmq';
+import { RabbitRPC } from '@golevelup/nestjs-rabbitmq';
+import { Controller, UseGuards } from '@nestjs/common';
 import { TrainingsService } from './trainings.service';
 
 @Controller()
-@UseFilters(new RPCExceptionFilter())
 export class TrainingsController {
   public constructor(private readonly trainingsService: TrainingsService) { }
 
-  @RMQValidate()
-  @RMQRoute(TrainingCreate.topic)
+  @RabbitRPC({
+    exchange: Exchanges.trainings.name,
+    routingKey: TrainingCreate.topic,
+    queue: TrainingCreate.queue,
+    errorHandler: rmqErrorCallback,
+  })
   public async create(
     dto: TrainingCreate.Request
   ): Promise<TrainingCreate.Response> {
@@ -28,8 +32,12 @@ export class TrainingsController {
     return fillObject(TrainingCreate.Response, training);
   }
 
-  @RMQValidate()
-  @RMQRoute(TrainingCreateMany.topic)
+  @RabbitRPC({
+    exchange: Exchanges.trainings.name,
+    routingKey: TrainingCreateMany.topic,
+    queue: TrainingCreateMany.queue,
+    errorHandler: rmqErrorCallback,
+  })
   public async createMany(
     dtos: TrainingCreateMany.Request
   ): Promise<TrainingCreateMany.Response> {
@@ -37,17 +45,26 @@ export class TrainingsController {
     return fillObject(TrainingCreateMany.Response, trainings);
   }
 
-  @RMQValidate()
-  @RMQRoute(TrainingGetOne.topic)
+  @RabbitRPC({
+    exchange: Exchanges.trainings.name,
+    routingKey: TrainingGetOne.topic,
+    queue: TrainingGetOne.queue,
+    errorHandler: rmqErrorCallback,
+  })
   public async getOne(
-    { id }: TrainingGetOne.Request
-  ): Promise<TrainingGetOne.Response> {
-    const training = await this.trainingsService.getById(id);
+    query
+  : TrainingGetOne.Request): Promise<TrainingGetOne.Response> {
+    const { id, userId, role } = query;
+    const training = await this.trainingsService.getOne(id, userId, role);
     return fillObject(TrainingGetOne.Response, training);
   }
 
-  @RMQValidate()
-  @RMQRoute(TrainingGetList.topic)
+  @RabbitRPC({
+    exchange: Exchanges.trainings.name,
+    routingKey: TrainingGetList.topic,
+    queue: TrainingGetList.queue,
+    errorHandler: rmqErrorCallback,
+  })
   public async getList(
     dto: TrainingGetList.Request
   ): Promise<TrainingGetList.Response> {
@@ -55,8 +72,12 @@ export class TrainingsController {
     return fillObject(TrainingGetList.Response, trainings);
   }
 
-  @RMQValidate()
-  @RMQRoute(TrainingGetMyList.topic)
+  @RabbitRPC({
+    exchange: Exchanges.trainings.name,
+    routingKey: TrainingGetMyList.topic,
+    queue: TrainingGetMyList.queue,
+    errorHandler: rmqErrorCallback,
+  })
   public async getMyList(
     dto: TrainingGetMyList.Request
   ): Promise<TrainingGetMyList.Response> {
@@ -64,8 +85,13 @@ export class TrainingsController {
     return fillObject(TrainingGetMyList.Response, trainings);
   }
 
-  @RMQValidate()
-  @RMQRoute(TrainingUpdateData.topic)
+  @RabbitRPC({
+    exchange: Exchanges.trainings.name,
+    routingKey: TrainingUpdateData.topic,
+    queue: TrainingUpdateData.queue,
+    errorHandler: rmqErrorCallback,
+  })
+  @UseGuards(OwnerGuard)
   public async updateData(
     dto: TrainingUpdateData.Request
   ): Promise<TrainingUpdateData.Response> {
@@ -73,8 +99,12 @@ export class TrainingsController {
     return fillObject(TrainingUpdateData.Response, training);
   }
 
-  @RMQValidate()
-  @RMQRoute(TrainingUpdateImage.topic)
+  @RabbitRPC({
+    exchange: Exchanges.trainings.name,
+    routingKey: TrainingUpdateImage.topic,
+    queue: TrainingUpdateImage.queue,
+    errorHandler: rmqErrorCallback,
+  })
   public async updateImage(
     dto: TrainingUpdateImage.Request
   ): Promise<TrainingUpdateImage.Response> {
@@ -82,8 +112,12 @@ export class TrainingsController {
     return fillObject(TrainingUpdateImage.Response, training);
   }
 
-  @RMQValidate()
-  @RMQRoute(TrainingUpdateVideo.topic)
+  @RabbitRPC({
+    exchange: Exchanges.trainings.name,
+    routingKey: TrainingUpdateVideo.topic,
+    queue: TrainingUpdateVideo.queue,
+    errorHandler: rmqErrorCallback,
+  })
   public async updateVideo(
     dto: TrainingUpdateVideo.Request
   ): Promise<TrainingUpdateVideo.Response> {

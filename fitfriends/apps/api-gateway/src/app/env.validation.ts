@@ -1,6 +1,6 @@
 import { plainToInstance } from 'class-transformer';
-import { EnvValidationMessage } from './app.constant';
 import { IsString, validateSync } from 'class-validator';
+import { EnvValidationMessage } from './app.constant';
 
 class EnvironmentsConfig {
   @IsString({
@@ -26,7 +26,12 @@ class EnvironmentsConfig {
   @IsString({
     message: EnvValidationMessage.RmqHostRequired,
   })
-  public RMQ_HOST_NAME: string;
+  public RMQ_HOST: string;
+
+  @IsString({
+    message: EnvValidationMessage.RmqPortRequired,
+  })
+  public RMQ_PORT: string;
 
   @IsString({
     message: EnvValidationMessage.JwtAccessTokenSecretRequired,

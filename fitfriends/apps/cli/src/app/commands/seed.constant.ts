@@ -1,5 +1,6 @@
 export const CUSTOMERS_COUNT = 20;
 export const COACHES_COUNT = 10;
+export const GYMS_COUNT = 5;
 
 export const UserFriendsCount = {
   Min: (CUSTOMERS_COUNT + COACHES_COUNT) / 4,

@@ -10,5 +10,6 @@ export interface Gym {
   photos: string[];
   description: string;
   price: number;
+  isFavorite?: boolean;
   createdAt?: Date;
 }

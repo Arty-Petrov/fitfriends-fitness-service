@@ -1,6 +1,6 @@
 import { OrderSortType, ProductType, SortOrder } from '@fitfriends/shared-types';
 import { Transform } from 'class-transformer';
-import { IsEnum, IsNumber, IsOptional, Max } from 'class-validator';
+import { IsBoolean, IsEnum, IsNumber, IsOptional, Max } from 'class-validator';
 import {
   DEFAULT_ORDERS_COUNT_LIMIT,
   DEFAULT_ORDERS_PAGINATION_COUNT,
@@ -39,6 +39,14 @@ export class OrderQueryApi {
   @IsOptional()
   public type?: ProductType;
 
+  @Transform(({ value }) => JSON.parse(value))
+  @IsBoolean()
+  @IsOptional()
+  public isActive: boolean;
+
   @IsOptional()
   public coachId: string;
+
+  @IsOptional()
+  public customerId: string;
 }

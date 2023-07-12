@@ -6,6 +6,6 @@ export class OrderCreateDto extends PickType(OrderApi, [
   'productType',
   'productId',
   'productPrice',
-  'quantity',
+  'amount',
   'paymentMethod',
 ]) { }

@@ -1,14 +1,21 @@
 import {
+  GymCardRdo,
+  GymGetFavoriteList,
   OrderCoachListQuery,
+  OrderCoachListRdo,
+  OrderCustomerListQuery,
+  OrderCustomerListRdo,
   OrderGetCoachList,
+  OrderGetCustomerList,
   UserCardRdo,
   UserFriendListQuery,
   UserGetFriendList,
 } from '@fitfriends/contracts';
+import { Exchanges } from '@fitfriends/rmq';
 import { UserRole } from '@fitfriends/shared-types';
-import { Controller, Get, HttpStatus, Query, UseGuards } from '@nestjs/common';
+import { AmqpConnection } from '@golevelup/nestjs-rabbitmq';
+import { Controller, Get, HttpStatus, NotImplementedException, Query, UseGuards } from '@nestjs/common';
 import { ApiResponse } from '@nestjs/swagger';
-import { RMQService } from 'nestjs-rmq';
 import { Roles } from '../decorators/roles.decorator';
 import { UserData } from '../decorators/user-data.decorator';
 import { JwtAccessGuard } from '../guards/jwt-access.guard';
@@ -16,7 +23,7 @@ import { RolesGuard } from '../guards/roles.guard';
 
 @Controller('my')
 export class MyController {
-  constructor(private readonly rmqService: RMQService) {}
+  constructor(private readonly amqpConnection: AmqpConnection) { }
 
   @Get('friends')
   @ApiResponse({
@@ -29,27 +36,81 @@ export class MyController {
     @Query() query: UserFriendListQuery,
     @UserData('sub') id: string
   ): Promise<UserGetFriendList.Response> {
-    return await this.rmqService.send<
-      UserGetFriendList.Request,
-      UserGetFriendList.Response
-    >(UserGetFriendList.topic, { ...query, userId: id });
+    return await this.amqpConnection.request<UserGetFriendList.Response>({
+      exchange: Exchanges.user.name,
+      routingKey: UserGetFriendList.topic,
+      payload: { ...query, userId: id },
+    });
   }
 
   @Get('orders')
   @ApiResponse({
-    type: UserCardRdo,
+    type: OrderCoachListRdo,
     status: HttpStatus.OK,
-    description: 'User friends found',
+    description: 'Coache\'s orders found',
   })
   @Roles(UserRole.Coach)
   @UseGuards(JwtAccessGuard, RolesGuard)
-  async getMyTrainings(
+  async getMyOrders(
     @Query() query: OrderCoachListQuery,
-    @UserData('sub') id: string
+    @UserData('sub') userId: string
   ): Promise<OrderGetCoachList.Response> {
-    return await this.rmqService.send<
-      OrderGetCoachList.Request,
-      OrderGetCoachList.Response
-    >(OrderGetCoachList.topic, { ...query, coachId: id });
+    return await this.amqpConnection.request<OrderGetCoachList.Response>({
+      exchange: Exchanges.orders.name,
+      routingKey: OrderGetCoachList.topic,
+      payload: { ...query, coachId: userId },
+    });
+  }
+
+  @Get('purchases')
+  @ApiResponse({
+    type: OrderCustomerListRdo,
+    status: HttpStatus.OK,
+    description: 'Customers\'s purchases found',
+  })
+  @Roles(UserRole.Customer)
+  @UseGuards(JwtAccessGuard, RolesGuard)
+  async getMyPurchases(
+    @Query() query: OrderCustomerListQuery,
+    @UserData('sub') userId: string
+  ): Promise<OrderGetCustomerList.Response> {
+    return await this.amqpConnection.request<OrderGetCustomerList.Response>({
+      exchange: Exchanges.orders.name,
+      routingKey: OrderGetCustomerList.topic,
+      payload: { ...query, customerId: userId },
+    });
+  }
+
+  @Get('gyms')
+  @ApiResponse({
+    type: GymCardRdo,
+    status: HttpStatus.OK,
+    description: 'Favorite gyms is found',
+  })
+  @Roles(UserRole.Customer)
+  @UseGuards(JwtAccessGuard, RolesGuard)
+  public async getFavoriteList(
+    @UserData('sub') userId: string,
+    @Query() query: GymGetFavoriteList.Request
+  ): Promise<GymGetFavoriteList.Response> {
+    return await this.amqpConnection.request<GymGetFavoriteList.Response>({
+      exchange: Exchanges.gyms.name,
+      routingKey: GymGetFavoriteList.topic,
+      payload: { ...query, userId: userId },
+    });
+  }
+
+  @Get('activity')
+  @Roles(UserRole.Customer)
+  @UseGuards(JwtAccessGuard, RolesGuard)
+  public async getActivity() {
+    throw new NotImplementedException();
+  }
+
+  @Get('feeding')
+  @Roles(UserRole.Customer)
+  @UseGuards(JwtAccessGuard, RolesGuard)
+  public async getFeeding() {
+    throw new NotImplementedException();
   }
 }

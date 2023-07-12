@@ -11,13 +11,14 @@ import {
   UserUploadCertificate,
 } from '@fitfriends/contracts';
 import { UploadField } from '@fitfriends/core';
+import { Exchanges } from '@fitfriends/rmq';
+import { AmqpConnection } from '@golevelup/nestjs-rabbitmq';
 import {
   Body,
   Controller,
   HttpCode,
   HttpStatus,
   Post,
-  UnauthorizedException,
   UploadedFile,
   UseGuards,
   UseInterceptors,
@@ -25,7 +26,6 @@ import {
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ApiResponse, ApiTags } from '@nestjs/swagger';
 import { Express } from 'express';
-import { RMQService } from 'nestjs-rmq';
 import { MulterOptions } from '../../config/multer.config';
 import { UserData } from '../decorators/user-data.decorator';
 import { JwtRefreshGuard } from '../guards/jwt-refresh.guard';
@@ -34,7 +34,7 @@ import { NoAuthGuard } from '../guards/no-auth.guard';
 @ApiTags('auth')
 @Controller('auth')
 export class AuthController {
-  constructor(private readonly rmqService: RMQService) { }
+  constructor(private readonly amqpConnection: AmqpConnection) { }
 
   @Post('avatar')
   @UseInterceptors(FileInterceptor(UploadField.Avatar, MulterOptions.Avatar))
@@ -47,7 +47,9 @@ export class AuthController {
   }
 
   @Post('certificate')
-  @UseInterceptors(FileInterceptor(UploadField.Certificate, MulterOptions.Certificate))
+  @UseInterceptors(
+    FileInterceptor(UploadField.Certificate, MulterOptions.Certificate)
+  )
   public async uploadCertificate(
     @UploadedFile() file: Express.Multer.File
   ): Promise<UserUploadCertificate.Response> {
@@ -62,17 +64,14 @@ export class AuthController {
     description: 'The new user has been successfully created.',
   })
   @UseGuards(NoAuthGuard)
-  public async signUp(@Body() dto: UserSignUpDto): Promise<UserSignUp.Response> {
-    try {
-      return await this.rmqService.send<
-        UserSignUp.Request,
-        UserSignUp.Response>
-        (UserSignUp.topic, dto);
-    } catch (error) {
-      if (error instanceof Error) {
-        throw new UnauthorizedException(error.message);
-      }
-    }
+  public async signUp(
+    @Body() dto: UserSignUpDto
+  ): Promise<UserSignUp.Response> {
+    return await this.amqpConnection.request<UserSignUp.Response>({
+      exchange: Exchanges.user.name,
+      routingKey: UserSignUp.topic,
+      payload: dto,
+    });
   }
 
   @Post('sign-in')
@@ -90,19 +89,11 @@ export class AuthController {
   public async signIn(
     @Body() dto: UserSignInDto
   ): Promise<UserSignIn.Response> {
-    try {
-      return await this.rmqService.send<
-        UserSignIn.Request,
-        UserSignIn.Response
-      >(
-        UserSignIn.topic,
-        dto
-      );
-    } catch (error) {
-      if (error instanceof Error) {
-        throw new UnauthorizedException(error.message);
-      }
-    }
+    return await this.amqpConnection.request<UserSignIn.Response>({
+      exchange: Exchanges.user.name,
+      routingKey: UserSignIn.topic,
+      payload: dto,
+    });
   }
 
   @Post('sign-out')
@@ -115,17 +106,11 @@ export class AuthController {
   public async signOut(
     @UserData() { refreshTokenId }: UserRefreshTokenDto
   ): Promise<UserSignOut.Response> {
-    try {
-      return await this.rmqService.send<
-        UserSignOut.Request,
-        UserSignOut.Response
-      >(
-        UserSignOut.topic, { refreshTokenId });
-    } catch (error) {
-      if (error instanceof Error) {
-        throw new UnauthorizedException(error.message);
-      }
-    }
+    return await this.amqpConnection.request<UserSignOut.Response>({
+      exchange: Exchanges.user.name,
+      routingKey: UserSignOut.topic,
+      payload: { refreshTokenId },
+    });
   }
 
   @Post('refresh')
@@ -137,19 +122,11 @@ export class AuthController {
   @UseGuards(JwtRefreshGuard)
   public async refresh(
     @UserData() refreshTokenPayload: UserRefreshTokenDto
-
   ): Promise<UserRefreshToken.Response> {
-    try {
-      return await this.rmqService.send<
-        UserRefreshToken.Request,
-        UserRefreshToken.Response
-      >(
-        UserRefreshToken.topic, refreshTokenPayload
-      );
-    } catch (error) {
-      if (error instanceof Error) {
-        throw new UnauthorizedException(error.message);
-      }
-    }
+    return await this.amqpConnection.request<UserRefreshToken.Response>({
+      exchange: Exchanges.user.name,
+      routingKey: UserRefreshToken.topic,
+      payload: refreshTokenPayload,
+    });
   }
 }

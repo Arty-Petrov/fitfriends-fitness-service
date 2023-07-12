@@ -10,19 +10,19 @@ export class TrainingsRepository
   constructor(private readonly prisma: PrismaService) { }
 
   public async create(entity: TrainingEntity): Promise<Training> {
-    return this.prisma.trainings.create({
+    return this.prisma.training.create({
       data: { ...entity},
     }) as unknown as Training;
   }
 
   public async createMany(entities: TrainingEntity[]): Promise<Training[]> {
     return this.prisma.$transaction(
-      entities.map((entity) => this.prisma.trainings.create({ data: entity}))
+      entities.map((entity) => this.prisma.training.create({ data: entity}))
     ) as unknown as Training[];
   }
 
   public async findById(id: number): Promise<Training | null> {
-    return this.prisma.trainings.findFirst({
+    return this.prisma.training.findFirst({
       where: { id },
     }) as unknown as Training;
   }
@@ -39,7 +39,7 @@ export class TrainingsRepository
       types,
       durations,
     } = query;
-    return this.prisma.trainings.findMany({
+    return this.prisma.training.findMany({
       where: {
         duration: { in: durations },
         type: { in: types },
@@ -59,14 +59,20 @@ export class TrainingsRepository
   }
 
   public async update(id: number, entity: TrainingEntity): Promise<Training> {
-    return this.prisma.trainings.update({
+    return this.prisma.training.update({
       where: { id },
       data: { ...entity },
     }) as unknown as Training;
   }
 
+  public async updateRating(id: number, rating: number): Promise<void> {
+    await this.prisma.training.update({
+      where: { id },
+      data: { rating: rating },
+    }) as unknown as Training;
+  }
   public async destroy(id: number): Promise<void> {
-    await this.prisma.trainings.delete({
+    await this.prisma.training.delete({
       where: { id },
     });
   }

@@ -11,7 +11,9 @@ import {
   UserUploadCertificate,
 } from '@fitfriends/contracts';
 import { MongoidValidationPipe, UploadField } from '@fitfriends/core';
+import { Exchanges } from '@fitfriends/rmq';
 import { TokenPayload, UserRole } from '@fitfriends/shared-types';
+import { AmqpConnection } from '@golevelup/nestjs-rabbitmq';
 import {
   Controller,
   Get,
@@ -26,7 +28,6 @@ import {
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ApiResponse, ApiTags } from '@nestjs/swagger';
-import { RMQService } from 'nestjs-rmq';
 import { MulterOptions } from '../../config/multer.config';
 import { Roles } from '../decorators/roles.decorator';
 import { UserData } from '../decorators/user-data.decorator';
@@ -37,7 +38,7 @@ import { UserDataInterceptor } from '../interceptors/user-data-interceptor';
 @ApiTags('users')
 @Controller('users')
 export class UsersController {
-  constructor(private readonly rmqService: RMQService) { }
+  constructor(private readonly amqpConnection: AmqpConnection) { }
 
   @Get(':id')
   @ApiResponse({
@@ -47,12 +48,13 @@ export class UsersController {
   })
   @UseGuards(JwtAccessGuard)
   async getOne(
-    @Param('id', MongoidValidationPipe) id: string,
+    @Param('id', MongoidValidationPipe) id: string
   ): Promise<UserGetOne.Response> {
-    return await this.rmqService.send<UserGetOne.Request, UserGetOne.Response>(
-      UserGetOne.topic,
-      { id }
-    );
+    return await this.amqpConnection.request<UserGetOne.Response>({
+      exchange: Exchanges.user.name,
+      routingKey: UserGetOne.topic,
+      payload: { id },
+    });
   }
 
   @Get()
@@ -62,11 +64,12 @@ export class UsersController {
     description: 'Users found',
   })
   @UseGuards(JwtAccessGuard)
-  async getList(
-    @Query() dto: UserListQuery,
-  ): Promise<UserGetList.Response> {
-    return await this.rmqService.send<UserGetList.Request, UserGetList.Response>(
-      UserGetList.topic, dto);
+  async getList(@Query() dto: UserListQuery): Promise<UserGetList.Response> {
+    return await this.amqpConnection.request<UserGetOne.Response>({
+      exchange: Exchanges.user.name,
+      routingKey: UserGetList.topic,
+      payload: dto,
+    });
   }
 
   @Patch('avatar')
@@ -74,34 +77,36 @@ export class UsersController {
   @UseInterceptors(FileInterceptor(UploadField.Avatar, MulterOptions.Avatar))
   public async uploadAvatar(
     @UploadedFile() file: Express.Multer.File,
-    @UserData() user: TokenPayload,
+    @UserData() user: TokenPayload
   ): Promise<UserUploadAvatar.Response> {
-    const dto = {
-      id: user.sub,
-      avatar: file.path,
-    }
-    return await this.rmqService.send<
-      UserUploadAvatar.Request,
-      UserUploadAvatar.Response
-    >(UserUploadAvatar.topic, dto);
+    return await this.amqpConnection.request<UserUploadAvatar.Response>({
+      exchange: Exchanges.user.name,
+      routingKey: UserUploadAvatar.topic,
+      payload: {
+        id: user.sub,
+        avatar: file.path,
+      },
+    });
   }
 
   @Patch('certificate')
   @Roles(UserRole.Coach)
   @UseGuards(JwtAccessGuard, RolesGuard)
-  @UseInterceptors(FileInterceptor(UploadField.Certificate, MulterOptions.Certificate))
+  @UseInterceptors(
+    FileInterceptor(UploadField.Certificate, MulterOptions.Certificate)
+  )
   public async uploadCertificate(
     @UploadedFile() file: Express.Multer.File,
-    @UserData() user: TokenPayload,
+    @UserData() user: TokenPayload
   ): Promise<UserUploadCertificate.Response> {
-    const dto = {
-      id: user.sub,
-      certificate: file.path,
-    }
-    return await this.rmqService.send<
-      UserUploadCertificate.Request,
-      UserUploadCertificate.Response
-    >(UserUploadCertificate.topic, dto);
+    return await this.amqpConnection.request<UserUploadCertificate.Response>({
+      exchange: Exchanges.user.name,
+      routingKey: UserUploadCertificate.topic,
+      payload: {
+        id: user.sub,
+        certificate: file.path,
+      },
+    });
   }
 
   @Patch()
@@ -112,13 +117,12 @@ export class UsersController {
   })
   @UseGuards(JwtAccessGuard)
   @UseInterceptors(UserDataInterceptor)
-  async update(
-    @UserData() dto: UserUpdateDataDto
-  ) {
-    return await this.rmqService.send<
-      UserUpdateData.Request,
-      UserUpdateData.Response
-    >(UserUpdateData.topic, dto);
+  async update(@UserData() dto: UserUpdateDataDto) {
+    return await this.amqpConnection.request<UserUpdateData.Response>({
+      exchange: Exchanges.user.name,
+      routingKey: UserUpdateData.topic,
+      payload: dto,
+    });
   }
 
   @Put('friend/:id')
@@ -127,15 +131,17 @@ export class UsersController {
     status: HttpStatus.OK,
     description: 'User placed to friends list',
   })
-  @UseGuards(JwtAccessGuard)
+  @Roles(UserRole.Customer)
+  @UseGuards(JwtAccessGuard, RolesGuard)
   async addFriend(
     @Param('id') friendId: string,
-    @UserData('sub') userId: string,
+    @UserData('sub') userId: string
   ) {
-    return await this.rmqService.send<
-      UserAddFriend.Request,
-      UserAddFriend.Response
-    >(UserAddFriend.topic, {userId, friendId});
+    return await this.amqpConnection.request<UserAddFriend.Response>({
+      exchange: Exchanges.user.name,
+      routingKey: UserAddFriend.topic,
+      payload: { userId, friendId },
+    });
   }
 
   @Patch('friend/:id')
@@ -147,11 +153,12 @@ export class UsersController {
   @UseGuards(JwtAccessGuard)
   async removeFriend(
     @Param('id') friendId: string,
-    @UserData('sub') userId: string,
+    @UserData('sub') userId: string
   ) {
-    return await this.rmqService.send<
-      UserRemoveFriend.Request,
-      UserRemoveFriend.Response
-    >(UserRemoveFriend.topic, {userId, friendId});
+    return await this.amqpConnection.request<UserRemoveFriend.Response>({
+      exchange: Exchanges.user.name,
+      routingKey: UserRemoveFriend.topic,
+      payload: { userId, friendId },
+    });
   }
 }

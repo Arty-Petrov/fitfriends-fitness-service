@@ -1,4 +1,4 @@
-import { TrainingDuration, TrainingType, UserExperience, UserGender } from '@fitfriends/shared-types';
+import { OrderStatus, TrainingDuration, TrainingType, UserExperience, UserGender } from '@fitfriends/shared-types';
 import { PickType } from '@nestjs/swagger';
 import { Expose } from 'class-transformer';
 import { TrainingApi } from '../training.api';
@@ -60,4 +60,10 @@ export class TrainingCardRdo extends PickType(TrainingApi, [
 
   @Expose()
   public isSpecialOffer: boolean;
+
+  @Expose()
+  public orderId: number;
+
+  @Expose()
+  public status?: Exclude<OrderStatus | null, OrderStatus.Expired | OrderStatus.Finished>;
 }

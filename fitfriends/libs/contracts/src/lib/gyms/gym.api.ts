@@ -1,6 +1,5 @@
-import { Gym, GymFeature, SortOrder, SubwayStation } from '@fitfriends/shared-types';
+import { Gym, GymFeature, SubwayStation } from '@fitfriends/shared-types';
 import { ApiProperty } from '@nestjs/swagger';
-import { Transform } from 'class-transformer';
 import {
   ArrayMaxSize,
   ArrayNotEmpty,
@@ -14,16 +13,7 @@ import {
   Max,
   Min,
 } from 'class-validator';
-import {
-  DEFAULT_GYM_COUNT_LIMIT,
-  DEFAULT_GYM_PAGINATION_COUNT,
-  DEFAULT_GYM_SORT_ORDER,
-  GymApiDescription,
-  GymApiError,
-  GymNameLength,
-  GymPhotosSize,
-  GymPriceRange,
-} from './gym.constant';
+import { GymApiDescription, GymApiError, GymPhotosSize, GymPriceRange, GymTitleLength } from './gym.constant';
 
 export class GymApi implements Gym {
   @ApiProperty({
@@ -35,11 +25,11 @@ export class GymApi implements Gym {
 
   @ApiProperty({
     required: true,
-    description: GymApiDescription.Name,
+    description: GymApiDescription.Title,
   })
   @IsString()
-  @Length(GymNameLength.Min, GymNameLength.Max, {
-    message: GymApiError.NameNotValid,
+  @Length(GymTitleLength.Min, GymTitleLength.Max, {
+    message: GymApiError.TitleNotValid,
   })
   public title: string;
 
@@ -104,29 +94,13 @@ export class GymApi implements Gym {
 
   @ApiProperty({
     required: true,
+    description: GymApiDescription.IsFavorite,
+  })
+  @IsBooleanString()
+  public isFavorite: boolean;
+
+  @ApiProperty({
+    required: true,
   })
   public createdAt: Date;
-
-  @ApiProperty({
-    required: false,
-  })
-  @IsEnum(SortOrder)
-  public sort: SortOrder = DEFAULT_GYM_SORT_ORDER;
-
-  @ApiProperty({
-    required: false,
-  })
-  @Transform(({ value }) => +value)
-  @IsNumber()
-  public page: number = DEFAULT_GYM_PAGINATION_COUNT;
-
-  @ApiProperty({
-    required: false,
-  })
-  @Transform(({ value }) => +value)
-  @IsNumber()
-  @Transform(({ value }) => {
-    return value < DEFAULT_GYM_COUNT_LIMIT ? value : DEFAULT_GYM_COUNT_LIMIT;
-  })
-  public count: number = DEFAULT_GYM_COUNT_LIMIT;
 }

@@ -10,6 +10,8 @@ export const DEFAULT_TRAININGS_PAGINATION_COUNT = 1;
 export const DEFAULT_TRAININGS_SORT_ORDER = SortOrder.Descended;
 export const DEFAULT_TRAININGS_COUNT_LIMIT = 50;
 
+export const TRAININGS_RATING_DECIMALS = 1;
+
 export const enum TrainingTitleLength {
   Min = 1,
   Max = 15,

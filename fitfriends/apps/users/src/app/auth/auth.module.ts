@@ -1,3 +1,4 @@
+import { RmqModule } from '@fitfriends/rmq';
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { JwtModule } from '@nestjs/jwt';
@@ -13,15 +14,15 @@ import { AuthService } from './auth.service';
     JwtModule.registerAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
-      useFactory: getJwtConfig
+      useFactory: getJwtConfig,
     }),
     PassportModule,
-    UserModule, 
-    RefreshTokenModule],
-  controllers: [AuthController],
-  providers: [
-    AuthService,
+    RmqModule,
+    UserModule,
+    RefreshTokenModule,
   ],
+  controllers: [AuthController],
+  providers: [AuthService],
   exports: [AuthService],
 })
 export class AuthModule { }

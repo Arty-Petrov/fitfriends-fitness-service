@@ -6,6 +6,8 @@ import { TrainingApi } from '../training.api';
 export namespace TrainingUpdateVideo {
   export const topic = 'training.update-video.command';
 
+  export const queue = 'training.update-video';
+
   export class Request extends TrainingUpdateVideoDto { }
 
   export class Response extends PickType(TrainingApi, ['video']) {

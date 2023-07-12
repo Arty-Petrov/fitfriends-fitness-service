@@ -62,12 +62,12 @@ class EnvironmentsConfig {
   @IsString({
     message: EnvValidationMessage.RmqHostRequired,
   })
-  public RMQ_HOST_NAME: string;
+  public RMQ_HOST: string;
 
   @IsString({
-    message: EnvValidationMessage.RmqQueueRequired,
+    message: EnvValidationMessage.RmqPortRequired,
   })
-  public RMQ_USERS_QUEUE: string;
+  public RMQ_PORT: string;
 
   @IsString({
     message: EnvValidationMessage.JwtAccessTokenSecretRequired,

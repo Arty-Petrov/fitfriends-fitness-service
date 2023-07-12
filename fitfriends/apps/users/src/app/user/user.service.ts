@@ -11,9 +11,10 @@ import {
   UserNotFoundException,
   UserNotRegisteredException,
 } from '@fitfriends/exceptions';
+import { Exchanges } from '@fitfriends/rmq';
 import { User } from '@fitfriends/shared-types';
+import { AmqpConnection } from '@golevelup/nestjs-rabbitmq';
 import { HttpStatus, Injectable } from '@nestjs/common';
-import { RMQService } from 'nestjs-rmq';
 import { UserFriendsEntity } from '../friends/user-friends.entity';
 import UserFriendsRepository from '../friends/user-friends.repository';
 import { UserEntity } from './user.entity';
@@ -24,7 +25,7 @@ export class UserService {
   constructor(
     private readonly userRepository: UserRepository,
     private readonly userFriendsRepository: UserFriendsRepository,
-    private readonly rmqService: RMQService
+    private readonly amqpConnection: AmqpConnection
   ) { }
 
   public async createMany(dtos: UserSignUpDto[]): Promise<User[]> {
@@ -33,7 +34,7 @@ export class UserService {
       const { email, password } = dto;
       delete dto.password;
       const existUser = await this.userRepository.findByEmail(email);
-      if (existUser ) {
+      if (existUser) {
         break;
       }
       const userEntity = await new UserEntity(dto).setPassword(password);
@@ -77,10 +78,11 @@ export class UserService {
       .toString();
     const existUser = await this.getById(id);
     const filePath = existUser[fieldName];
-    await this.rmqService.notify<StorageDeleteFile.Request>(
-      StorageDeleteFile.topic,
-      { fileName: filePath }
-    );
+    await this.amqpConnection.request<StorageDeleteFile.Response>({
+      exchange: Exchanges.storage.name,
+      routingKey: StorageDeleteFile.topic,
+      payload: { fileName: filePath },
+    });
     return this.update({ id, [fieldName]: dto[fieldName] });
   }
 
