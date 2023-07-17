@@ -77,6 +77,13 @@
         "command": "docker-compose stop",
         "cwd": "apps/users"
       }
+    },
+    "db-reset": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "env-cmd -f ../../envs/.env sh -c 'mongosh --host $MONGO_HOST --port $MONGO_PORT --username $MONGO_USER --password $MONGO_PASSWORD --authenticationDatabase $MONGO_AUTH_BASE $MONGO_DB  --eval \"db.getCollectionNames().forEach((collection) => db[collection].drop())\"'",
+        "cwd": "apps/users"
+      }
     }
   },
   "tags": []

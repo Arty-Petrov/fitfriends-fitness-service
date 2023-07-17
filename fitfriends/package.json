@@ -3,11 +3,13 @@
   "version": "0.0.0",
   "license": "MIT",
   "scripts": {
+    "set-env": "export $(cat .env | grep \"^[^#;]\" |xargs)",
     "services:docker-up": "nx run api-gateway:docker-up && nx run users:docker-up && nx run fitness:docker-up",
     "services:docker-stop": "nx run api-gateway:docker-stop && nx run users:docker-stop && nx run fitness:docker-stop",
     "services:docker-start": "nx run api-gateway:docker-start && nx run users:docker-start && nx run fitness:docker-start",
     "services:db-init": "nx run fitness:db-migrate && nx run fitness:db-generate",
-    "services:seed": "nx run cli:build && node ./dist/apps/cli/main.js seed",
+    "services:db-seed": "nx run cli:build && node ./dist/apps/cli/main.js seed",
+    "services:db-reset": "nx run fitness:db-reset && nx run users:db-reset",
     "services:start": "concurrently \"nx run api-gateway:serve\"  \"nx run users:serve\" \"nx run fitness:serve\" \"nx run storage:serve\""
   },
   "private": true,
@@ -73,6 +75,7 @@
     "babel-jest": "^29.4.1",
     "concurrently": "^8.0.1",
     "cypress": "^12.2.0",
+    "env-cmd": "^10.1.0",
     "eslint": "~8.15.0",
     "eslint-config-prettier": "8.1.0",
     "eslint-plugin-cypress": "^2.10.3",
