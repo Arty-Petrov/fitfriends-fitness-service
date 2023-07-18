@@ -14,6 +14,8 @@ export * from './lib/reviews/review.constant';
 
 export * from './lib/storage/contract/storage-delete-file';
 
+export * from './lib/feed/index';
+
 export * from './lib/orders/index';
 
 export * from './lib/trainings/index';

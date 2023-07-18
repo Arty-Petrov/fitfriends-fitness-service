@@ -3,6 +3,7 @@ import { ConfigModule } from '@nestjs/config';
 import { rabbitMqOptions } from '../config/rabbitmq.config';
 import { FITNESS_SERVICE_ENV_PATH } from './app.constant';
 import { validateEnvironments } from './env.valitation';
+import { FeedModule } from './feed/feed.module';
 import { GymsModule } from './gyms/gyms.module';
 import { OrdersModule } from './orders/orders.module';
 import { PrismaModule } from './prisma/prisma.module';
@@ -18,6 +19,7 @@ import { TrainingsModule } from './trainings/trainings.module';
       load: [rabbitMqOptions],
       validate: validateEnvironments,
     }),
+    FeedModule,
     GymsModule,
     OrdersModule,
     PrismaModule,
@@ -26,5 +28,5 @@ import { TrainingsModule } from './trainings/trainings.module';
   ],
   controllers: [],
   providers: [],
-}) 
+})
 export class AppModule { }

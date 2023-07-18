@@ -76,3 +76,13 @@ model Training {
   createdAt      DateTime @default(now())
   orders         Order[]
 }
+
+model Feed {
+  id           Int      @id @default(autoincrement())
+  date         DateTime
+  mealOrdinal  Int
+  authorId     String
+  caloriesGain Int
+
+  @@unique(fields: [date, mealOrdinal, authorId], name: "dateMealOrdinalAuthor")
+}
