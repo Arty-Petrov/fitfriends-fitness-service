@@ -79,7 +79,7 @@ export class OrdersService implements AuthorizeOwner {
 
   public async update(dto: OrderUpdateDataDto): Promise<Order> {
     const { id, authorId, status } = dto;
-    this.markExpiredOrders(authorId);
+    await this.markExpiredOrders(authorId);
     const existOrder = await this.getById(id);
     const orderEntity = new OrderEntity({ ...existOrder });
     orderEntity.updateStatus(status);

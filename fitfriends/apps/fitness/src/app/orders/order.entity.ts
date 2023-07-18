@@ -11,7 +11,6 @@ export class OrderEntity implements Entity<OrderEntity>, Order {
   status: OrderStatus;
   paymentMethod: PaymentMethod;
   createdAt: Date;
-  statusFlow: OrderStatus[];
 
   constructor(entity: Order) {
     this.fillEntity(entity);
