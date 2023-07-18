@@ -1,7 +1,10 @@
 import { faker } from '@faker-js/faker';
 import {
+  FeedCreateDto,
+  FeedCreateMany,
   GymCreateDto,
   GymCreateMany,
+  OrderAmountRange,
   OrderCreateDto,
   OrderCreateMany,
   ReviewCreateMany,
@@ -13,11 +16,22 @@ import {
   UserSignUpDto,
 } from '@fitfriends/contracts';
 import { Exchanges } from '@fitfriends/rmq';
-import { Gym, Order, ProductType, Review, Training, User, UserFriends, UserRole } from '@fitfriends/shared-types';
+import {
+  FeedMealType,
+  Gym,
+  ProductType,
+  Review,
+  Training,
+  User,
+  UserFriends,
+  UserRole,
+} from '@fitfriends/shared-types';
 import { AmqpConnection } from '@golevelup/nestjs-rabbitmq';
 import { Injectable } from '@nestjs/common';
+import dayjs from 'dayjs';
 import { Command, CommandRunner } from 'nest-commander';
 import { generateFriendList, generateOrder, generateReview, generateTraining, generateUser } from '../mock-generators';
+import { generateFeed } from '../mock-generators/generate-feed';
 import { generateGym } from '../mock-generators/generate-gym';
 import {
   CoacherTrainingsCount,
@@ -25,7 +39,9 @@ import {
   CustomerOrdersCount,
   CUSTOMERS_COUNT,
   DefaultEmail,
+  DIARY_DAYS_COUNT,
   GYMS_COUNT,
+  MealCaloriesAmount,
   TrainingReviewersCount,
   UserFriendsCount,
 } from './seed.constant';
@@ -38,7 +54,7 @@ export class SeedCommand extends CommandRunner {
   private friends: UserFriends[];
   private trainings: Training[];
   private reviews: Review[];
-  private orders: Order[];
+  private orders: string;
   private gyms: Gym[];
 
   constructor(private readonly amqpConnection: AmqpConnection) {
@@ -51,6 +67,7 @@ export class SeedCommand extends CommandRunner {
     await this.seedTrainigs();
     await this.seedReviews();
     await this.seedOrders();
+    await this.seedFeed();
   }
   private async seedUsers() {
     console.log('creating users');
@@ -200,8 +217,8 @@ export class SeedCommand extends CommandRunner {
             .arrayElements(
               this.gyms,
               faker.datatype.number({
-                min: CustomerOrdersCount.Min,
-                max: CustomerOrdersCount.Max,
+                min: OrderAmountRange.Min,
+                max: OrderAmountRange.Max,
               })
             )
             .map((product) => generateOrder(customerId, product, ProductType.Gym))
@@ -223,11 +240,43 @@ export class SeedCommand extends CommandRunner {
         )
         .flat())
     );
-    await this.amqpConnection.request<OrderCreateMany.Response>({
-      exchange: Exchanges.reviews.name,
-      routingKey: OrderCreateMany.topic,
-      payload: [...trainingOrders, ...gymVisitOrders],
-    });
+    this.orders =
+      (await this.amqpConnection.request<OrderCreateMany.Response>({
+        exchange: Exchanges.orders.name,
+        routingKey: OrderCreateMany.topic,
+        payload: [...trainingOrders, ...gymVisitOrders],
+        timeout: 100000,
+      }) as unknown as string);
     console.log('orders are created');
+  }
+
+  private async seedFeed() {
+    let feedRecords: Array<FeedCreateDto>;
+    console.log('creating feed diaries');
+    const customerIds = this.customers.map((customer) => customer?.id);
+    const date = dayjs(new Date(dayjs().format('YYYY-MM-DD')));
+    const dates = new Array(DIARY_DAYS_COUNT).fill(date.toDate())
+    const mealTypes = Object.values(FeedMealType);
+    await Promise.all(
+      (feedRecords = customerIds
+        .map((customerId) =>
+          dates.map((date, i) => mealTypes
+            .map((mealType) => generateFeed(
+              dayjs(date).add(i, 'days').toDate(),
+              mealTypes.indexOf(mealType),
+              faker.datatype.number({
+                min: MealCaloriesAmount.Min,
+                max: MealCaloriesAmount.Max,
+              }),
+              customerId
+            )))
+        ).flat(2))
+    );
+    await this.amqpConnection.request<FeedCreateMany.Response>({
+      exchange: Exchanges.feed.name,
+      routingKey: FeedCreateMany.topic,
+      payload: feedRecords,
+    });
+    console.log('feed diaries are created');
   }
 }

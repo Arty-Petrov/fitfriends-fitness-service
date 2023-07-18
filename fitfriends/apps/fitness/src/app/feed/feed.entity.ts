@@ -17,7 +17,7 @@ export class FeedEntity implements Entity<FeedEntity>, Feed {
   }
 
   updateData(newData: Feed) {
-    let currentData = this.toObject();
+    const currentData = this.toObject();
     if (
       currentData.id !== newData.id ||
       currentData.date.getTime() !== new Date(newData.date).getTime() ||
