@@ -1,5 +1,7 @@
 export * from './lib/http.exception-filter';
 export * from './lib/item-not-exists.exception';
+export * from './lib/item-exists.exception';
+export * from './lib/item-data-is-not-match.exception';
 export * from './lib/item-not-found.exception';
 export * from './lib/order-status-not-allowed.exception';
 export * from './lib/rmq-error-callback';

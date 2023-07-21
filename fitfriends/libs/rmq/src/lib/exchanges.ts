@@ -1,4 +1,8 @@
 export const Exchanges = {
+  feed: {
+    name: 'fitfriends',
+    type: 'topic',
+  },
   gyms: {
     name: 'fitfriends',
     type: 'topic',

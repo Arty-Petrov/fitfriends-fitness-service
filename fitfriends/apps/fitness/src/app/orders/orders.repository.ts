@@ -125,7 +125,7 @@ export class OrdersRepository
         "OR"."authorId",
         ${selectOrderStatus}
         MAX("OR"."createdAt") AS "createdAt",
-        COUNT ("OR"."productId") filter (WHERE "OR"."status" = ${OrderStatus.Purchased})::INTEGER as "amount"
+        COUNT ("OR"."productId") FILTER (WHERE "OR"."status" = ${OrderStatus.Purchased})::INTEGER as "amount"
         FROM "public"."Order" "OR"
         GROUP BY
         "OR"."productId",
@@ -226,14 +226,14 @@ export class OrdersRepository
 
   public async getDiaryDays(query: OrderDiaryQuery): Promise<DiaryDay[]> {
     const { customerId } = query;
-    const firstDayOfWeek = new Date(dayjs('2023-07-04').isoWeekday(1).format('YYYY-MM-DD'));
-    const lastDayOfWeek = new Date(dayjs('2023-07-04').isoWeekday(7).format('YYYY-MM-DD'));
+    const firstDayOfWeek = new Date(dayjs().isoWeekday(0).format('YYYY-MM-DD'));
+    const lastDayOfWeek = new Date(dayjs().isoWeekday(6).format('YYYY-MM-DD'));
     const status = OrderStatus.Finished;
     const productType = ProductType.Training;
     return this.prisma.$queryRaw<DiaryDay[]>(Prisma.sql`
       WITH all_dates AS (
-          SELECT (DATE_TRUNC('week', ${firstDayOfWeek}) + (n || ' day')::interval)::date AS "date"
-          FROM generate_series(1, 7) AS n
+          SELECT (DATE_TRUNC('week', NOW()) + (n || ' day')::interval)::date AS "date"
+          FROM generate_series(0, 6) AS n
       )
       SELECT
       TO_CHAR(ad."date", 'YYYY-MM-DD') AS "date",

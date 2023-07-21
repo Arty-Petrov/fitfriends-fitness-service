@@ -21,8 +21,9 @@
     8.2 `services:docker-start` — запустит все контейнеры
     8.3 `services:docker-stop` — остановит все контейнеры
     8.4 `services:db-init` — проинициализирует prisma 
-    8.5 `services:seed` — заполнит базы данных тестовыми данными
-    8.6 `services:start` — запустит все микросервисы
+    8.5 `services:db-seed` — заполнит базы данных тестовыми данными
+    8.6 `services:db-reset` — очистит базы данных
+    8.7 `services:start` — запустит все микросервисы
 9 Команда герерации тестовых данных создает две учетные записи: 
   `coach@fitfriends.local` — роль тренера
   `customer@fitfriends.local` — роль клиента

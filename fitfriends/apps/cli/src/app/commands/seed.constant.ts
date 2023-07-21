@@ -1,5 +1,6 @@
-export const CUSTOMERS_COUNT = 20;
 export const COACHES_COUNT = 10;
+export const CUSTOMERS_COUNT = 20;
+export const DIARY_DAYS_COUNT = 10;
 export const GYMS_COUNT = 5;
 
 export const UserFriendsCount = {
@@ -12,12 +13,17 @@ export const CoacherTrainingsCount = {
   Max: 3,
 } as const;
 
-export const TrainingReviewersCount = {
+export const CustomerOrdersCount = {
   Min: 3,
   Max: 10,
 } as const;
 
-export const CustomerOrdersCount = {
+export const MealCaloriesAmount = {
+  Min: 300,
+  Max: 1300,
+} as const;
+
+export const TrainingReviewersCount = {
   Min: 3,
   Max: 10,
 } as const;

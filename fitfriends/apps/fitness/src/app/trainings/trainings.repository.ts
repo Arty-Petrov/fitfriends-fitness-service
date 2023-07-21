@@ -71,6 +71,7 @@ export class TrainingsRepository
       data: { rating: rating },
     }) as unknown as Training;
   }
+
   public async destroy(id: number): Promise<void> {
     await this.prisma.training.delete({
       where: { id },

@@ -6,7 +6,6 @@ import {
   TrainingUpdateData,
   TrainingUpdateImage,
   TrainingUpdateVideo,
-  UserCardRdo,
 } from '@fitfriends/contracts';
 import { UploadField } from '@fitfriends/core';
 import { Exchanges } from '@fitfriends/rmq';
@@ -184,7 +183,7 @@ export class TrainingsController {
 
   @Patch(':id')
   @ApiResponse({
-    type: UserCardRdo,
+    type: TrainingCardRdo,
     status: HttpStatus.OK,
     description: 'Training data is updated',
   })
