@@ -25,8 +25,9 @@
     - `services:db-reset` — очистит базы данных
     - `services:start` — запустит все микросервисы
 1. Команда герерации тестовых данных создает две учетные записи: 
-  `coach@fitfriends.local` — роль тренера
-  `customer@fitfriends.local` — роль клиента
+  - `coach@fitfriends.local` — роль тренера
+  - `customer@fitfriends.local` — роль клиента
+  
   Пароль для всех учетоных записей: `123456`
 
 ## Порядок действий для запуска проекта
@@ -34,10 +35,12 @@
 1. Установите зависимости `npm i`
 1. Установите docker
 1. В директории ./fitfriends
+   
    Запустите сценарии в следующем порядке:
     - `npm run servisec:docker-up`
     - `npm run services:docker-start`
     - `npm run services:start`
+   
    Перейдите в другое окно терминала:
     - `npm run services:db-init`
     - `services:seed`
