@@ -24,19 +24,19 @@
     - `services:db-seed` — заполнит базы данных тестовыми данными
     - `services:db-reset` — очистит базы данных
     - `services:start` — запустит все микросервисы
-- Команда герерации тестовых данных создает две учетные записи: 
+1. Команда герерации тестовых данных создает две учетные записи: 
   `coach@fitfriends.local` — роль тренера
   `customer@fitfriends.local` — роль клиента
   Пароль для всех учетоных записей: `123456`
 
 ## Порядок действий для запуска проекта
-- Создайте файл .env в папке fitfriends/envs/ обновите переменные окружения по образцу в файле .env-example
-- Установите зависимости `npm i`
-- Установите docker
-- В директории ./fitfriends запустите сценарии в следующем порядке:
-    4.1 `npm run servisec:docker-up`
-    4.2 `npm run services:docker-start`
-    4.3 `npm run services:start`
+1. Создайте файл .env в папке fitfriends/envs/ обновите переменные окружения по образцу в файле .env-example
+1. Установите зависимости `npm i`
+1. Установите docker
+1. В директории ./fitfriends запустите сценарии в следующем порядке:
+    - `npm run servisec:docker-up`
+    - `npm run services:docker-start`
+    - `npm run services:start`
   Перейдите в другое окно терминала
-    4.4 `npm run services:db-init`
-    4.5 `services:seed`
+    - `npm run services:db-init`
+    - `services:seed`
