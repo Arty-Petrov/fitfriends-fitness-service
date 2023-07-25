@@ -33,10 +33,11 @@
 1. Создайте файл .env в папке fitfriends/envs/ обновите переменные окружения по образцу в файле .env-example
 1. Установите зависимости `npm i`
 1. Установите docker
-1. В директории ./fitfriends запустите сценарии в следующем порядке:
+1. В директории ./fitfriends
+   Запустите сценарии в следующем порядке:
     - `npm run servisec:docker-up`
     - `npm run services:docker-start`
     - `npm run services:start`
-  Перейдите в другое окно терминала
+   Перейдите в другое окно терминала:
     - `npm run services:db-init`
     - `services:seed`
