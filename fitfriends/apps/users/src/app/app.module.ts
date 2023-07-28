@@ -10,22 +10,24 @@ import { AuthModule } from './auth/auth.module';
 import { validateEnvironments } from './env.validation';
 import { UserFriendsModule } from './friends/user-friends.module';
 import { UserModule } from './user/user.module';
+import { WorkoutInviteModule } from './workout-invite/workout-invite.module';
 
 @Module({
-	imports: [
-		ConfigModule.forRoot({
-			cache: true,
-			isGlobal: true,
-			envFilePath: USER_SERVICE_ENV_PATH,
-			load: [databaseConfig, rabbitMqOptions, jwtOptions],
-			validate: validateEnvironments,
-		}),
-		MongooseModule.forRootAsync(getMongoDbConfig()),
-		AuthModule,
-		UserModule,
+  imports: [
+    ConfigModule.forRoot({
+      cache: true,
+      isGlobal: true,
+      envFilePath: USER_SERVICE_ENV_PATH,
+      load: [databaseConfig, rabbitMqOptions, jwtOptions],
+      validate: validateEnvironments,
+    }),
+    MongooseModule.forRootAsync(getMongoDbConfig()),
+    AuthModule,
+    UserModule,
     UserFriendsModule,
-	],
-	controllers: [],
-	providers: [],
+    WorkoutInviteModule,
+  ],
+  controllers: [],
+  providers: [],
 })
 export class AppModule { }

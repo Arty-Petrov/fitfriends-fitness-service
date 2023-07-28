@@ -1,6 +1,7 @@
 export const USER_SERVICE_ENV_PATH = 'envs/.env';
 export const USERS_COLLECTION_NAME = 'users';
 export const USER_FRIENDS_COLLECTION_NAME = 'user-friends';
+export const WORKOUT_INVITE_COLLECTION_NAME = 'workout-invite';
 
 export const SALT_ROUNDS = 10;
 

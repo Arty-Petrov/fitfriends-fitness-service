@@ -19,8 +19,6 @@ export * from './lib/feed/index';
 export * from './lib/orders/index';
 
 export * from './lib/trainings/index';
-
-export * from './lib/reviews/index';
-
 export * from './lib/users/index';
+export * from './lib/workout-invite';
 

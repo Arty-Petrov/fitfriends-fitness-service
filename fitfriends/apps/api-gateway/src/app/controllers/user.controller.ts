@@ -9,17 +9,23 @@ import {
   UserUpdateDataDto,
   UserUploadAvatar,
   UserUploadCertificate,
+  WorkoutInviteAnswer,
+  WorkoutInviteAnswerDto,
+  WorkoutInviteSend,
+  WorkoutInviteSendDto,
 } from '@fitfriends/contracts';
 import { MongoidValidationPipe, UploadField } from '@fitfriends/core';
 import { Exchanges } from '@fitfriends/rmq';
 import { TokenPayload, UserRole } from '@fitfriends/shared-types';
 import { AmqpConnection } from '@golevelup/nestjs-rabbitmq';
 import {
+  Body,
   Controller,
   Get,
   HttpStatus,
   Param,
   Patch,
+  Post,
   Put,
   Query,
   UploadedFile,
@@ -38,7 +44,7 @@ import { UserDataInterceptor } from '../interceptors/user-data-interceptor';
 @ApiTags('users')
 @Controller('users')
 export class UsersController {
-  constructor(private readonly amqpConnection: AmqpConnection) { }
+  constructor(private readonly amqpConnection: AmqpConnection) {}
 
   @Get(':id')
   @ApiResponse({
@@ -159,6 +165,41 @@ export class UsersController {
       exchange: Exchanges.user.name,
       routingKey: UserRemoveFriend.topic,
       payload: { userId, friendId },
+    });
+  }
+
+  @Post('send-invite')
+  @ApiResponse({
+    status: HttpStatus.CREATED,
+    description: 'Workout invite is sent',
+  })
+  @Roles(UserRole.Customer)
+  @UseGuards(JwtAccessGuard)
+  async sendInvite(
+    @UserData('sub') authorId: string,
+    @Body() { inviteeId }: WorkoutInviteSendDto
+  ): Promise<WorkoutInviteSend.Response> {
+    return await this.amqpConnection.request<WorkoutInviteSend.Response>({
+      exchange: Exchanges.invite.name,
+      routingKey: WorkoutInviteSend.topic,
+      payload: { authorId: authorId, inviteeId: inviteeId },
+    });
+  }
+
+  @Patch('response-invite')
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: 'Workout invite is responsed',
+  })
+  @UseGuards(JwtAccessGuard)
+async responseInvite(
+    @UserData('sub') inviteeId: string,
+    @Body() { authorId,  status }: WorkoutInviteAnswerDto
+  ): Promise<WorkoutInviteAnswer.Response> {
+    return await this.amqpConnection.request<WorkoutInviteAnswer.Response>({
+      exchange: Exchanges.invite.name,
+      routingKey: WorkoutInviteAnswer.topic,
+      payload: { authorId: authorId, inviteeId: inviteeId, status: status},
     });
   }
 }

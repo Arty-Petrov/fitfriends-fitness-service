@@ -3,6 +3,10 @@ export const Exchanges = {
     name: 'fitfriends',
     type: 'topic',
   },
+  invite: {
+    name: 'fitfriends',
+    type: 'topic',
+  },
   gyms: {
     name: 'fitfriends',
     type: 'topic',
@@ -24,6 +28,10 @@ export const Exchanges = {
     type: 'topic',
   },
   trainings: {
+    name: 'fitfriends',
+    type: 'topic',
+  },
+  user: {
     name: 'fitfriends',
     type: 'topic',
   },
