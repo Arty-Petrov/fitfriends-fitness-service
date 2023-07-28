@@ -10,8 +10,11 @@ import { AuthController } from './controllers/auth.controller';
 import { FeedController } from './controllers/feed.controller';
 import { GymsController } from './controllers/gyms.controller';
 import { MyController } from './controllers/my.controller';
+import { NoticeController } from './controllers/notice.controller';
 import { OrdersController } from './controllers/orders.controller';
 import { ReviewsController } from './controllers/reviews.controller';
+import { SenderController } from './controllers/sender.controller';
+import { SubscriberController } from './controllers/subscriber.controller';
 import { TrainingsController } from './controllers/trainings.controller';
 import { UsersController } from './controllers/user.controller';
 import { validateEnvironments } from './env.validation';
@@ -36,6 +39,7 @@ import { JwtRefreshStrategy } from './strategies/jwt-refresh.strategy';
     FeedController,
     GymsController,
     MyController,
+    NoticeController,
     OrdersController,
     ReviewsController,
     TrainingsController,

@@ -11,7 +11,7 @@ export const Exchanges = {
     name: 'fitfriends',
     type: 'topic',
   },
-  user: {
+  notice: {
     name: 'fitfriends',
     type: 'topic',
   },
