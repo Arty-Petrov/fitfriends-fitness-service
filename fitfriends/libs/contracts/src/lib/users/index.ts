@@ -27,6 +27,7 @@ export * from './dto/user-upload-certificate.dto';
 export * from './query/user-list.query';
 export * from './query/user-friend-list.query';
 export * from './rdo/user-card.rdo';
+export * from './rdo/user-friend-list.rdo';
 export * from './rdo/user-friends.rdo';
 export * from './rdo/user-list.rdo';
 export * from './rdo/user-signed.rdo';

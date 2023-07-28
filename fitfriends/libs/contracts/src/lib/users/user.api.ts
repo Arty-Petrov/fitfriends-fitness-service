@@ -196,7 +196,7 @@ export class UserApi {
   @ApiProperty({
     required: true,
     description: UserApiDescription.Certificate,
-    example: InputExample.SertificateUrl,
+    example: InputExample.CertificateUrl,
   })
   @IsString()
   public certificate?: string;

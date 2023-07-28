@@ -52,7 +52,7 @@ export const enum UserCaloriesConsumption {
 export const UserApiError = {
   LocationIsWrong: `User location field must contain any of these values: ${Object.values(SubwayStation).join(', ')}`,
   DateBirthNotValid: 'The user date birth is not valid',
-  NameIsNotValid: 'Name string must contains latin and cyrillic althabet characters only',
+  NameIsNotValid: 'Name string must contains latin and cyrillic alphabet characters only',
   AlreadyExists: 'User with this email already exists',
   AwardsNotValid: `User info should not be more than ${UserAwardsLength.Max} chars length`,
   NameNotValid: `User name, min ${UserNameLength.Min}, max ${UserNameLength.Max} chars length`,
