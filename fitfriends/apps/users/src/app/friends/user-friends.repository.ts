@@ -7,19 +7,21 @@ import { UserFriendsEntity } from './user-friends.entity';
 import { UserFriendsModel } from './user-friends.model';
 
 @Injectable()
-export default class UserFriendsRepository
-{
+export default class UserFriendsRepository {
   constructor(
-    @InjectModel(UserFriendsModel.name) private readonly userFriendsModel: Model<UserFriendsModel>
-  ) { }
+    @InjectModel(UserFriendsModel.name)
+    private readonly userFriendsModel: Model<UserFriendsModel>
+  ) {}
 
   public async create(entity: UserFriendsEntity): Promise<UserFriends> {
     const newFriend = new this.userFriendsModel(entity);
     return newFriend.save();
   }
 
-  public async createMany(entities: UserFriendsEntity[]): Promise<UserFriends[]> {
-   return this.userFriendsModel.insertMany(entities);
+  public async createMany(
+    entities: UserFriendsEntity[]
+  ): Promise<UserFriends[]> {
+    return this.userFriendsModel.insertMany(entities);
   }
 
   public async findByUserId(userId: string): Promise<UserFriends | null> {
@@ -59,15 +61,16 @@ export default class UserFriendsRepository
     ]);
   }
 
-  public async update(_id: string, entity: UserFriendsEntity): Promise<UserFriends> {
+  public async update(
+    _id: string,
+    entity: UserFriendsEntity
+  ): Promise<UserFriends> {
     return this.userFriendsModel
       .findByIdAndUpdate(_id, entity.toObject(), { new: true })
       .exec();
   }
 
   public async destroy(_id: string): Promise<UserFriends> {
-    return this.userFriendsModel
-      .findByIdAndDelete(_id)
-      .exec();
+    return this.userFriendsModel.findByIdAndDelete(_id).exec();
   }
 }
