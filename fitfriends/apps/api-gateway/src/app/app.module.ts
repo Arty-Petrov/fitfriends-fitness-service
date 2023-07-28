@@ -42,6 +42,7 @@ import { JwtRefreshStrategy } from './strategies/jwt-refresh.strategy';
     NoticeController,
     OrdersController,
     ReviewsController,
+    SenderController,
     TrainingsController,
     SubscriberController,
     UsersController,

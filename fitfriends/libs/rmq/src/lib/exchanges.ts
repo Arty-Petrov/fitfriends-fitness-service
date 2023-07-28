@@ -27,6 +27,10 @@ export const Exchanges = {
     name: 'fitfriends',
     type: 'topic',
   },
+  sender: {
+    name: 'fitfriends',
+    type: 'topic',
+  },
   storage: {
     name: 'fitfriends',
     type: 'topic',

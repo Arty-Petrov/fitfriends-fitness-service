@@ -1,0 +1,11 @@
+<h2>Привет, {{subscriberName}}</h2>
+<p>В каталоге тренерa {{publisherName}} появились новые тренировки.</p>
+<ul>
+  {{#each publications}}
+    <li>
+      <h3>{{this.title}}.</h3>
+      <p>{{this.description}}</p>
+    </li>
+  {{/each}}
+</ul>
+<p>Присоединяйся!!!</p>
