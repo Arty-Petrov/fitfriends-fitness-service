@@ -1,0 +1,1970 @@
+{
+	"info": {
+		"_postman_id": "e48a392a-7f80-4ef4-b4c3-542d2f6f7399",
+		"name": "Fitfriends",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "24198458"
+	},
+	"item": [
+		{
+			"name": "Auth",
+			"item": [
+				{
+					"name": "user-coach-sign-up",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"Keks-Coach\",\n  \"email\": \"coach@fitfriends.local\",\n  \"avatar\": \"uploads/avatar/1680168642/photo1.png\",\n  \"password\": \"123456\",\n  \"gender\": \"женский\",\n  \"dateBirth\":\"2011-12-11\",\n  \"role\": \"coach\",\n  \"location\":\"Петроградская\",\n  \"experience\":\"новичок\",\n  \"trainingTypes\": [\"бег\", \"пилатес\", \"бокс\"],\n  \"certificate\": \"uploads/certificate/1680166624/certificate-1.pdf\",\n  \"awards\": \"Персональный тренер и инструктор групповых программ с опытом  более 4х лет. Специализация: коррекция фигуры и осанки.\",\n  \"isPersonalCoach\": false,\n  \"caloriesLoss\": 1500,\n  \"caloriesConsumption\": 1500,\n  \"isReadyForInvite\": false\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3333/api/auth/sign-up",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3333",
+							"path": [
+								"api",
+								"auth",
+								"sign-up"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "user-customer-sign-up",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"Keks-Coach\",\n  \"email\": \"customer@fitfriends.local\",\n  \"avatar\": \"uploads/avatar/1680168642/photo1.png\",\n  \"password\": \"123456\",\n  \"gender\": \"женский\",\n  \"dateBirth\":\"2011-11-11\",\n  \"role\": \"customer\",\n  \"location\":\"Удельная\",\n  \"experience\":\"профессионал\",\n  \"trainingTypes\": [\"бег\"],\n  \"trainingDuration\": \"half-an-hour\",\n  \"caloriesLoss\": 1500,\n  \"caloriesConsumption\": 1500,\n  \"isReadyForInvite\": false,\n  \"certificate\": \"uploads/certificate/1680166624/certificate-1.pdf\",\n  \"awards\": \"Персональный тренер и инструктор групповых программ с опытом  более 4х лет. Специализация: коррекция фигуры и осанки.\",\n  \"isPersonalCoach\": true\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3333/api/auth/sign-up",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3333",
+							"path": [
+								"api",
+								"auth",
+								"sign-up"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "coach-sign-in",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// const responseBody = pm.response.body",
+									"// let jsonData = pm.response.json();",
+									"const jsonData = JSON.parse(responseBody)",
+									"// console.log(jsonData)",
+									"pm.globals.set(\"accessToken\", jsonData.access_token);",
+									"pm.globals.set(\"refreshToken\", jsonData.refresh_token);",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"coach@fitfriends.local\",\n    \"password\": \"123456\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}auth/sign-in",
+							"host": [
+								"{{baseUrl}}auth"
+							],
+							"path": [
+								"sign-in"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "customer-sign-in",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// const responseBody = pm.response.body",
+									"// let jsonData = pm.response.json();",
+									"const jsonData = JSON.parse(responseBody)",
+									"// console.log(jsonData)",
+									"pm.globals.set(\"accessToken\", jsonData.access_token);",
+									"pm.globals.set(\"refreshToken\", jsonData.refresh_token);",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"customer@fitfriends.local\",\n    \"password\": \"123456\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}auth/sign-in",
+							"host": [
+								"{{baseUrl}}auth"
+							],
+							"path": [
+								"sign-in"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "user-sign-in",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// const responseBody = pm.response.body",
+									"// let jsonData = pm.response.json();",
+									"const jsonData = JSON.parse(responseBody)",
+									"// console.log(jsonData)",
+									"pm.globals.set(\"accessToken\", jsonData.access_token);",
+									"pm.globals.set(\"refreshToken\", jsonData.refresh_token);",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"Tamia41@yahoo.com\",\n    \"password\": \"123456\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}auth/sign-in",
+							"host": [
+								"{{baseUrl}}auth"
+							],
+							"path": [
+								"sign-in"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "user-sign-out",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{refreshToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": []
+						},
+						"url": {
+							"raw": "http://localhost:3333/api/auth/sign-out",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3333",
+							"path": [
+								"api",
+								"auth",
+								"sign-out"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "user-refresh",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{refreshToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"coach@fitfriends.local\",\n    \"password\": \"123456\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}auth/refresh",
+							"host": [
+								"{{baseUrl}}auth"
+							],
+							"path": [
+								"refresh"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Feed",
+			"item": [
+				{
+					"name": "Create Feed",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"date\": \"2023-07-27\",\n    \"mealOrdinal\": 1,\n    \"caloriesGain\": 1000\n} ",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}feed",
+							"host": [
+								"{{baseUrl}}feed"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Feed Balance",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}feed/balance",
+							"host": [
+								"{{baseUrl}}feed"
+							],
+							"path": [
+								"balance"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Feed Diary",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}feed",
+							"host": [
+								"{{baseUrl}}feed"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Feed Data",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"id\": 761,\n    \"date\": \"2023-07-17\",\n    \"mealOrdinal\": 0,\n    \"caloriesGain\": 1000\n} ",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}feed",
+							"host": [
+								"{{baseUrl}}feed"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get user",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"// pm.variables.get(",
+									"//     \"accessToken\"",
+									"// )"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer{{accessToken}}",
+								"type": "default",
+								"disabled": true
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}users/64b58f9547d1935d997e807f",
+							"host": [
+								"{{baseUrl}}users"
+							],
+							"path": [
+								"64b58f9547d1935d997e807f"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Gym",
+			"item": [
+				{
+					"name": "Toggle Favorite Status",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PATCH",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}gyms/favorites/2",
+							"host": [
+								"{{baseUrl}}gyms"
+							],
+							"path": [
+								"favorites",
+								"2"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Gym",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}gyms/1",
+							"host": [
+								"{{baseUrl}}gyms"
+							],
+							"path": [
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Gyms List",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}gyms?page=1&count=50&sortCreation=asc&features=бесплатная парковка",
+							"host": [
+								"{{baseUrl}}gyms"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "count",
+									"value": "50"
+								},
+								{
+									"key": "sortCreation",
+									"value": "asc"
+								},
+								{
+									"key": "priceMin",
+									"value": "2000",
+									"disabled": true
+								},
+								{
+									"key": "priceMax",
+									"value": "2800",
+									"disabled": true
+								},
+								{
+									"key": "locations",
+									"value": "Пионерская,Спортивная",
+									"disabled": true
+								},
+								{
+									"key": "features",
+									"value": "бесплатная парковка"
+								},
+								{
+									"key": "isVerified",
+									"value": "false",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "My",
+			"item": [
+				{
+					"name": "My Orders",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}my/orders?page=1&count=2&sortCreation=asc&sortType=amount&sortOrder=desc",
+							"host": [
+								"{{baseUrl}}my"
+							],
+							"path": [
+								"orders"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "count",
+									"value": "2"
+								},
+								{
+									"key": "sortCreation",
+									"value": "asc"
+								},
+								{
+									"key": "sortType",
+									"value": "amount"
+								},
+								{
+									"key": "sortOrder",
+									"value": "desc"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "My Purchases",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}my/purchases?page=1&count=20&sortCreation=asc&type=training&isActive=true",
+							"host": [
+								"{{baseUrl}}my"
+							],
+							"path": [
+								"purchases"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "count",
+									"value": "20"
+								},
+								{
+									"key": "sortCreation",
+									"value": "asc"
+								},
+								{
+									"key": "type",
+									"value": "training"
+								},
+								{
+									"key": "isActive",
+									"value": "true"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "My Gyms",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}my/gyms?page=1&count=50",
+							"host": [
+								"{{baseUrl}}my"
+							],
+							"path": [
+								"gyms"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "count",
+									"value": "50"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "My Friend List",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}my/friends?page=1&count=20&sortCreation=asc",
+							"host": [
+								"{{baseUrl}}my"
+							],
+							"path": [
+								"friends"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "count",
+									"value": "20"
+								},
+								{
+									"key": "sortCreation",
+									"value": "asc"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Notice",
+			"item": [
+				{
+					"name": "Get Notices",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}notice",
+							"host": [
+								"{{baseUrl}}notice"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Notice",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"id\": \"64c2261a403ac81e720dfe23\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}notice",
+							"host": [
+								"{{baseUrl}}notice"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Orders",
+			"item": [
+				{
+					"name": "Create Order",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"productType\": \"training\",\n  \"productId\": 1,\n  \"productPrice\": 1200,\n  \"amount\": 5,\n  \"paymentMethod\": \"visa\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}orders",
+							"host": [
+								"{{baseUrl}}orders"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Create Order",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"productType\": \"gym\",\n  \"productId\": 2,\n  \"productPrice\": 1200,\n  \"amount\": 5,\n  \"paymentMethod\": \"visa\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}orders",
+									"host": [
+										"{{baseUrl}}orders"
+									]
+								}
+							},
+							"_postman_previewlanguage": null,
+							"header": null,
+							"cookie": [],
+							"body": null
+						}
+					]
+				},
+				{
+					"name": "Upadte Order Status",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"id\": 3254,\n  \"status\": \"finished\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}orders",
+							"host": [
+								"{{baseUrl}}orders"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Diary",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}orders/diary",
+							"host": [
+								"{{baseUrl}}orders"
+							],
+							"path": [
+								"diary"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Review",
+			"item": [
+				{
+					"name": "Create Review",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"pm.variables.get(\"accessToken\");"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"text\": \"The Apollotech B340 is an affordable wireless mouse with reliable connectivity, 12 months battery life and modern design\",\n  \"evaluation\": 4\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}reviews/1",
+							"host": [
+								"{{baseUrl}}reviews"
+							],
+							"path": [
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Reviews",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}reviews/1?page=1&count=5&sortCreation=desc",
+							"host": [
+								"{{baseUrl}}reviews"
+							],
+							"path": [
+								"1"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "count",
+									"value": "5"
+								},
+								{
+									"key": "sortCreation",
+									"value": "desc"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Sender",
+			"item": [
+				{
+					"name": "Send new training",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}sender/trainings",
+							"host": [
+								"{{baseUrl}}sender"
+							],
+							"path": [
+								"trainings"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Subscriber",
+			"item": [
+				{
+					"name": "Subscribe",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"publisherId\": \"64b58f9647d1935d997e8099\"\n} ",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}subscriber/set",
+							"host": [
+								"{{baseUrl}}subscriber"
+							],
+							"path": [
+								"set"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Unsubscribe",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"publisherId\": \"64b58f9647d1935d997e8099\"\n} ",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}subscriber/unset",
+							"host": [
+								"{{baseUrl}}subscriber"
+							],
+							"path": [
+								"unset"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Trainings",
+			"item": [
+				{
+					"name": "Create Training Order",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"productPrice\": 1200,\n  \"amount\": 5,\n  \"paymentMethod\": \"visa\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}trainings/order/2",
+							"host": [
+								"{{baseUrl}}trainings"
+							],
+							"path": [
+								"order",
+								"2"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Upload image",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "training-image",
+									"type": "file",
+									"src": "/Users/tema/Documents/htmlacademy/fitfriends-fitness-service/mock-files/promo-1.png"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{baseUrl}}trainings/image",
+							"host": [
+								"{{baseUrl}}trainings"
+							],
+							"path": [
+								"image"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Upload video",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "training-video",
+									"type": "file",
+									"src": "/Users/tema/Documents/htmlacademy/fitfriends-fitness-service/mock-files/Video_html_Academy.mov"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{baseUrl}}trainings/video",
+							"host": [
+								"{{baseUrl}}trainings"
+							],
+							"path": [
+								"video"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Training",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"pm.variables.get(\"accessToken\");"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"title\": \"Аэробика\",\n  \"image\": \"uploads/training-image/1680854625/promo-1.png\",\n  \"experience\": \"профессионал\",\n  \"type\": \"аэробика\",\n  \"duration\": \"hour\",\n  \"price\": 1000,\n  \"caloriesLoss\": 2800,\n  \"description\": \"Интенсивная тренировка\",\n  \"gender\": \"женский\",\n  \"video\": \"uploads/training-video/1680855910/Video_html_Academy.mov\",\n  \"isSpecialOffer\": false\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}trainings/",
+							"host": [
+								"{{baseUrl}}trainings"
+							],
+							"path": [
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Image",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "image",
+									"type": "file",
+									"src": "/Users/tema/Documents/htmlacademy/fitfriends-fitness-service/mock-files/promo-1.png"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{baseUrl}}trainings/image/13",
+							"host": [
+								"{{baseUrl}}trainings"
+							],
+							"path": [
+								"image",
+								"13"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Video",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "video",
+									"type": "file",
+									"src": "/Users/tema/Documents/htmlacademy/fitfriends-fitness-service/mock-files/Video_html_Academy.mov"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{baseUrl}}trainings/video/13",
+							"host": [
+								"{{baseUrl}}trainings"
+							],
+							"path": [
+								"video",
+								"13"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Training",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"title\": \"Crossfit\",\n    \"image\": \"uploads/training-image/1680854625/promo-1.png\",\n    \"experience\": \"профессионал\",\n    \"type\": \"йога\",\n    \"duration\": \"half-an-hour\",\n    \"price\": 1800,\n    \"caloriesLoss\": 1500,\n    \"description\": \"Максимальное расслабление\",\n    \"gender\": \"мужской\",\n    \"video\": \"uploads/training-video/1680855910/Video_html_Academy.mov\",\n    \"rating\": null,\n    \"authorId\": \"642ba867177bbd27efdf07b2\",\n    \"isSpecialOffer\": true\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}trainings/1",
+							"host": [
+								"{{baseUrl}}trainings"
+							],
+							"path": [
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Training",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}trainings/2",
+							"host": [
+								"{{baseUrl}}trainings"
+							],
+							"path": [
+								"2"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Trainings List",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}trainings/?page=1&count=50&sortCreation=asc",
+							"host": [
+								"{{baseUrl}}trainings"
+							],
+							"path": [
+								""
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "count",
+									"value": "50"
+								},
+								{
+									"key": "sortCreation",
+									"value": "asc"
+								},
+								{
+									"key": "sortBy",
+									"value": "low-price",
+									"disabled": true
+								},
+								{
+									"key": "priceMin",
+									"value": "1000",
+									"disabled": true
+								},
+								{
+									"key": "priceMax",
+									"value": "1500",
+									"disabled": true
+								},
+								{
+									"key": "caloriesMin",
+									"value": "1300",
+									"disabled": true
+								},
+								{
+									"key": "caloriesMax",
+									"value": "2000",
+									"disabled": true
+								},
+								{
+									"key": "ratingMin",
+									"value": "1",
+									"disabled": true
+								},
+								{
+									"key": "ratingMax",
+									"value": "5",
+									"disabled": true
+								},
+								{
+									"key": "types",
+									"value": "бокс",
+									"disabled": true
+								},
+								{
+									"key": "durations",
+									"value": "half-an-hour,two-hours",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Users",
+			"item": [
+				{
+					"name": "Upload certificate",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "multipart/form-data; boundary=WebKitFormBoundary",
+								"type": "default"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "certificate",
+									"type": "file",
+									"src": "/Users/tema/Documents/htmlacademy/fitfriends-fitness-service/mock-files/certificate-1.pdf"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://localhost:3333/api/upload/certificate",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3333",
+							"path": [
+								"api",
+								"upload",
+								"certificate"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Upload avatar",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "multipart/form-data; boundary=WebKitFormBoundary",
+								"type": "default"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "avatar",
+									"type": "file",
+									"src": "/Users/tema/Documents/htmlacademy/fitfriends-fitness-service/mock-files/photo1.png"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://localhost:3333/api/upload/avatar",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3333",
+							"path": [
+								"api",
+								"upload",
+								"avatar"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get User",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}users/64b58f9547d1935d997e8073",
+							"host": [
+								"{{baseUrl}}users"
+							],
+							"path": [
+								"64b58f9547d1935d997e8073"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Users List",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}users?sortRole=coach",
+							"host": [
+								"{{baseUrl}}users"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "1",
+									"disabled": true
+								},
+								{
+									"key": "count",
+									"value": "4",
+									"disabled": true
+								},
+								{
+									"key": "sortRole",
+									"value": "coach"
+								},
+								{
+									"key": "sortCreation",
+									"value": "asc",
+									"disabled": true
+								},
+								{
+									"key": "experience",
+									"value": "любитель",
+									"disabled": true
+								},
+								{
+									"key": "locations",
+									"value": "Петроградская,Пионерская",
+									"disabled": true
+								},
+								{
+									"key": "trainings",
+									"value": "бокс,пилатес",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update User Data",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Keks-Coach\",\n    \"avatar\": \"uploads/avatar/1680168642/photo1.png\",\n    \"gender\": \"женский\",\n    \"dateBirth\": \"2011-11-11T00:00:00.000Z\",\n    \"location\": \"Пионерская\",\n    \"createdAt\": \"2023-03-31T16:34:22.688Z\",\n    \"experience\": \"любитель\",\n    \"trainingDuration\": \"\",\n    \"trainingTypes\": [\n        \"бокс\",\n        \"стретчинг\"\n    ],\n    \"certificate\": \"uploads/certificate/1680166624/certificate-1.pdf\",\n    \"awards\": \"Персональный тренер и инструктор групповых программ с опытом  более 4х лет. Специализация: коррекция фигуры и осанки.\",\n    \"isPersonalCoach\": false\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}users/",
+							"host": [
+								"{{baseUrl}}users"
+							],
+							"path": [
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update User Certificate",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "certificate",
+									"type": "file",
+									"src": "/Users/tema/Documents/htmlacademy/fitfriends-fitness-service/mock-files/certificate-2.pdf"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{baseUrl}}api/users/certificate",
+							"host": [
+								"{{baseUrl}}api"
+							],
+							"path": [
+								"users",
+								"certificate"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update User Avatar",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "avatar",
+									"type": "file",
+									"src": "/Users/tema/Documents/htmlacademy/fitfriends-fitness-service/mock-files/photo2.png"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{baseUrl}}users/avatar",
+							"host": [
+								"{{baseUrl}}users"
+							],
+							"path": [
+								"avatar"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Add Friend",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}users/friend/64b58f9547d1935d997e8084/",
+							"host": [
+								"{{baseUrl}}users"
+							],
+							"path": [
+								"friend",
+								"64b58f9547d1935d997e8084",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Remove Friend",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PATCH",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}users/friend/6437c11b1dd17a346446e979/",
+							"host": [
+								"{{baseUrl}}users"
+							],
+							"path": [
+								"friend",
+								"6437c11b1dd17a346446e979",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Send Workout Invite",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"inviteeId\": \"64b58f9547d1935d997e807d\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}users/send-invite",
+							"host": [
+								"{{baseUrl}}users"
+							],
+							"path": [
+								"send-invite"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Response Workout Invite",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"authorId\": \"64b58f9547d1935d997e8084\",\n    \"status\": \"accepted\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}users/response-invite",
+							"host": [
+								"{{baseUrl}}users"
+							],
+							"path": [
+								"response-invite"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
