@@ -35,7 +35,9 @@ class EnvironmentsConfig {
 }
 
 export function validateEnvironments(config: Record<string, unknown>) {
-  const environmentsConfig = plainToInstance(EnvironmentsConfig, config, { enableImplicitConversion: true });
+  const environmentsConfig = plainToInstance(EnvironmentsConfig, config, {
+    enableImplicitConversion: true,
+  });
 
   const errors = validateSync(environmentsConfig, {
     skipMissingProperties: false,

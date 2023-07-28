@@ -14,4 +14,5 @@ export * from './lib/user-not-authorized.exception';
 export * from './lib/user-not-found.exception';
 export * from './lib/user-not-registered.exception';
 export * from './lib/user-password-wrong.exception';
-
+export * from './lib/workout-invite-status-not-allowed.exception';
+export * from './lib/workout-invite-forbidden.exception';

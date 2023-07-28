@@ -56,6 +56,34 @@
           "codeCoverage": true
         }
       }
+    },
+    "docker-up": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "docker-compose up -d",
+        "cwd": "apps/notify"
+      }
+    },
+    "docker-start": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "docker-compose start",
+        "cwd": "apps/notify"
+      }
+    },
+    "docker-stop": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "docker-compose stop",
+        "cwd": "apps/notify"
+      }
+    },
+    "db-reset": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "env-cmd -f ../../envs/.env sh -c 'mongosh --host $NOTIFY_MONGO_HOST --port $NOTIFY_USERS_MONGO_PORT --username $NOTIFY_USERS_MONGO_USER --password $NOTIFY_USERS_MONGO_PASSWORD --authenticationDatabase $NOTIFY_USERS_MONGO_AUTH_BASE $NOTIFY_USERS_MONGO_DB  --eval \"db.getCollectionNames().forEach((collection) => db[collection].drop())\"'",
+        "cwd": "apps/notify"
+      }
     }
   },
   "tags": []

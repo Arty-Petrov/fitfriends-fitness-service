@@ -1,7 +1,7 @@
 export const UserMock = {
   Password: '123456',
   Avatar: '/uploads/avatar/1680162533/photo1.png',
-  Sertificate: '/uploads/certificate/1680166624/certificate-1.pdf',
+  Certificate: '/uploads/certificate/1680166624/certificate-1.pdf',
 } as const;
 
 export const TrainingMock = {

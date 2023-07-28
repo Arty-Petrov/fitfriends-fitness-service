@@ -16,8 +16,8 @@ export class TrainingsRepository
   }
 
   public async createMany(entities: TrainingEntity[]): Promise<Training[]> {
-    return this.prisma.$transaction(
-      entities.map((entity) => this.prisma.training.create({ data: entity}))
+    return await this.prisma.$transaction(
+      entities.map((entity) => this.prisma.training.create({data: entity}))
     ) as unknown as Training[];
   }
 
@@ -69,7 +69,7 @@ export class TrainingsRepository
     await this.prisma.training.update({
       where: { id },
       data: { rating: rating },
-    }) as unknown as Training;
+    });
   }
 
   public async destroy(id: number): Promise<void> {

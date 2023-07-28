@@ -4,7 +4,7 @@ import { Observable, throwError } from 'rxjs';
 
 @Catch(RpcException)
 export class RPCExceptionFilter implements RpcExceptionFilter {
-  catch(exception: RpcException, host: ArgumentsHost): Observable<any> {
+  catch(exception: RpcException, host: ArgumentsHost): Observable<never> {
     const ctx = host.switchToHttp();
     const response = ctx.getResponse<Response>();
     const status = exception.getError()['status'];

@@ -1,8 +1,8 @@
 import {
-  FeedBalanceRdo,
+  FeedBalanceDayRdo,
   FeedCreate,
   FeedCreateDto,
-  FeedDiaryRdo,
+  FeedDiaryDayRdo,
   FeedGetBalance,
   FeedGetDiary,
   FeedUpdateData,
@@ -21,11 +21,11 @@ import { RolesGuard } from '../guards/roles.guard';
 @ApiTags('feed')
 @Controller('feed')
 export class FeedController {
-  constructor(private readonly amqpConnection: AmqpConnection) { }
+  constructor(private readonly amqpConnection: AmqpConnection) {}
 
   @Post()
   @ApiResponse({
-    type: FeedDiaryRdo,
+    type: FeedDiaryDayRdo,
     status: HttpStatus.OK,
     description: 'Feed data is created',
   })
@@ -44,14 +44,14 @@ export class FeedController {
 
   @Get()
   @ApiResponse({
-    type: FeedDiaryRdo,
+    type: FeedDiaryDayRdo,
     status: HttpStatus.OK,
     description: 'Feed diary is found',
   })
   @Roles(UserRole.Customer)
   @UseGuards(JwtAccessGuard, RolesGuard)
   async getFeedDiary(
-    @UserData('sub') userId: string,
+    @UserData('sub') userId: string
   ): Promise<FeedGetDiary.Response> {
     return await this.amqpConnection.request<FeedGetDiary.Response>({
       exchange: Exchanges.feed.name,
@@ -62,14 +62,14 @@ export class FeedController {
 
   @Get('balance')
   @ApiResponse({
-    type: FeedBalanceRdo,
+    type: FeedBalanceDayRdo,
     status: HttpStatus.OK,
     description: 'Feed balance is found',
   })
   @Roles(UserRole.Customer)
   @UseGuards(JwtAccessGuard, RolesGuard)
   async getFeedBalance(
-    @UserData('sub') userId: string,
+    @UserData('sub') userId: string
   ): Promise<FeedGetBalance.Response> {
     return await this.amqpConnection.request<FeedGetBalance.Response>({
       exchange: Exchanges.feed.name,
@@ -80,7 +80,7 @@ export class FeedController {
 
   @Patch()
   @ApiResponse({
-    type: FeedDiaryRdo,
+    type: FeedDiaryDayRdo,
     status: HttpStatus.OK,
     description: 'Feed data is updated',
   })

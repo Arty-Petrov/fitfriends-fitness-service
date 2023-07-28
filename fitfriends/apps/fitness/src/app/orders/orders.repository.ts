@@ -40,7 +40,7 @@ export class OrdersRepository
   }
 
   public async createMany(entities: OrderEntity[]): Promise<Order[]> {
-    return this.prisma.$transaction(
+    return await this.prisma.$transaction(
       entities.map((entity) => this.prisma.order.create({
         data: {
           ...entity,

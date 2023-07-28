@@ -23,7 +23,7 @@ import { RolesGuard } from '../guards/roles.guard';
 
 @Controller('my')
 export class MyController {
-  constructor(private readonly amqpConnection: AmqpConnection) { }
+  constructor(private readonly amqpConnection: AmqpConnection) {}
 
   @Get('friends')
   @ApiResponse({
@@ -47,7 +47,7 @@ export class MyController {
   @ApiResponse({
     type: OrderCoachListRdo,
     status: HttpStatus.OK,
-    description: 'Coache\'s orders found',
+    description: "Coach's orders found",
   })
   @Roles(UserRole.Coach)
   @UseGuards(JwtAccessGuard, RolesGuard)
@@ -66,7 +66,7 @@ export class MyController {
   @ApiResponse({
     type: OrderCustomerListRdo,
     status: HttpStatus.OK,
-    description: 'Customers\'s purchases found',
+    description: "Customers's purchases found",
   })
   @Roles(UserRole.Customer)
   @UseGuards(JwtAccessGuard, RolesGuard)

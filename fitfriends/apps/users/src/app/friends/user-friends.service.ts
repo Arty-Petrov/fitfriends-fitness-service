@@ -1,17 +1,26 @@
-import { UserFriendListQuery, UserFriendsDto } from '@fitfriends/contracts';
+import { NoticeCreate, UserFriendListQuery, UserFriendsDto } from '@fitfriends/contracts';
 import { UserFriendsNotFoundException } from '@fitfriends/exceptions';
-import { User, UserFriends } from '@fitfriends/shared-types';
+import { Exchanges } from '@fitfriends/rmq';
+import { NoticeCategory, User, UserFriends, WorkoutInviteStatus } from '@fitfriends/shared-types';
+import { AmqpConnection } from '@golevelup/nestjs-rabbitmq';
 import { HttpStatus, Injectable } from '@nestjs/common';
 import UserRepository from '../user/user.repository';
+import { WorkoutInviteRepository } from '../workout-invite/workout-invite.repository';
 import { UserFriendsEntity } from './user-friends.entity';
 import UserFriendsRepository from './user-friends.repository';
+
+type WithWorkoutInviteStatus<T> = T & {
+  inviteStatus: WorkoutInviteStatus;
+};
 
 @Injectable()
 export class UserFriendsService {
   constructor(
     private readonly userRepository: UserRepository,
-    private readonly userFriendsRepository: UserFriendsRepository
-  ) { }
+    private readonly userFriendsRepository: UserFriendsRepository,
+    private readonly workoutInviteRepository: WorkoutInviteRepository,
+    private readonly amqpConnection: AmqpConnection
+  ) {}
 
   public async createMany(dtos: UserFriendsDto[]): Promise<UserFriends[]> {
     let friends: Array<UserFriendsEntity> = [];
@@ -40,8 +49,18 @@ export class UserFriendsService {
     return updatedFriends;
   }
 
-  public async getFriendList(query: UserFriendListQuery): Promise<User[]> {
-    return this.userFriendsRepository.findFriends(query);
+  public async getFriendList(
+    query: UserFriendListQuery
+  ): Promise<Array<WithWorkoutInviteStatus<User>>> {
+    const { userId } = query;
+    const friends = await this.userFriendsRepository.findFriends(query);
+    const invitees = await this.workoutInviteRepository.findInvitee(userId);
+    return friends.map<WithWorkoutInviteStatus<User>>((friend) => {
+      const workoutInvite = invitees.find(
+        (invitee) => invitee.inviteeId === friend.id
+      );
+      return { ...friend, inviteStatus: (!workoutInvite) ? null: workoutInvite.status };
+    });
   }
 
   public async addFriend(
@@ -60,7 +79,21 @@ export class UserFriendsService {
     userFriendsEntity.addFriend(friendId);
     const { id: entityId } = userFriendsEntity;
     await this.userFriendsRepository.update(entityId, userFriendsEntity);
-    return this.userRepository.findById(friendId);
+    const { name: authorName, gender: authorGenger } =
+      await this.userRepository.findById(userId);
+    const friend = await this.userRepository.findById(friendId);
+    await this.amqpConnection.publish(
+      Exchanges.notice.name,
+      NoticeCreate.topic,
+      {
+        senderId: userId,
+        senderName: authorName,
+        senderGender: authorGenger,
+        recipientId: friendId,
+        category: NoticeCategory.NewFriend,
+      }
+    );
+    return friend;
   }
 
   public async removeFriend(

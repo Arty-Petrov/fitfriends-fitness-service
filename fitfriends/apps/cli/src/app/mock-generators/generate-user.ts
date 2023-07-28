@@ -58,7 +58,7 @@ export const generateUser = (role: UserRole): UserSignUpDto => {
             max: UserMaxTrainingTypeCount.Coach,
           })
         ),
-        certificate: UserMock.Sertificate,
+        certificate: UserMock.Certificate,
         awards: faker.lorem.sentences().slice(0, UserAwardsLength.Max),
         isPersonalCoach: faker.datatype.boolean(),
       };

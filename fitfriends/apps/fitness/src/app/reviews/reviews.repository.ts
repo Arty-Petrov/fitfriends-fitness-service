@@ -18,8 +18,8 @@ export class ReviewsRepository
   }
 
   public async createMany(entities: ReviewEntity[]): Promise<Review[]> {
-    return this.prisma.$transaction(
-      entities.map((entity) => this.prisma.review.create({ data: entity }))
+    return await this.prisma.$transaction(
+      entities.map((entity) => this.prisma.review.create({data: entity}))
     ) as unknown as Review[];
   }
 
@@ -45,7 +45,7 @@ export class ReviewsRepository
       _avg: { evaluation: true }
     }))._avg.evaluation;
     return precisionRound(rating, TRAININGS_RATING_DECIMALS);
-  } 
+  }
 
   public async update(id: number, entity: ReviewEntity): Promise<Review> {
     return this.prisma.review.update({

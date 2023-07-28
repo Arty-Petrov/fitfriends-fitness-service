@@ -34,7 +34,7 @@ import { NoAuthGuard } from '../guards/no-auth.guard';
 @ApiTags('auth')
 @Controller('auth')
 export class AuthController {
-  constructor(private readonly amqpConnection: AmqpConnection) { }
+  constructor(private readonly amqpConnection: AmqpConnection) {}
 
   @Post('avatar')
   @UseInterceptors(FileInterceptor(UploadField.Avatar, MulterOptions.Avatar))

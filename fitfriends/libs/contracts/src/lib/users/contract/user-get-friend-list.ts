@@ -1,5 +1,5 @@
 import { UserFriendListQuery } from '../query/user-friend-list.query';
-import { UserCardRdo } from '../rdo/user-card.rdo';
+import { UserFriendListRdo } from '../rdo/user-friend-list.rdo';
 
 export namespace UserGetFriendList {
   export const topic = 'user.get-friend-list.query';
@@ -8,6 +8,6 @@ export namespace UserGetFriendList {
 
   export class Request extends UserFriendListQuery { }
 
-  export class Response extends UserCardRdo {
+  export class Response extends UserFriendListRdo {
   }
 }

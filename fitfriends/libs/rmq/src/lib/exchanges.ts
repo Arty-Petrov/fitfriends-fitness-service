@@ -3,11 +3,15 @@ export const Exchanges = {
     name: 'fitfriends',
     type: 'topic',
   },
+  invite: {
+    name: 'fitfriends',
+    type: 'topic',
+  },
   gyms: {
     name: 'fitfriends',
     type: 'topic',
   },
-  user: {
+  notice: {
     name: 'fitfriends',
     type: 'topic',
   },
@@ -15,7 +19,15 @@ export const Exchanges = {
     name: 'fitfriends',
     type: 'topic',
   },
+  publication: {
+    name: 'fitfriends',
+    type: 'topic',
+  },
   reviews: {
+    name: 'fitfriends',
+    type: 'topic',
+  },
+  sender: {
     name: 'fitfriends',
     type: 'topic',
   },
@@ -23,7 +35,15 @@ export const Exchanges = {
     name: 'fitfriends',
     type: 'topic',
   },
+  subscriber: {
+    name: 'fitfriends',
+    type: 'topic',
+  },
   trainings: {
+    name: 'fitfriends',
+    type: 'topic',
+  },
+  user: {
     name: 'fitfriends',
     type: 'topic',
   },

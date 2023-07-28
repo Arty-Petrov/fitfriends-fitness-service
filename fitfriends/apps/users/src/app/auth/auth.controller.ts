@@ -27,7 +27,7 @@ export class AuthController {
     queue: UserSignIn.queue,
     errorHandler: rmqErrorCallback,
   })
-  public async signIn(dto: UserSignIn.Request): Promise<any> {
+  public async signIn(dto: UserSignIn.Request): Promise<UserSignIn.Response> {
     const tokens = await this.authService.signIn(dto);
     return fillObject(UserSignIn.Response, tokens);
   }

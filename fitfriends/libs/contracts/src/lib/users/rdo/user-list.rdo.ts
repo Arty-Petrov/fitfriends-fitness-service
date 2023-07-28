@@ -1,9 +1,23 @@
 import { SubwayStation, TrainingType, UserExperience, UserRole } from '@fitfriends/shared-types';
 import { PickType } from '@nestjs/swagger';
-import { Expose } from 'class-transformer';
+import { Expose, Transform } from 'class-transformer';
 import { UserApi } from '../user.api';
 
-export class UserListRdo extends PickType(UserApi, ['name', 'avatar', 'role', 'location', 'experience', 'createdAt', 'trainingTypes', 'isReadyForInvite', 'isPersonalCoach']) {
+export class UserListRdo extends PickType(UserApi, [
+  'id',
+  'name',
+  'avatar',
+  'role',
+  'location',
+  'experience',
+  'createdAt',
+  'trainingTypes',
+  'isReadyForInvite',
+  'isPersonalCoach',
+]) {
+  @Expose()
+  public id: string;
+
   @Expose()
   public name: string;
 
@@ -26,8 +40,10 @@ export class UserListRdo extends PickType(UserApi, ['name', 'avatar', 'role', 'l
   public createdAt: Date;
 
   @Expose()
+  @Transform(({ obj, value }) =>
+    obj.isPersonalCoach !== undefined ? obj.isPersonalCoach : value
+  )
   public isReadyForInvite: boolean;
 
-  @Expose()
   public isPersonalCoach: boolean;
 }

@@ -81,7 +81,7 @@
     "db-reset": {
       "executor": "nx:run-commands",
       "options": {
-        "command": "env-cmd -f ../../envs/.env sh -c 'mongosh --host $MONGO_HOST --port $MONGO_PORT --username $MONGO_USER --password $MONGO_PASSWORD --authenticationDatabase $MONGO_AUTH_BASE $MONGO_DB  --eval \"db.getCollectionNames().forEach((collection) => db[collection].drop())\"'",
+        "command": "env-cmd -f ../../envs/.env sh -c 'mongosh --host $USERS_MONGO_HOST --port $USERS_MONGO_PORT --username $USERS_MONGO_USER --password $USERS_MONGO_PASSWORD --authenticationDatabase $USERS_MONGO_AUTH_BASE $USERS_MONGO_DB  --eval \"db.getCollectionNames().forEach((collection) => db[collection].drop())\"'",
         "cwd": "apps/users"
       }
     }
