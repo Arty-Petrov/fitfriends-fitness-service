@@ -31,6 +31,10 @@ export const Exchanges = {
     name: 'fitfriends',
     type: 'topic',
   },
+  subscriber: {
+    name: 'fitfriends',
+    type: 'topic',
+  },
   trainings: {
     name: 'fitfriends',
     type: 'topic',

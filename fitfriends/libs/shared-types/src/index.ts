@@ -29,6 +29,7 @@ export * from './lib/request-with-token-payload.interface';
 export * from './lib/review-query.interface';
 export * from './lib/review.interface';
 export * from './lib/sort-order.enum';
+export * from './lib/subscriber.interface';
 export * from './lib/subway-station.enum';
 export * from './lib/token-payload.interface';
 export * from './lib/token.interface';
