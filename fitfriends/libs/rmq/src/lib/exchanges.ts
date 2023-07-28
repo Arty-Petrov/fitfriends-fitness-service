@@ -19,6 +19,10 @@ export const Exchanges = {
     name: 'fitfriends',
     type: 'topic',
   },
+  publication: {
+    name: 'fitfriends',
+    type: 'topic',
+  },
   reviews: {
     name: 'fitfriends',
     type: 'topic',

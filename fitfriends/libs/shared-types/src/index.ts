@@ -21,6 +21,8 @@ export * from './lib/order-status.enum';
 export * from './lib/order.interface';
 export * from './lib/payment-method.enum';
 export * from './lib/product-type.enum';
+export * from './lib/publication-category.enum';
+export * from './lib/publication.interface';
 export * from './lib/query.interface';
 export * from './lib/refresh-token-payload.interface';
 export * from './lib/request-with-token-payload.interface';
