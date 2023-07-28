@@ -7,12 +7,12 @@ class EnvironmentsConfig {
   @IsString({
     message: EnvValidationMessage.DBNameRequired,
   })
-  public MONGO_DB: string;
+  public USERS_MONGO_DB: string;
 
   @IsString({
     message: EnvValidationMessage.DBHostRequired,
   })
-  public MONGO_HOST: string;
+  public USERS_MONGO_HOST: string;
 
   @IsNumber(
     {},
@@ -22,22 +22,22 @@ class EnvironmentsConfig {
   )
   @Min(MongoPortRange.Min)
   @Max(MongoPortRange.Max)
-  public MONGO_PORT: number;
+  public USERS_MONGO_PORT: number;
 
   @IsString({
     message: EnvValidationMessage.DBUserRequired,
   })
-  public MONGO_USER: string;
+  public USERS_MONGO_USER: string
 
   @IsString({
     message: EnvValidationMessage.DBPasswordRequired,
   })
-  public MONGO_PASSWORD: string;
+  public USERS_MONGO_PASSWORD: string;
 
   @IsString({
     message: EnvValidationMessage.DBBaseAuthRequired,
   })
-  public MONGO_AUTH_BASE: string;
+  public USERS_MONGO_AUTH_BASE: string;
 
   @IsString({
     message: EnvValidationMessage.RmqServiceNameRequired,
@@ -75,7 +75,7 @@ class EnvironmentsConfig {
   public JWT_AT_SECRET: string;
 
   @IsString({
-    message: EnvValidationMessage.JwtRefreshTokenExpiresInRequired,
+    message: EnvValidationMessage.JwtAccessTokenExpiresInRequired,
   })
   public JWT_AT_EXPIRES_IN: string;
 
