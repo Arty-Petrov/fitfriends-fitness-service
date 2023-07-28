@@ -1,4 +1,5 @@
 import {
+  PublicationCreate,
   StorageDeleteFile,
   TrainingCreateDto,
   TrainingUpdateDataDto,
@@ -8,7 +9,15 @@ import {
 import { UploadField } from '@fitfriends/core';
 import { ItemNotFoundException } from '@fitfriends/exceptions';
 import { Exchanges } from '@fitfriends/rmq';
-import { AuthorizeOwner, OrderStatus, ProductType, Training, TrainingQuery, UserRole } from '@fitfriends/shared-types';
+import {
+  AuthorizeOwner,
+  OrderStatus,
+  ProductType,
+  PublicationCategory,
+  Training,
+  TrainingQuery,
+  UserRole,
+} from '@fitfriends/shared-types';
 import { AmqpConnection } from '@golevelup/nestjs-rabbitmq';
 import { ForbiddenException, Injectable } from '@nestjs/common';
 import { OrdersRepository } from '../orders/orders.repository';
@@ -32,7 +41,20 @@ export class TrainingsService implements AuthorizeOwner {
     dto: TrainingCreateDto
   ): Promise<Training> {
     const trainingEntity = new TrainingEntity(dto);
-    return this.trainingsRepository.create(trainingEntity);
+    const training = await this.trainingsRepository.create(trainingEntity);
+    const { id, authorId, title, description } = training;
+    await this.amqpConnection.publish(
+      Exchanges.publication.name,
+      PublicationCreate.topic,
+      {
+        authorId: authorId,
+        category: PublicationCategory.Training,
+        entityId: id,
+        title: title,
+        description: description,
+      },
+    );
+    return training;
   }
 
   public async createMany(
@@ -76,7 +98,7 @@ export class TrainingsService implements AuthorizeOwner {
   public async getList(
     dto: TrainingQuery
   ): Promise<Training[]> {
-   return this.trainingsRepository.find(dto);
+    return this.trainingsRepository.find(dto);
   }
 
   public async update(
@@ -101,7 +123,7 @@ export class TrainingsService implements AuthorizeOwner {
       routingKey: StorageDeleteFile.topic,
       payload: { fileName: filePath },
     });
-    return this.update({...existTraining, [fieldName]: dto[fieldName] });
+    return this.update({ ...existTraining, [fieldName]: dto[fieldName] });
   }
 
   public async isOwner(

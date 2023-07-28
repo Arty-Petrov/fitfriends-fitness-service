@@ -20,8 +20,8 @@ export class GymsRepository {
   }
 
   public async createMany(entities: GymEntity[]): Promise<Gym[]> {
-    return this.prisma.$transaction(
-      entities.map((entity) => this.prisma.gym.create({ data: entity }))
+    return await this.prisma.$transaction(
+      entities.map((entity) => this.prisma.gym.create({data: entity}))
     ) as unknown as Gym[];
   }
 

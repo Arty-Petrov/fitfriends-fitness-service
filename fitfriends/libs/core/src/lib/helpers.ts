@@ -6,15 +6,33 @@ import { diskStorage } from 'multer';
 import { extname } from 'path';
 import { UploadField } from './constants/upload-field.const';
 
-export function getMongoConnectionString({ username, password, host, port, databaseName, authDatabase }): string {
+export function getMongoConnectionString({
+  username,
+  password,
+  host,
+  port,
+  databaseName,
+  authDatabase,
+}): string {
   return `mongodb://${username}:${password}@${host}:${port}/${databaseName}?authSource=${authDatabase}`;
 }
 
-export function getRabbitConnectionString({ username, password, host, port }): string {
+export function getRabbitConnectionString({
+  username,
+  password,
+  host,
+  port,
+}): string {
   return `amqp://${username}:${password}@${host}:${port}`;
 }
-export function fillObject<T, V>(dto: ClassConstructor<T>, plainObject: V, groups: string[] = []) {
-  const options = !groups.length ? { excludeExtraneousValues: true } : { excludeExtraneousValues: true, groups: [...groups] };
+export function fillObject<T, V>(
+  dto: ClassConstructor<T>,
+  plainObject: V,
+  groups: string[] = []
+) {
+  const options = !groups.length
+    ? { excludeExtraneousValues: true }
+    : { excludeExtraneousValues: true, groups: [...groups] };
   return plainToInstance(dto, plainObject, { ...options });
 }
 export function precisionRound(num: number, decimals = 0): number {
@@ -23,10 +41,14 @@ export function precisionRound(num: number, decimals = 0): number {
     factor *= 10;
     factor **= decimals;
   }
-  return Math.round((num + Number.EPSILON) * factor) / factor
+  return Math.round((num + Number.EPSILON) * factor) / factor;
 }
 
-export function createMulterOptions(maxFileSize: number, fileType: RegExp, maxCount = 1) {
+export function createMulterOptions(
+  maxFileSize: number,
+  fileType: RegExp,
+  maxCount = 1
+) {
   return {
     limits: {
       fileSize: maxFileSize,
@@ -36,7 +58,13 @@ export function createMulterOptions(maxFileSize: number, fileType: RegExp, maxCo
       if (file.mimetype.match(fileType)) {
         cb(null, true);
       } else {
-        cb(new HttpException(`Unsupported file type ${extname(file.originalname)}`, HttpStatus.BAD_REQUEST), false);
+        cb(
+          new HttpException(
+            `Unsupported file type ${extname(file.originalname)}`,
+            HttpStatus.BAD_REQUEST
+          ),
+          false
+        );
       }
     },
     storage: diskStorage({
@@ -44,9 +72,14 @@ export function createMulterOptions(maxFileSize: number, fileType: RegExp, maxCo
         const rootDir = process.env.MULTER_DEST;
 
         const { id } = req;
-        const categoryDir = Object.values(UploadField).find((field) => file.fieldname === field);
+        const categoryDir = Object.values(UploadField).find(
+          (field) => file.fieldname === field
+        );
         if (!categoryDir) {
-          throw new HttpException('Unexpected field name', HttpStatus.BAD_REQUEST);
+          throw new HttpException(
+            'Unexpected field name',
+            HttpStatus.BAD_REQUEST
+          );
         }
         const routeId = id ? `${id}-` : '';
 

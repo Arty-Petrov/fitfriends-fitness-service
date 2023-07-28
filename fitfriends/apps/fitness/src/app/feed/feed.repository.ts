@@ -20,8 +20,8 @@ export class FeedRepository
   }
 
   public async createMany(entities: FeedEntity[]): Promise<Feed[]> {
-    return this.prisma.$transaction(
-      entities.map((entity) => this.prisma.feed.create({ data: entity }))
+    return await this.prisma.$transaction(
+      entities.map((entity) => this.prisma.feed.create({data: entity}))
     ) as unknown as Feed[];
   }
 
